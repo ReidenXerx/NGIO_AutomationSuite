@@ -3,6 +3,42 @@
 
 [line]
 
+[size=5][color=#FF9800]⚠️ ANTIVIRUS DISCLAIMER[/color][/size]
+
+[quote]
+[size=4][color=#E91E63][b]THIS IS NOT A VIRUS![/b][/color][/size]
+
+[b]Why antivirus might flag this tool:[/b]
+[list]
+[*][b]Process Management:[/b] Tool launches and monitors Skyrim.exe (appears as "process injection" to some AVs)
+[*][b]File Operations:[/b] Rapidly processes thousands of .cgid files (looks like "mass file modification")
+[*][b]System Monitoring:[/b] Monitors CPU, memory, and file activity (appears as "system scanning")
+[*][b]Automation Scripts:[/b] Python scripts with batch files (flagged as "potentially unwanted programs")
+[*][b]New/Unknown Software:[/b] Not widely distributed yet, so not in AV whitelists
+[/list]
+
+[b][color=#4CAF50]This tool is 100% safe:[/color][/b]
+[list]
+[*]✅ [b]Open Source:[/b] Full source code available on GitHub for inspection
+[*]✅ [b]No Network Activity:[/b] Tool works completely offline (except Python package downloads)
+[*]✅ [b]No System Changes:[/b] Only modifies Skyrim files and creates mod archives
+[*]✅ [b]No Admin Required:[/b] Runs with normal user permissions
+[*]✅ [b]Portable:[/b] No installation, no registry changes, no system files modified
+[/list]
+
+[b][color=#FF5722]If your antivirus blocks it:[/color][/b]
+[list]
+[*]Add the extracted folder to your antivirus exclusions
+[*]Temporarily disable real-time protection during use
+[*]Use Windows Defender (generally has fewer false positives with Python tools)
+[*]Download from official sources only (GitHub/Nexus)
+[/list]
+
+[b]Why we can't "fix" this:[/b] The tool's legitimate functionality (process monitoring, file operations) naturally triggers heuristic detection. This is common with automation tools.
+[/quote]
+
+[line]
+
 [size=5][color=#FF5722]🎯 What This Solves[/color][/size]
 
 [size=4][color=#E91E63]Current NGIO Grass Generation Process (PAINFUL):[/color][/size]
@@ -84,38 +120,119 @@
 
 [line]
 
-[size=5][color=#FF5722]📋 Requirements[/color][/size]
+[size=5][color=#FF5722]🔧 WHAT YOU MUST INSTALL FIRST[/color][/size]
 
+[size=4][color=#E91E63]⚠️ CRITICAL REQUIREMENTS (You MUST install these or nothing will work):[/color][/size]
+
+[size=3][color=#FF5722]1. Python 3.8+ 🐍 ESSENTIAL[/color][/size]
 [list]
-[*][b]Windows 10/11[/b]
-[*][b]Python 3.7+[/b] (auto-installed if needed)
-[*][b]Skyrim SE/AE/VR[/b] with NGIO installed
-[*][b]Seasons of Skyrim[/b] (or compatible seasonal mod) - [i]optional for non-seasonal mode[/i]
-[*][b]SKSE64[/b]
-[*][b]At least 5GB free disk space[/b]
+[*][b]Download:[/b] https://www.python.org/downloads/
+[*][b]Version:[/b] Python 3.8, 3.9, 3.10, 3.11, or 3.12 (latest recommended)
+[*][b]Installation:[/b] ✅ CHECK "Add Python to PATH" during installation (CRITICAL!)
+[*][b]Test it worked:[/b] Open Command Prompt, type [font=Courier New]python --version[/font]
+[*]✅ Should show: [font=Courier New]Python 3.8.x[/font] (or newer)
+[*]❌ If you get [font=Courier New]'python' is not recognized[/font], reinstall Python and check the PATH box
+[/list]
+
+[size=3][color=#FF5722]2. Skyrim Special Edition 🎮 ESSENTIAL[/color][/size]
+[list]
+[*][b]Required:[/b] Skyrim SE or Anniversary Edition (VR also works)
+[*][b]Platforms:[/b] Steam, GOG, Epic Games Store, Microsoft Store - any work
+[*][b]Must be:[/b] Installed, launched at least once, and working normally
+[*][b]Test it works:[/b] Launch Skyrim manually and make sure it reaches the main menu
+[/list]
+
+[size=3][color=#FF5722]3. NGIO Mod (No Grass In Objects) 🌱 ESSENTIAL[/color][/size]
+[list]
+[*][b]Download:[/b] From Nexus Mods - search for "No Grass In Objects"
+[*][b]Install:[/b] Through your mod manager (Mod Organizer 2 or Vortex)
+[*][b]Status:[/b] Must be ENABLED in your mod manager
+[*][b]Test it works:[/b] NGIO should appear in your mod list and be active
+[/list]
+
+[size=3][color=#FF5722]4. SKSE64 ⚡ HIGHLY RECOMMENDED[/color][/size]
+[list]
+[*][b]Download:[/b] https://skse.silverlock.org/
+[*][b]Why needed:[/b] NGIO plugin requires SKSE to work properly
+[*][b]Installation:[/b] Extract all files to your Skyrim installation directory
+[*][b]Verify:[/b] You should see [font=Courier New]skse64_loader.exe[/font] in your Skyrim folder
+[*][b]Test it works:[/b] Launch Skyrim using [font=Courier New]skse64_loader.exe[/font] instead of normal launcher
+[/list]
+
+[size=4][color=#4CAF50]🌱 OPTIONAL (For Seasonal Grass):[/color][/size]
+
+[size=3][color=#4CAF50]5. Seasons of Skyrim (Optional but Recommended)[/color][/size]
+[list]
+[*][b]Download:[/b] From Nexus Mods
+[*][b]Purpose:[/b] Enables Winter/Spring/Summer/Autumn grass generation
+[*][b]Without this:[/b] You can still generate universal grass cache (non-seasonal mode)
+[*][b]Install:[/b] Through mod manager, configure seasons as desired
+[/list]
+
+[size=3][color=#4CAF50]6. Grass Cache Helper NG (Recommended)[/color][/size]
+[list]
+[*][b]Download:[/b] From Nexus Mods
+[*][b]Purpose:[/b] Loads the generated .cgid files in-game for seasonal switching
+[*][b]Install:[/b] SKSE plugin - extract to Data/SKSE/Plugins/
+[/list]
+
+[size=4][color=#2196F3]💾 System Requirements:[/color][/size]
+[list]
+[*][b]Windows 10/11[/b] (required)
+[*][b]At least 8GB RAM[/b] (for heavy mod lists)
+[*][b]At least 5GB free disk space[/b] (for generation process)
+[*][b]Stable internet connection[/b] (for Python package downloads)
 [/list]
 
 [line]
 
-[size=5][color=#FF5722]🚀 Quick Start[/color][/size]
+[size=5][color=#FF5722]🚀 HOW TO USE (Step-by-Step for Complete Beginners)[/color][/size]
 
-[size=4][color=#4CAF50]Installation:[/color][/size]
+[size=4][color=#4CAF50]Download Options:[/color][/size]
+[list]
+[*][b]Portable Version (Recommended):[/b] Download [font=Courier New]ngio-automation-suite-X.X.X-portable.zip[/font]
+[*][b]Extract anywhere[/b] on your computer (Desktop is fine)
+[*][b]No installation required![/b] Just extract and run
+[/list]
+
+[size=4][color=#4CAF50]First Time Setup (5 minutes):[/color][/size]
 [list=1]
-[*]Download and extract the archive
-[*]Double-click [font=Courier New]run_ngio_automation.bat[/font]
-[*]Provide your Skyrim installation path (one-time setup)
-[*]Choose which seasons to generate
-[*]Click start and walk away!
-[*]Each season is automatically archived & cleaned after completion
+[*][b]Run the tool:[/b] Double-click [font=Courier New]start_ngio_automation.bat[/font]
+[*][b]Python check:[/b] Tool will verify Python is installed (install if needed)
+[*][b]Skyrim path:[/b] Point to your Skyrim installation folder
+   [list]
+   [*]Usually: [font=Courier New]C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition[/font]
+   [*]Or: [font=Courier New]C:\Program Files\Steam\steamapps\common\Skyrim Special Edition[/font]
+   [*][b]Tip:[/b] You can drag and drop the folder into the console
+   [/list]
+[*][b]Output path:[/b] Where to save generated archives (any folder you want)
+[*][b]Seasonal mods:[/b] Tell the tool if you have Seasons of Skyrim installed
+[*][b]Season selection:[/b] Pick ONE season to generate (Winter/Spring/Summer/Autumn)
+[*][b]Timeouts:[/b] Leave defaults unless you have issues (5min crash, 10min no-progress)
+[/list]
+
+[size=4][color=#4CAF50]Generation Process (20-60 minutes per season):[/color][/size]
+[list=1]
+[*][b]Start generation:[/b] Tool automatically launches Skyrim
+[*][b]Walk away:[/b] Tool handles everything (crashes, retries, progress monitoring)
+[*][b]Completion:[/b] Tool creates archive and cleans up files automatically
+[*][b]Install:[/b] Use the generated archive in your mod manager like any other mod
+[/list]
+
+[size=4][color=#4CAF50]For Multiple Seasons:[/color][/size]
+[list]
+[*][b]Run the tool again[/b] and select a different season
+[*][b]Each season is generated separately[/b] for optimal disk space usage
+[*][b]You get one archive per season[/b] - install the ones you want
 [/list]
 
 [size=4][color=#4CAF50]What You Get:[/color][/size]
 [list]
-[*][font=Courier New]Grass_Cache_Winter_Season.zip[/font]
-[*][font=Courier New]Grass_Cache_Spring_Season.zip[/font]
-[*][font=Courier New]Grass_Cache_Summer_Season.zip[/font]
-[*][font=Courier New]Grass_Cache_Autumn_Season.zip[/font]
-[*][font=Courier New]INSTALLATION_GUIDE.txt[/font]
+[*][font=Courier New]Grass_Cache_Winter_Season.zip[/font] (ready-to-install mod)
+[*][font=Courier New]Grass_Cache_Spring_Season.zip[/font] (ready-to-install mod)
+[*][font=Courier New]Grass_Cache_Summer_Season.zip[/font] (ready-to-install mod)
+[*][font=Courier New]Grass_Cache_Autumn_Season.zip[/font] (ready-to-install mod)
+[*][font=Courier New]INSTALLATION_GUIDE.txt[/font] (detailed instructions)
 [/list]
 
 [line]
@@ -199,14 +316,87 @@
 
 [line]
 
+[size=5][color=#FF5722]🆘 TROUBLESHOOTING (Common Issues & Solutions)[/color][/size]
+
+[size=4][color=#E91E63]❌ "python: command not found" or "'python' is not recognized"[/color][/size]
+[b]Problem:[/b] Python not installed or not in PATH
+[b]Solution:[/b]
+[list=1]
+[*]Download Python from https://www.python.org/downloads/
+[*]During installation, ✅ CHECK "Add Python to PATH"
+[*]Restart your computer
+[*]Test: Open Command Prompt, type [font=Courier New]python --version[/font]
+[/list]
+
+[size=4][color=#E91E63]❌ "SKSE loader not found" or "Skyrim process not found"[/color][/size]
+[b]Problem:[/b] SKSE64 not installed properly
+[b]Solution:[/b]
+[list=1]
+[*]Download SKSE64 from https://skse.silverlock.org/
+[*]Extract ALL files to your Skyrim directory (where SkyrimSE.exe is)
+[*]Verify [font=Courier New]skse64_loader.exe[/font] exists in Skyrim folder
+[*]Test: Launch Skyrim using [font=Courier New]skse64_loader.exe[/font] manually
+[/list]
+
+[size=4][color=#E91E63]❌ "No grass generation" or "PrecacheGrass.txt not created"[/color][/size]
+[b]Problem:[/b] NGIO mod not working
+[b]Solution:[/b]
+[list=1]
+[*]Ensure NGIO is ✅ ENABLED in your mod manager
+[*]Check NGIO is not being overridden by other mods
+[*]Verify SKSE64 is working (see above)
+[*]Try launching Skyrim manually first to test
+[/list]
+
+[size=4][color=#E91E63]❌ "Skyrim won't launch" or "Process terminated immediately"[/color][/size]
+[b]Problem:[/b] Skyrim installation or configuration issue
+[b]Solution:[/b]
+[list=1]
+[*]Verify Skyrim path is correct (where SkyrimSE.exe is located)
+[*]Launch Skyrim manually first to ensure it works
+[*]Check for conflicting mods or mod manager issues
+[*]Try running as Administrator
+[/list]
+
+[size=4][color=#E91E63]❌ "Permission denied" or "Access denied" errors[/color][/size]
+[b]Problem:[/b] Windows permissions blocking file operations
+[b]Solution:[/b]
+[list=1]
+[*]Run the tool as Administrator (right-click → Run as administrator)
+[*]Check your antivirus isn't blocking the tool
+[*]Ensure output directory has write permissions
+[*]Try using a different output directory (like Desktop)
+[/list]
+
+[size=4][color=#4CAF50]🎯 Still Having Issues?[/color][/size]
+[list]
+[*][b]Check the logs[/b] - Tool creates detailed logs for troubleshooting
+[*][b]Try non-seasonal mode[/b] - Simpler setup, fewer dependencies
+[*][b]Test with minimal mods[/b] - Disable other mods temporarily
+[*][b]Report bugs[/b] - Include your Python version, Skyrim version, and error messages
+[/list]
+
+[size=4][color=#2196F3]📋 Before Asking for Help, Provide:[/color][/size]
+[list]
+[*]Python version ([font=Courier New]python --version[/font])
+[*]Skyrim version (SE/AE/VR)
+[*]NGIO mod version
+[*]Whether SKSE64 works manually
+[*]Full error message or log file
+[*]Your mod list (if relevant)
+[/list]
+
+[line]
+
 [size=5][color=#FF5722]⚠️ Important Notes[/color][/size]
 
 [list]
-[*][b]This tool automates NGIO,[/b] it doesn't replace it - NGIO must be installed
-[*][b]Generated archives should replace NGIO[/b] - disable NGIO after installing the cache
-[*][b]Requires Grass Cache Helper NG[/b] for seasonal switching functionality
+[*][b]This tool automates NGIO,[/b] it doesn't replace it - NGIO must be installed first
+[*][b]Keep NGIO mod ENABLED[/b] - you might want to generate more seasons later
+[*][b]Requires Grass Cache Helper NG[/b] for seasonal switching functionality  
 [*][b]First run may take longer[/b] as it validates your setup
-[*][b]Heavy mod lists[/b] will take longer to generate (this is normal)
+[*][b]Heavy mod lists[/b] will take longer to generate (this is completely normal)
+[*][b]Single-season workflow[/b] - generates one season at a time for optimal performance
 [/list]
 
 [line]

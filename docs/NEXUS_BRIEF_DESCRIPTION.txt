@@ -1,1 +1,7 @@
-Transform the painful 4+ hour manual NGIO grass cache generation process into a fully automated 5-minute setup! This tool automatically generates seasonal grass cache for Winter, Spring, Summer, and Autumn (or any combination you choose), handles all crashes and retries, and creates ready-to-install mod archives. Perfect for users with heavy mod lists who are tired of babysitting Skyrim through endless crashes during grass generation.
+Transform the painful 4+ hour manual NGIO grass cache generation into a fully automated 5-minute setup! Automatically generates seasonal grass cache for Winter, Spring, Summer, and Autumn (one season at a time), handles all crashes and retries, and creates ready-to-install mod archives. Perfect for users with heavy mod lists who are tired of babysitting Skyrim through endless crashes. 
+
+⚠️ ANTIVIRUS NOTICE: This tool may trigger false positives due to process monitoring and file automation. It's 100% safe, open-source, and works offline. Add to AV exclusions if blocked.
+
+REQUIREMENTS: Python 3.8+, Skyrim SE/AE, NGIO mod, SKSE64. Optional: Seasons of Skyrim for seasonal support.
+
+FEATURES: Smart crash recovery, automatic file processing, mod-ready archives, single-season workflow, non-seasonal mode support, progress preservation, activity-based timeouts.

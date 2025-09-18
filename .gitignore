@@ -83,8 +83,10 @@ test_output/
 docs/_build/
 docs/.doctrees/
 
-# Distribution
+# Distribution and Build Output
 *.tar.gz
 *.zip
 *.exe
 releases/
+release/           # Build system output directory
+*.whl             # Python wheel files

@@ -4,49 +4,64 @@
 ================================================================================
 
 VERSION: 1.0
-AUTHOR: ReidenXerx
+AUTHOR: Dudu
 LICENSE: MIT License
-GITHUB: https://github.com/ReidenXerx/ngio-automation-suite
+GITHUB: https://github.com/yourusername/ngio-automation-suite
+
+================================================================================
+⚠️ ANTIVIRUS DISCLAIMER - THIS IS NOT A VIRUS!
+================================================================================
+
+WHY ANTIVIRUS MIGHT FLAG THIS TOOL:
+• Process Management: Tool launches and monitors Skyrim.exe (appears as 
+  "process injection" to some antivirus software)
+• File Operations: Rapidly processes thousands of .cgid files (looks like 
+  "mass file modification" to heuristic scanners)
+• System Monitoring: Monitors CPU, memory, and file activity (appears as 
+  "system scanning" behavior)
+• Automation Scripts: Python scripts with batch files (flagged as 
+  "potentially unwanted programs")
+• New/Unknown Software: Not widely distributed yet, so not in AV whitelists
+
+THIS TOOL IS 100% SAFE:
+✓ Open Source: Full source code available on GitHub for inspection
+✓ No Network Activity: Tool works completely offline (except Python downloads)
+✓ No System Changes: Only modifies Skyrim files and creates mod archives
+✓ No Admin Required: Runs with normal user permissions
+✓ Portable: No installation, no registry changes, no system files modified
+
+IF YOUR ANTIVIRUS BLOCKS IT:
+• Add the extracted folder to your antivirus exclusions
+• Temporarily disable real-time protection during use
+• Use Windows Defender (generally fewer false positives with Python tools)
+• Download from official sources only (GitHub/Nexus)
+
+WHY WE CAN'T "FIX" THIS:
+The tool's legitimate functionality (process monitoring, file operations) 
+naturally triggers heuristic detection. This is common with automation tools.
 
 ================================================================================
 📋 TABLE OF CONTENTS
 ================================================================================
 
-1. Overview
-2. What This Solves
-3. Requirements
-4. Installation
-5. Quick Start Guide
-6. Season Selection Options
-7. Configuration Options
-8. Troubleshooting
-9. Advanced Usage
-10. FAQ
-11. Technical Details
-12. Credits & Acknowledgments
+1. Overview & What This Solves
+2. CRITICAL REQUIREMENTS (What You Must Install First)
+3. How to Use (Step-by-Step for Complete Beginners)
+4. Troubleshooting (Common Issues & Solutions)
+5. Advanced Features
+6. FAQ
+7. Technical Details
+8. Credits & Acknowledgments
 
 ================================================================================
-1. 📖 OVERVIEW
+1. 📖 OVERVIEW & WHAT THIS SOLVES
 ================================================================================
 
 The NGIO Automation Suite transforms the painful 4+ hour manual NGIO grass 
-cache generation process into a fully automated workflow. Instead of manually 
-babysitting Skyrim through countless crashes and restarts, you can set it up 
-once and let it run automatically.
+cache generation process into a fully automated 5-minute setup that runs 
+completely unattended.
 
-KEY BENEFITS:
-• 5 minutes setup vs 4+ hours of manual work
-• Fully automated crash recovery with resume functionality
-• Intelligent process management and monitoring
-• High-speed multithreaded file processing (10-25x faster)
-• Professional mod archives ready for installation
-• Supports any combination of seasons or non-seasonal mode
-
-================================================================================
-2. 🎯 WHAT THIS SOLVES
-================================================================================
-
-CURRENT NGIO PROCESS (PAINFUL):
+BEFORE (Manual Process - PAINFUL):
 ✗ 4+ hours of manual work across 4 seasons
 ✗ Constant manual restarts when Skyrim crashes
 ✗ Manual config editing for each season (Winter→Spring→Summer→Autumn)
@@ -54,374 +69,355 @@ CURRENT NGIO PROCESS (PAINFUL):
 ✗ High error rates and frustration
 ✗ Constant babysitting required
 
-WITH AUTOMATION SUITE (AMAZING):
+AFTER (With Automation Suite - AMAZING):
 ✓ 5 minutes setup, walk away
-✓ Each season archived & cleaned automatically
 ✓ Run before bed, wake up completed
-✓ Fully automated crash recovery
+✓ Fully automated crash recovery with resume
 ✓ Intelligent process management
 ✓ Real-time progress tracking
 ✓ Consistent, reliable results
 
-================================================================================
-3. 📋 REQUIREMENTS
-================================================================================
-
-SYSTEM REQUIREMENTS:
-• Windows 10/11
-• Python 3.7+ (will be auto-installed if needed)
-• At least 5GB free disk space
-• Internet connection (for initial Python setup)
-
-SKYRIM REQUIREMENTS:
-• Skyrim SE/AE/VR
-• SKSE64 (latest version)
-• NGIO (No Grass In Objects) mod installed and working
-• Seasons of Skyrim mod (optional - only needed for seasonal mode)
-
-RECOMMENDED:
-• Grass Cache Helper NG (for using the generated seasonal cache)
-• Mod Organizer 2 or Vortex (for easy mod installation)
+PERFECT FOR:
+• Users with heavy mod lists who experience frequent crashes
+• People tired of babysitting Skyrim through grass generation
+• Streamers/content creators who want set-and-forget automation
+• Anyone who values their time and wants professional results
 
 ================================================================================
-4. 🚀 INSTALLATION
+2. 🔧 CRITICAL REQUIREMENTS (What You Must Install First)
 ================================================================================
 
-STEP 1: Download and Extract
-• Download the NGIO Automation Suite archive from Nexus
-• Extract to any location (e.g., C:\NGIO_AutomationSuite\)
-• Do NOT extract to your Skyrim directory
+⚠️ ESSENTIAL REQUIREMENTS - You MUST install these or nothing will work:
 
-STEP 2: Run the Launcher
-• Double-click "run_ngio_automation.bat"
-• If Python is not installed, it will be installed automatically
-• The tool will check for required dependencies
+1. PYTHON 3.8+ 🐍 ESSENTIAL
+   • Download: https://www.python.org/downloads/
+   • Version: Python 3.8, 3.9, 3.10, 3.11, or 3.12 (latest recommended)
+   • Installation Steps:
+     1. Download the installer from the link above
+     2. ✅ CHECK "Add Python to PATH" during installation (CRITICAL!)
+     3. ✅ Choose "Install for all users" (recommended)
+     4. Wait for installation to complete
+   • Test it worked: Open Command Prompt, type: python --version
+     ✓ Should show: Python 3.8.x (or newer)
+     ✗ If you get 'python' is not recognized, reinstall and check PATH box
 
-STEP 3: First-Time Setup
-• The tool will ask for your Skyrim installation path
-• Choose your generation preferences (seasons, timeouts, etc.)
-• Settings are saved automatically for future use
+2. SKYRIM SPECIAL EDITION 🎮 ESSENTIAL
+   • Required: Skyrim SE or Anniversary Edition (VR also works)
+   • Platforms: Steam, GOG, Epic Games Store, Microsoft Store - any work
+   • Must be: Installed, launched at least once, and working normally
+   • Test it works: Launch Skyrim manually and reach the main menu
 
-That's it! The tool is ready to use.
+3. NGIO MOD (No Grass In Objects) 🌱 ESSENTIAL
+   • Download: From Nexus Mods - search for "No Grass In Objects"
+   • Install: Through your mod manager (Mod Organizer 2 or Vortex)
+   • Status: Must be ENABLED in your mod manager
+   • Test it works: NGIO should appear in your mod list and be active
+
+4. SKSE64 ⚡ HIGHLY RECOMMENDED
+   • Download: https://skse.silverlock.org/
+   • Why needed: NGIO plugin requires SKSE to work properly
+   • Installation:
+     1. Download the correct version for your Skyrim
+     2. Extract all files to your Skyrim installation directory
+     3. You should see skse64_loader.exe in your Skyrim folder
+   • Test it works: Launch Skyrim using skse64_loader.exe
+
+🌱 OPTIONAL (For Seasonal Grass):
+
+5. SEASONS OF SKYRIM (Optional but Recommended)
+   • Download: From Nexus Mods
+   • Purpose: Enables Winter/Spring/Summer/Autumn grass generation
+   • Without this: You can still generate universal grass cache (non-seasonal)
+   • Install: Through mod manager, configure seasons as desired
+
+6. GRASS CACHE HELPER NG (Recommended)
+   • Download: From Nexus Mods
+   • Purpose: Loads the generated .cgid files in-game for seasonal switching
+   • Install: SKSE plugin - extract to Data/SKSE/Plugins/
+
+💾 SYSTEM REQUIREMENTS:
+• Windows 10/11 (required)
+• At least 8GB RAM (for heavy mod lists)
+• At least 5GB free disk space (for generation process)
+• Stable internet connection (for Python package downloads)
 
 ================================================================================
-5. 🎮 QUICK START GUIDE
+3. 🚀 HOW TO USE (Step-by-Step for Complete Beginners)
 ================================================================================
 
-BASIC WORKFLOW:
-1. Launch the tool: Double-click "run_ngio_automation.bat"
-2. If first time: Provide Skyrim path and choose preferences
-3. Select "Start Grass Cache Generation" from the main menu
-4. Review the generation summary
-5. Confirm to start
-6. Walk away! The tool handles everything automatically
+DOWNLOAD OPTIONS:
 
-WHAT HAPPENS AUTOMATICALLY:
-• Validates your Skyrim installation and mods
-• Backs up your configuration files
-• For each selected season:
-  - Sets the season in po3_SeasonsOfSkyrim.ini
-  - Creates PrecacheGrass.txt trigger file
-  - Launches Skyrim and monitors progress
-  - Handles crashes with automatic retry and resume
-  - Processes and renames generated files
-• Creates professional mod archives
-• Restores your original settings
-• Shows completion report
+Option A: Portable Version (Recommended for most users)
+1. Download ngio-automation-suite-X.X.X-portable.zip
+2. Extract anywhere on your computer (Desktop is fine)
+3. Double-click start_ngio_automation.bat
+4. Follow the setup wizard
+
+Option B: From Source (For advanced users)
+1. Download source code from GitHub
+2. Extract and run python ngio_automation_runner.py
+
+FIRST TIME SETUP (5 minutes):
+
+1. Run the tool: Double-click start_ngio_automation.bat
+2. Python check: Tool will verify Python is installed
+3. Skyrim path: Point to your Skyrim installation folder
+   • Usually: C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition
+   • Or: C:\Program Files\Steam\steamapps\common\Skyrim Special Edition
+   • Tip: You can drag and drop the folder into the console
+4. Output path: Where to save generated archives (any folder you want)
+5. Seasonal mods: Tell the tool if you have Seasons of Skyrim installed
+6. Season selection: Pick ONE season to generate (Winter/Spring/Summer/Autumn)
+7. Timeouts: Leave defaults unless you have issues (5min crash, 10min no-progress)
+
+GENERATION PROCESS (20-60 minutes per season):
+
+1. Start generation: Tool automatically launches Skyrim
+2. Walk away: Tool handles everything (crashes, retries, progress monitoring)
+3. Completion: Tool creates archive and cleans up files automatically
+4. Install: Use the generated archive in your mod manager like any other mod
+
+FOR MULTIPLE SEASONS:
+• Run the tool again and select a different season
+• Each season is generated separately for optimal disk space usage
+• You get one archive per season - install the ones you want
 
 WHAT YOU GET:
-• Grass_Cache_Winter_Season.zip (if Winter selected)
-• Grass_Cache_Spring_Season.zip (if Spring selected)
-• Grass_Cache_Summer_Season.zip (if Summer selected)
-• Grass_Cache_Autumn_Season.zip (if Autumn selected)
-• INSTALLATION_GUIDE.txt (detailed installation instructions)
+• Grass_Cache_Winter_Season.zip (ready-to-install mod)
+• Grass_Cache_Spring_Season.zip (ready-to-install mod)
+• Grass_Cache_Summer_Season.zip (ready-to-install mod)
+• Grass_Cache_Autumn_Season.zip (ready-to-install mod)
+• INSTALLATION_GUIDE.txt (detailed instructions)
 
 ================================================================================
-6. 🌱 SEASON SELECTION OPTIONS
+4. 🆘 TROUBLESHOOTING (Common Issues & Solutions)
 ================================================================================
 
-The tool supports flexible season selection to match your needs:
+❌ "python: command not found" or "'python' is not recognized"
+Problem: Python not installed or not in PATH
+Solution:
+1. Download Python from https://www.python.org/downloads/
+2. During installation, ✅ CHECK "Add Python to PATH"
+3. Restart your computer
+4. Test: Open Command Prompt, type python --version
 
-OPTION 1: ALL SEASONS (Default)
-• Generates: Winter, Spring, Summer, Autumn
-• Time: 2-4 hours total
-• Best for: Complete seasonal coverage
+❌ "SKSE loader not found" or "Skyrim process not found"
+Problem: SKSE64 not installed properly
+Solution:
+1. Download SKSE64 from https://skse.silverlock.org/
+2. Extract ALL files to your Skyrim directory (where SkyrimSE.exe is)
+3. Verify skse64_loader.exe exists in Skyrim folder
+4. Test: Launch Skyrim using skse64_loader.exe manually
 
-OPTION 2: POPULAR COMBINATIONS
-• Winter + Summer: Maximum seasonal contrast (1-2 hours)
-• Spring + Autumn: Transitional seasons (1-2 hours)
-• Winter + Spring: Cold to moderate (1-2 hours)
-• Summer + Autumn: Warm to cool (1-2 hours)
+❌ "No grass generation" or "PrecacheGrass.txt not created"
+Problem: NGIO mod not working
+Solution:
+1. Ensure NGIO is ✅ ENABLED in your mod manager
+2. Check NGIO is not being overridden by other mods
+3. Verify SKSE64 is working (see above)
+4. Try launching Skyrim manually first to test
 
-OPTION 3: CUSTOM SELECTION
-• Choose any individual seasons
-• Mix and match as needed
-• Perfect for specific preferences
+❌ "Skyrim won't launch" or "Process terminated immediately"
+Problem: Skyrim installation or configuration issue
+Solution:
+1. Verify Skyrim path is correct (where SkyrimSE.exe is located)
+2. Launch Skyrim manually first to ensure it works
+3. Check for conflicting mods or mod manager issues
+4. Try running as Administrator
 
-OPTION 4: NON-SEASONAL MODE
-• For users without seasonal mods
-• Generates single universal grass cache
-• Time: 30-60 minutes
-• Works with any grass mod setup
+❌ "Permission denied" or "Access denied" errors
+Problem: Windows permissions blocking file operations
+Solution:
+1. Run the tool as Administrator (right-click → Run as administrator)
+2. Check your antivirus isn't blocking the tool
+3. Ensure output directory has write permissions
+4. Try using a different output directory (like Desktop)
 
-OPTION 5: SINGLE SEASON
-• Perfect for testing your setup
-• Quick validation of mod configuration
-• Time: 30-60 minutes
+❌ "Archive not created" or "Files not found"
+Problem: File processing or archive creation failed
+Solution:
+1. Check output directory has enough free space (5GB+)
+2. Verify no other programs are using the Skyrim directory
+3. Check antivirus isn't quarantining files
+4. Try running as Administrator
 
-================================================================================
-7. ⚙️ CONFIGURATION OPTIONS
-================================================================================
+❌ Tool crashes or hangs during generation
+Problem: Various possible causes
+Solution:
+1. Check system has enough RAM (8GB+ recommended)
+2. Close unnecessary programs to free memory
+3. Try increasing timeout values in configuration
+4. Check logs for specific error messages
 
-The tool offers several configuration options during setup:
+❌ "Seasons of Skyrim config not found"
+Problem: Seasonal mod not installed or configured
+Solution:
+1. Install Seasons of Skyrim from Nexus Mods
+2. Configure it in your mod manager
+3. Or select "Non-seasonal mode" in the tool
 
-SEASONAL MODS:
-• Yes: Use seasonal mode (requires Seasons of Skyrim)
-• No: Use non-seasonal mode (universal grass cache)
+🎯 STILL HAVING ISSUES?
+1. Check the logs - Tool creates detailed logs for troubleshooting
+2. Try non-seasonal mode - Simpler setup, fewer dependencies
+3. Test with minimal mods - Disable other mods temporarily
+4. Report bugs - Include your Python version, Skyrim version, and error messages
 
-SEASON SELECTION:
-• All seasons: Complete coverage
-• Custom selection: Choose specific seasons
-• Popular combinations: Quick presets
-
-MAX CRASH RETRIES:
-• Default: 5 attempts per season
-• Range: 1-10 attempts
-• Higher values = more resilient to crashes
-
-INACTIVITY TIMEOUT:
-• Default: 60 minutes of no progress
-• Range: 30-180 minutes
-• Active generation can run longer than this
-
-CREATE ARCHIVES:
-• Yes: Creates installable mod archives (recommended)
-• No: Only processes files in place
-
-BACKUP CONFIGS:
-• Yes: Backs up configuration files before changes (recommended)
-• No: Skip backup (not recommended)
-
-================================================================================
-8. 🛠️ TROUBLESHOOTING
-================================================================================
-
-COMMON ISSUES AND SOLUTIONS:
-
-ISSUE: "Python is not installed"
-SOLUTION: Let the tool install Python automatically, or download from python.org
-
-ISSUE: "Skyrim executable not found"
-SOLUTION: Verify the Skyrim path points to the folder containing SkyrimSE.exe
-
-ISSUE: "Seasons of Skyrim config file not found"
-SOLUTION: Install Seasons of Skyrim mod, or use non-seasonal mode
-
-ISSUE: "No .cgid files found after generation"
-SOLUTION: Check that NGIO is properly installed and configured
-
-ISSUE: "Generation keeps failing"
-SOLUTION: 
-• Reduce mod count temporarily
-• Increase crash retry limit
-• Check Skyrim stability manually first
-
-ISSUE: "Archives not created"
-SOLUTION: Check output directory permissions and available disk space
-
-ISSUE: "Grass doesn't appear in-game"
-SOLUTION:
-• Install Grass Cache Helper NG
-• Disable the original NGIO mod
-• Verify seasonal mod settings match cache
-
-PERFORMANCE ISSUES:
-• Heavy mod lists will take longer (this is normal)
-• Close other applications during generation
-• Ensure adequate free disk space
-• Consider generating fewer seasons initially
+📋 BEFORE ASKING FOR HELP, PROVIDE:
+• Python version (python --version)
+• Skyrim version (SE/AE/VR)
+• NGIO mod version
+• Whether SKSE64 works manually
+• Full error message or log file
+• Your mod list (if relevant)
 
 ================================================================================
-9. 🔧 ADVANCED USAGE
+5. 🔧 ADVANCED FEATURES
 ================================================================================
 
-CONFIGURATION FILE LOCATION:
-The tool stores settings in: %USERPROFILE%\.ngio_automation\config.json
+SMART CRASH RECOVERY:
+• Detects when Skyrim crashes or hangs
+• Automatically restarts with progress preservation
+• Up to 5 retry attempts per season with intelligent backoff
+• Preserves PrecacheGrass.txt for seamless resume
 
-MANUAL CONFIGURATION EDITING:
-You can edit the config file directly to:
-• Change paths without running setup again
-• Modify timeout values
-• Adjust retry counts
+ACTIVITY-BASED TIMEOUTS:
+• Dual timeout system: 5 minutes for crash detection, 10 minutes for no progress
+• Won't kill active generation - only detects real hangs
+• Monitors file activity, not just time elapsed
+• Allows long-running generations to complete naturally
 
-COMMAND LINE USAGE:
-You can run the tool directly with Python:
-python ngio_automation_runner.py
+HIGH-SPEED FILE PROCESSING:
+• Multithreaded file renaming (10-25x faster than batch scripts)
+• Processes thousands of .cgid files in seconds
+• Automatic seasonal extension application (.WIN.cgid, .SPR.cgid, etc.)
+• Preserves file integrity and timestamps
 
-CUSTOM OUTPUT DIRECTORY:
-During setup, you can specify any directory for output archives.
-Default: [Skyrim Path]\NGIO_Generated_Mods\
+PROFESSIONAL MOD ARCHIVES:
+• Creates proper mod structure with Data/Grass folders
+• Includes metadata and installation instructions
+• Compatible with MO2, Vortex, and manual installation
+• Automatic cleanup after successful archive creation
 
-BACKUP MANAGEMENT:
-Configuration backups are stored in:
-[Skyrim Path]\NGIO_Backups\backup_[timestamp]\
+CONFIGURATION MANAGEMENT:
+• Persistent settings cache (remembers your preferences)
+• Automatic backup and restoration of INI files
+• Drag-and-drop path support for easy setup
+• Smart validation of paths and requirements
 
-LOG FILES:
-Detailed logs are available for debugging issues.
-Enable file logging by setting NGIO_LOG_FILE environment variable.
-
-================================================================================
-10. ❓ FREQUENTLY ASKED QUESTIONS
-================================================================================
-
-Q: Do I need to disable NGIO before running this?
-A: No, NGIO must be enabled during generation. Disable it after installing 
-   the generated cache archives.
-
-Q: Can I use this with mod managers?
-A: Yes! The generated archives work with MO2, Vortex, and manual installation.
-
-Q: What if my game crashes constantly?
-A: The tool handles crashes automatically with resume functionality. It will 
-   retry up to 5 times per season by default.
-
-Q: Can I stop and resume later?
-A: Yes, you can safely stop the tool. Progress is saved and will resume from 
-   where it left off.
-
-Q: Do I need Seasons of Skyrim?
-A: Only for seasonal mode. Use non-seasonal mode if you don't have seasonal mods.
-
-Q: How much disk space do I need?
-A: At least 5GB free space. Heavy mod lists may need more.
-
-Q: Can I generate just one season?
-A: Yes, use custom selection to choose any combination of seasons.
-
-Q: Will this work with my ENB/weather mods?
-A: Yes, grass cache is compatible with all ENB and weather modifications.
-
-Q: What if I have multiple Skyrim installations?
-A: Run the tool separately for each installation with different output directories.
-
-Q: Can I modify the generated files?
-A: The archives contain standard .cgid files that can be modified like any 
-   grass cache files.
+PROGRESS MONITORING:
+• Real-time cell count tracking via PrecacheGrass.txt
+• Detailed logging with timestamps and progress indicators
+• Visual progress feedback in console
+• Comprehensive completion reports
 
 ================================================================================
-11. 🔬 TECHNICAL DETAILS
+6. ❓ FAQ
+================================================================================
+
+Q: Do I need to disable NGIO after using this tool?
+A: No! Keep NGIO enabled in case you want to generate more seasons later. 
+   The generated archives work alongside NGIO.
+
+Q: Can I use this without seasonal mods?
+A: Yes! Select "Non-seasonal mode" during setup. This generates a universal 
+   grass cache that works without seasonal dependencies.
+
+Q: How long does generation take?
+A: 20-60 minutes per season, depending on your mod list complexity. Heavy 
+   grass mods and large worldspaces take longer.
+
+Q: What if my generation gets interrupted?
+A: The tool preserves progress in PrecacheGrass.txt. When you restart, it 
+   will ask if you want to resume or start fresh.
+
+Q: Can I generate multiple seasons at once?
+A: No, the tool uses a single-season workflow for optimal performance and 
+   disk space usage. Run it multiple times for different seasons.
+
+Q: Does this work with other grass mods?
+A: Yes! Any mod that adds grass objects will be included in the cache. The 
+   tool works with the NGIO plugin, not specific grass mods.
+
+Q: What's the difference between crash timeout and no-progress timeout?
+A: Crash timeout (5min) detects when Skyrim process stops running. 
+   No-progress timeout (10min) detects when generation stalls but process 
+   is still alive.
+
+Q: Can I use this on a different computer?
+A: The portable version works on any Windows PC with Python installed. 
+   Just copy the extracted folder and run it.
+
+================================================================================
+7. 🔍 TECHNICAL DETAILS
 ================================================================================
 
 HOW IT WORKS:
-The tool automates the NGIO grass generation process by:
+1. Setup & Validation: Validates Skyrim installation and required mods
+2. Configuration Backup: Safely backs up po3_SeasonsOfSkyrim.ini
+3. Season Generation: For each selected season:
+   • Sets season type in configuration (Winter=1, Spring=2, etc.)
+   • Creates PrecacheGrass.txt trigger file
+   • Launches Skyrim via SKSE and monitors PrecacheGrass.txt for progress
+   • Detects completion when NGIO deletes the file
+   • Handles crashes with intelligent retry (preserves progress for resume)
+   • Processes and renames generated files (.cgid → .WIN.cgid)
+4. Archive Creation: Creates professional mod archives with proper structure
+5. Cleanup & Restore: Restores original settings and cleans temporary files
 
-1. DETECTION: Monitors PrecacheGrass.txt file for progress
-2. COMPLETION: Detects when NGIO deletes the file (generation complete)
-3. CRASH RECOVERY: Preserves progress file for resume functionality
-4. PROCESSING: Renames .cgid files with seasonal extensions
-5. ARCHIVING: Creates professional mod packages
+ARCHITECTURE:
+• automation_suite.py: Main orchestrator and workflow manager
+• game_manager.py: Skyrim process management and crash detection
+• config_manager.py: INI file backup, modification, and restoration
+• file_processor.py: High-speed multithreaded file operations
+• archive_creator.py: Professional mod archive generation
+• progress_monitor.py: Real-time progress tracking and reporting
 
-SEASON TYPE MAPPING:
-• 0 = No Seasons (non-seasonal mode)
-• 1 = Winter (.WIN.cgid)
-• 2 = Spring (.SPR.cgid)
-• 3 = Summer (.SUM.cgid)
-• 4 = Autumn (.AUT.cgid)
-• 5 = Seasonal (restoration mode)
+CRASH DETECTION METHODS:
+• Process monitoring: Detects when Skyrim.exe terminates unexpectedly
+• Activity monitoring: Tracks PrecacheGrass.txt modification times
+• Hang detection: Identifies when process exists but makes no progress
+• Memory monitoring: Detects resource exhaustion scenarios
 
-FILE PROCESSING:
-• Multithreaded processing for maximum speed
-• 10-25x faster than traditional batch scripts
-• Handles thousands of files efficiently
-• Validates file integrity during processing
-
-CRASH DETECTION:
-• Process termination monitoring
-• Activity-based timeout (not hard time limits)
-• Hang detection via CPU and memory monitoring
-• Intelligent retry logic with exponential backoff
-
-CONFIGURATION MANAGEMENT:
-• Safe backup and restore of INI files
-• Atomic configuration changes
-• Rollback capability on errors
-• Validation of all changes
+FILE SAFETY:
+• All operations preserve original files until success is confirmed
+• Progress files are protected during interruptions
+• Configuration backups are automatically restored on any failure
+• Generated cache files are never deleted during script interruptions
 
 ================================================================================
-12. 🙏 CREDITS & ACKNOWLEDGMENTS
+8. 🙏 CREDITS & ACKNOWLEDGMENTS
 ================================================================================
 
 SPECIAL THANKS TO:
 • infernalryan: For the comprehensive NGIO guide that inspired this automation
-• NGIO Development Team: For creating the grass cache system
+• NGIO Development Team: For creating the foundation this builds upon
 • Grass Cache Helper NG Team: For enabling seasonal cache loading
 • Seasons of Skyrim Team: For the seasonal framework
-• Skyrim Modding Community: For enduring the manual process and providing feedback
+• Skyrim Modding Community: For enduring the manual process long enough to 
+  need this solution
 
-THIRD-PARTY LIBRARIES:
-• Python: Core automation language
-• psutil: Process monitoring and management
-• colorlog: Enhanced console logging
-• PyYAML: Configuration file handling
-• configparser: INI file management
-
-INSPIRATION:
-This tool was created out of frustration with the manual NGIO process and 
-a desire to save the Skyrim modding community thousands of collective hours.
-
-================================================================================
-📞 SUPPORT & UPDATES
-================================================================================
-
-GETTING HELP:
-• Check this documentation first
-• Review the troubleshooting section
-• Check the GitHub repository for known issues
-• Post detailed bug reports with log files
-
-REPORTING BUGS:
-• Include your system specifications
-• Describe steps to reproduce the issue
-• Attach relevant log files
-• Mention your mod list size and complexity
-
-FEATURE REQUESTS:
-• Post on GitHub Issues with detailed descriptions
-• Explain the use case and benefits
-• Be patient - this is a community project
-
-UPDATES:
-• Check Nexus for new versions
-• Follow the GitHub repository for development updates
-• Major updates will be announced on Nexus
-
-================================================================================
-📜 LICENSE & DISCLAIMER
-================================================================================
+BUILT WITH:
+• Python 3.8+ with rich, psutil, and colorama libraries
+• Advanced process management and file system monitoring
+• Multi-platform compatibility (Windows focus)
+• Professional software development practices
 
 LICENSE:
-This software is released under the MIT License. You are free to use, modify,
-and distribute this software according to the terms of the MIT License.
+MIT License - Free for personal and commercial use. See LICENSE file for 
+full details.
 
-DISCLAIMER:
-This tool automates interaction with Skyrim and mod files. While extensively
-tested, use at your own risk. Always backup your saves and mod configurations
-before use. The author is not responsible for any damage to your game or system.
-
-COMPATIBILITY:
-This tool is designed for Skyrim SE/AE/VR with NGIO. It may not work with
-other games or grass systems. Compatibility with future game or mod updates
-is not guaranteed.
+SUPPORT:
+• GitHub: https://github.com/yourusername/ngio-automation-suite
+• Issues: Report bugs and request features on GitHub
+• Updates: Check back for new features and improvements
 
 ================================================================================
 
 🎯 Goal: Save the Skyrim modding community thousands of collective hours and 
-         eliminate the biggest pain point in grass generation!
+eliminate the biggest pain point in grass generation!
 
-⭐ If this tool saves you hours of frustration, please endorse on Nexus! ⭐
+⭐ Endorse if this tool saves you hours of frustration! ⭐
 
-================================================================================
-End of Documentation - Version 1.0
-Generated: 2024
-For the latest version, visit: https://github.com/ReidenXerx/ngio-automation-suite
+Version 1.0 | MIT License | Made with ❤️ for the Skyrim community
+
 ================================================================================

@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ngio-automation-suite"
+version = "1.0.0"
+authors = [
+    {name = "Vadim"},
+]
+description = "Fully automated grass cache generation suite for Skyrim SE with seasonal support"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Games/Entertainment",
+    "Topic :: Utilities",
+    "Topic :: System :: Systems Administration",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: Microsoft :: Windows",
+]
+keywords = ["skyrim", "modding", "grass cache", "ngio", "automation", "seasonal", "game modding"]
+dependencies = [
+    "psutil>=5.8.0",
+    "colorama>=0.4.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/ngio-automation-suite"
+"Bug Tracker" = "https://github.com/yourusername/ngio-automation-suite/issues"
+Documentation = "https://github.com/yourusername/ngio-automation-suite/blob/main/docs/"
+"Source Code" = "https://github.com/yourusername/ngio-automation-suite"
+"Nexus Mods" = "https://nexusmods.com/skyrimspecialedition/mods/your-mod-id"
+
+[project.scripts]
+ngio-automation = "ngio_automation_runner:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.md", "*.ini", "*.json"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false

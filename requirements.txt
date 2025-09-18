@@ -1,31 +1,19 @@
-# NGIO Automation Suite - Python Dependencies
+# NGIO Automation Suite - Dependencies
+# Fully automated grass cache generation for Skyrim SE
 
-# Process monitoring and system interaction
-psutil>=5.8.0              # Process and system monitoring
-pywin32>=227               # Windows-specific functionality
+# Core dependencies
+psutil>=5.8.0          # Process management and system monitoring
+colorama>=0.4.4        # Cross-platform colored terminal output
 
-# Configuration file handling  
-PyYAML>=6.0                # YAML configuration files
-configparser>=5.0          # INI file parsing
+# Development dependencies (optional)
+# Uncomment these if you're developing or building from source
+# build>=0.8.0         # Modern Python build system
+# wheel>=0.37.0        # Wheel package format
+# setuptools>=45.0.0   # Package building tools
 
-# File operations and path handling
-pathlib>=1.0.1             # Modern path handling
-watchdog>=2.1.0            # File system event monitoring
-
-# Logging and debugging
-colorlog>=6.0              # Colored console logging
-python-dateutil>=2.8.0     # Date/time utilities
-
-# Optional GUI dependencies (for future dashboard)
-# tkinter                  # Included with Python
-# PyQt5>=5.15.0           # Alternative GUI framework
-
-# Development and testing dependencies
-pytest>=7.0.0              # Unit testing framework
-pytest-cov>=4.0.0          # Test coverage reporting
-black>=22.0.0              # Code formatting
-mypy>=1.0.0                # Type checking
-
-# Documentation
-Sphinx>=5.0.0              # Documentation generation
-sphinx-rtd-theme>=1.0.0    # ReadTheDocs theme
+# Note: Python 3.8+ is required
+# The automation suite has been tested with:
+# - Python 3.8, 3.9, 3.10, 3.11, 3.12
+# - Windows 10/11
+# - Skyrim SE with NGIO mod
+# - SKSE64 (recommended)
