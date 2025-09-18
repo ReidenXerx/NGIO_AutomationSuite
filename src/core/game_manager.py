@@ -44,24 +44,48 @@ class GameManager:
         self.current_process: Optional[ProcessInfo] = None
         self.grass_cache_file = os.path.join(skyrim_path, "PrecacheGrass.txt")
         
+        # Track if we deleted the file (to distinguish from plugin deletion)
+        self._we_deleted_precache_file = False
+        
+        # Progress protection file to prevent accidental deletion
+        self.progress_lock_file = os.path.join(skyrim_path, ".ngio_generation_active")
+        
         # Validate Skyrim executable
         self.skyrim_exe = self._find_skyrim_executable()
         if not self.skyrim_exe:
             raise ValueError(f"Skyrim executable not found in {skyrim_path}")
     
     def _find_skyrim_executable(self) -> Optional[str]:
-        """Find the correct Skyrim executable"""
-        possible_executables = [
+        """Find the correct Skyrim executable, prioritizing SKSE loader"""
+        # SKSE loaders (preferred for NGIO functionality)
+        skse_loaders = [
+            "skse64_loader.exe",  # SKSE64 for SE/AE
+            "sksevr_loader.exe",  # SKSE VR
+            "skse_loader.exe"     # Original SKSE (LE)
+        ]
+        
+        # Check for SKSE loaders first
+        for loader in skse_loaders:
+            loader_path = os.path.join(self.skyrim_path, loader)
+            if os.path.exists(loader_path):
+                self.logger.info(f"✅ Found SKSE loader: {loader}")
+                self.logger.info("🔧 SKSE will be used for proper NGIO plugin support")
+                return loader_path
+        
+        # Fallback to direct executables (not recommended for NGIO)
+        direct_executables = [
             "SkyrimSE.exe",
             "SkyrimAE.exe", 
             "SkyrimVR.exe",
             "Skyrim.exe"
         ]
         
-        for exe in possible_executables:
+        for exe in direct_executables:
             exe_path = os.path.join(self.skyrim_path, exe)
             if os.path.exists(exe_path):
-                self.logger.info(f"Found Skyrim executable: {exe}")
+                self.logger.warning(f"⚠️ Using direct executable: {exe}")
+                self.logger.warning("⚠️ SKSE loader not found - NGIO may not work properly")
+                self.logger.warning("💡 Install SKSE64 for full NGIO functionality")
                 return exe_path
                 
         return None
@@ -76,6 +100,11 @@ class GameManager:
         self.logger.info("🎮 Preparing to launch Skyrim for grass generation...")
         
         # Ensure PrecacheGrass.txt exists to trigger generation
+        # Check for existing active generation
+        if self._has_active_generation() and not is_retry:
+            self.logger.warning("🔒 Previous generation appears to have been interrupted!")
+            self.logger.warning("   Progress protection lock found - this indicates forced termination")
+            
         if not self._create_precache_trigger(is_retry):
             return None
             
@@ -94,24 +123,56 @@ class GameManager:
                 creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
             )
             
-            # Give the process a moment to start
-            time.sleep(3)
-            
-            # Verify it's still running
-            if process.poll() is not None:
-                self.logger.error("❌ Skyrim process terminated immediately")
-                return None
+            # Handle SKSE loader vs direct executable differently
+            if "skse" in self.skyrim_exe.lower():
+                # SKSE loader will terminate itself and spawn the actual Skyrim process
+                self.logger.info("⏳ SKSE loader started, waiting for Skyrim process to spawn...")
                 
-            # Create ProcessInfo
-            psutil_process = psutil.Process(process.pid)
-            self.current_process = ProcessInfo(
-                pid=process.pid,
-                process=psutil_process,
-                start_time=time.time(),
-                command_line=psutil_process.cmdline()
-            )
-            
-            self.logger.info(f"✅ Skyrim launched successfully (PID: {process.pid})")
+                # Wait for SKSE loader to finish and Skyrim to start
+                time.sleep(5)
+                
+                # Find the actual Skyrim process that SKSE spawned
+                skyrim_process = self._find_skyrim_process()
+                if not skyrim_process:
+                    self.logger.error("❌ SKSE loader completed but Skyrim process not found")
+                    self.logger.error("💡 Possible causes:")
+                    self.logger.error("   • SKSE version mismatch with Skyrim")
+                    self.logger.error("   • Missing Visual C++ Redistributables")
+                    self.logger.error("   • Antivirus blocking Skyrim launch")
+                    self.logger.error("   • Missing NGIO plugin files")
+                    return None
+                
+                # Use the spawned Skyrim process
+                self.current_process = ProcessInfo(
+                    pid=skyrim_process.pid,
+                    process=skyrim_process,
+                    start_time=time.time(),
+                    command_line=skyrim_process.cmdline()
+                )
+                
+                self.logger.info(f"✅ Skyrim launched successfully (PID: {skyrim_process.pid})")
+                
+            else:
+                # Direct executable launch
+                time.sleep(3)
+                
+                # Verify it's still running
+                if process.poll() is not None:
+                    exit_code = process.returncode
+                    self.logger.error(f"❌ Skyrim process terminated immediately (exit code: {exit_code})")
+                    return None
+                
+                # Create ProcessInfo for direct launch
+                psutil_process = psutil.Process(process.pid)
+                self.current_process = ProcessInfo(
+                    pid=process.pid,
+                    process=psutil_process,
+                    start_time=time.time(),
+                    command_line=psutil_process.cmdline()
+                )
+                
+                self.logger.info(f"✅ Skyrim launched successfully (PID: {process.pid})")
+                
             return self.current_process
             
         except Exception as e:
@@ -121,27 +182,88 @@ class GameManager:
     def _create_precache_trigger(self, is_retry: bool = False) -> bool:
         """Create or preserve PrecacheGrass.txt to trigger grass generation"""
         try:
-            if os.path.exists(self.grass_cache_file):
+            # Check if we have existing grass cache files (indicating previous completion)
+            grass_cache_exists = self._has_existing_grass_cache()
+            precache_file_exists = os.path.exists(self.grass_cache_file)
+            
+            # SCENARIO 1: No PrecacheGrass.txt + Grass cache exists = Previous completion
+            if not precache_file_exists and grass_cache_exists:
+                self.logger.info("✅ Previous grass generation completed successfully!")
+                self.logger.info("🌱 Found existing grass cache files, no PrecacheGrass.txt")
+                self.logger.info("🔄 Creating fresh trigger for new season/generation...")
+                
+                # Create new trigger file for this generation
+                with open(self.grass_cache_file, 'w') as f:
+                    f.write("")  # Empty file is sufficient
+                self.logger.info(f"✅ Created fresh grass cache trigger: {self.grass_cache_file}")
+                return True
+            
+            # SCENARIO 2: PrecacheGrass.txt exists (interrupted generation)
+            if precache_file_exists:
                 if is_retry:
                     # File exists from previous attempt - preserve it for resume!
                     status = self.check_precache_file_status()
                     self.logger.info(f"🔄 Found existing PrecacheGrass.txt with {status['content_lines']} cells - will resume")
                     return True
                 else:
-                    # First attempt - remove old file from different season
-                    self.logger.info("🗑️ Removing old PrecacheGrass.txt from previous season")
-                    os.remove(self.grass_cache_file)
-                    
-            # Create new empty trigger file (first attempt only)
+                    # First attempt but file exists - ask user what to do
+                    status = self.check_precache_file_status()
+                    if status['content_lines'] > 0:
+                        return self._handle_existing_progress(status)
+                    else:
+                        # Empty file - safe to remove
+                        self.logger.info("🗑️ Removing empty PrecacheGrass.txt from previous session")
+                        self._we_deleted_precache_file = True
+                        os.remove(self.grass_cache_file)
+            
+            # SCENARIO 3: No PrecacheGrass.txt + No grass cache = First time
+            # Create new empty trigger file
             with open(self.grass_cache_file, 'w') as f:
                 f.write("")  # Empty file is sufficient
                 
-            self.logger.info(f"✅ Created fresh grass cache trigger: {self.grass_cache_file}")
+            if grass_cache_exists:
+                self.logger.info("✅ Created grass cache trigger (will overwrite existing cache)")
+            else:
+                self.logger.info("✅ Created fresh grass cache trigger (first generation)")
             return True
             
         except Exception as e:
             self.logger.error(f"❌ Failed to create grass cache trigger: {e}")
             return False
+    
+    def _handle_existing_progress(self, status: dict) -> bool:
+        """Handle existing PrecacheGrass.txt with progress"""
+        self.logger.warning("⚠️ Found existing grass generation progress!")
+        self.logger.warning(f"   📊 {status['content_lines']} cells already processed")
+        self.logger.warning(f"   📁 File size: {status['size']} bytes")
+        
+        self.logger.info("")
+        self.logger.info("🤔 This could be:")
+        self.logger.info("   1. Script restarted after a glitch (RESUME generation)")
+        self.logger.info("   2. New season generation (START from scratch)")
+        self.logger.info("")
+        
+        while True:
+            try:
+                choice = input("Resume existing progress or start fresh? (r/f): ").strip().lower()
+                
+                if choice in ['r', 'resume']:
+                    self.logger.info("🔄 Resuming existing generation progress...")
+                    return True
+                elif choice in ['f', 'fresh']:
+                    self.logger.info("🗑️ Starting fresh - removing existing progress...")
+                    self._we_deleted_precache_file = True
+                    os.remove(self.grass_cache_file)
+                    return True
+                else:
+                    self.logger.error("Please enter 'r' to resume or 'f' for fresh start")
+                    
+            except KeyboardInterrupt:
+                self.logger.warning("⚠️ Operation cancelled by user")
+                return False
+            except Exception as e:
+                self.logger.error(f"Input error: {e}")
+                continue
     
     def _cleanup_existing_processes(self) -> None:
         """Kill any existing Skyrim processes"""
@@ -182,9 +304,27 @@ class GameManager:
             return False
             
         try:
-            return self.current_process.process.is_running()
+            # If we launched SKSE loader, check for the actual Skyrim process
+            if "skse" in self.skyrim_exe.lower():
+                return self._is_skyrim_game_running()
+            else:
+                # Direct executable launch
+                return self.current_process.process.is_running()
         except psutil.NoSuchProcess:
             return False
+    
+    def _is_skyrim_game_running(self) -> bool:
+        """Check if the actual Skyrim game process is running (when launched via SKSE)"""
+        skyrim_process_names = ["SkyrimSE.exe", "SkyrimAE.exe", "SkyrimVR.exe", "Skyrim.exe"]
+        
+        for proc in psutil.process_iter(['pid', 'name']):
+            try:
+                if proc.info['name'] in skyrim_process_names:
+                    return True
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+        
+        return False
     
     def get_process_status(self) -> dict:
         """Get detailed status information about current process"""
@@ -305,16 +445,48 @@ class GameManager:
             return False
     
     def force_terminate(self) -> bool:
-        """Force terminate the current Skyrim process"""
-        if not self.current_process:
-            return True
+        """Force terminate the current Skyrim process and any related processes"""
+        success = True
+        
+        # If we launched via SKSE, terminate all related processes
+        if self.current_process and "skse" in self.skyrim_exe.lower():
+            success &= self._terminate_skse_and_skyrim_processes()
+        elif self.current_process:
+            success &= self._terminate_single_process(self.current_process.process)
             
+        self.current_process = None
+        return success
+    
+    def _terminate_skse_and_skyrim_processes(self) -> bool:
+        """Terminate both SKSE loader and actual Skyrim processes"""
+        success = True
+        terminated_processes = []
+        
+        # Find and terminate all Skyrim-related processes
+        skyrim_process_names = ["SkyrimSE.exe", "SkyrimAE.exe", "SkyrimVR.exe", "Skyrim.exe"]
+        skse_process_names = ["skse64_loader.exe", "sksevr_loader.exe", "skse_loader.exe"]
+        all_process_names = skyrim_process_names + skse_process_names
+        
+        for proc in psutil.process_iter(['pid', 'name']):
+            try:
+                if proc.info['name'] in all_process_names:
+                    self.logger.warning(f"🔪 Force terminating {proc.info['name']} (PID: {proc.info['pid']})")
+                    success &= self._terminate_single_process(proc)
+                    terminated_processes.append(proc.info['name'])
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+        
+        if terminated_processes:
+            self.logger.info(f"✅ Terminated processes: {', '.join(terminated_processes)}")
+        else:
+            self.logger.info("✅ No Skyrim processes found to terminate")
+            
+        return success
+    
+    def _terminate_single_process(self, proc: psutil.Process) -> bool:
+        """Terminate a single process gracefully, then forcefully if needed"""
         try:
-            proc = self.current_process.process
-            
             if proc.is_running():
-                self.logger.warning(f"🔪 Force terminating Skyrim (PID: {self.current_process.pid})")
-                
                 # Try graceful termination first
                 proc.terminate()
                 
@@ -326,12 +498,31 @@ class GameManager:
                     proc.kill()
                     proc.wait()
                     
-            self.current_process = None
             return True
             
         except Exception as e:
             self.logger.error(f"Error force terminating process: {e}")
             return False
+    
+    def _find_skyrim_process(self) -> Optional[psutil.Process]:
+        """Find the actual Skyrim game process (used after SKSE launch)"""
+        skyrim_process_names = ["SkyrimSE.exe", "SkyrimAE.exe", "SkyrimVR.exe", "Skyrim.exe"]
+        
+        # Look for Skyrim processes, preferring the most recently started one
+        found_processes = []
+        
+        for proc in psutil.process_iter(['pid', 'name', 'create_time']):
+            try:
+                if proc.info['name'] in skyrim_process_names:
+                    found_processes.append(proc)
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+        
+        if not found_processes:
+            return None
+        
+        # Return the most recently started process
+        return max(found_processes, key=lambda p: p.create_time())
     
     def check_precache_file_status(self) -> dict:
         """
@@ -395,7 +586,13 @@ class GameManager:
             bool: True if completed successfully, False if failed/timeout
         """
         self.logger.info("👁️ Monitoring PrecacheGrass.txt for completion...")
-        self.logger.info(f"⏰ Will timeout only after {timeout_minutes} minutes of NO ACTIVITY")
+        self.logger.info(f"⏰ Will timeout after {timeout_minutes} minutes of NO ACTIVITY (active generation can run indefinitely)")
+        
+        # Reset deletion flag - we're starting fresh monitoring
+        self._we_deleted_precache_file = False
+        
+        # Create progress protection lock
+        self._create_progress_lock()
         
         start_time = time.time()
         last_size = 0
@@ -412,10 +609,26 @@ class GameManager:
             status = self.check_precache_file_status()
             
             if not status["exists"]:
-                # File was deleted - this means generation completed!
-                total_time = (current_time - start_time) / 60
-                self.logger.success(f"🎉 PrecacheGrass.txt deleted - Generation completed in {total_time:.1f} minutes!")
-                return True
+                # File was deleted - but by whom?
+                if self._we_deleted_precache_file:
+                    # We deleted it during cleanup - this is NOT completion
+                    self.logger.warning("🗑️ PrecacheGrass.txt was deleted by cleanup - generation interrupted")
+                    return False
+                else:
+                    # Plugin deleted it - this means generation completed!
+                    total_time = (current_time - start_time) / 60
+                    self.logger.success(f"🎉 PrecacheGrass.txt deleted by plugin - Generation completed in {total_time:.1f} minutes!")
+                    
+                    # Remove progress protection lock
+                    self._remove_progress_lock()
+                    
+                    # Additional verification: check if Skyrim is still running
+                    if self.is_process_running():
+                        self.logger.info("🎮 Skyrim still running after completion - will close automatically")
+                    else:
+                        self.logger.info("✅ Skyrim closed automatically after completion")
+                    
+                    return True
             
             # Check for file activity
             if status["size"] != last_size or status["modified_time"] != last_modified:
@@ -463,6 +676,53 @@ class GameManager:
             # Brief sleep to avoid excessive file system checks
             time.sleep(5)
     
+    def _create_progress_lock(self) -> None:
+        """Create a lock file to indicate generation is active"""
+        try:
+            with open(self.progress_lock_file, 'w') as f:
+                f.write(f"NGIO Generation Active - Started: {time.ctime()}\n")
+                f.write("This file protects PrecacheGrass.txt from cleanup\n")
+            self.logger.debug("🔒 Created progress protection lock")
+        except Exception as e:
+            self.logger.warning(f"Failed to create progress lock: {e}")
+    
+    def _remove_progress_lock(self) -> None:
+        """Remove the progress lock file"""
+        try:
+            if os.path.exists(self.progress_lock_file):
+                os.remove(self.progress_lock_file)
+                self.logger.debug("🔓 Removed progress protection lock")
+        except Exception as e:
+            self.logger.warning(f"Failed to remove progress lock: {e}")
+    
+    def _has_active_generation(self) -> bool:
+        """Check if there's an active generation (lock file exists)"""
+        return os.path.exists(self.progress_lock_file)
+    
+    def _has_existing_grass_cache(self) -> bool:
+        """Check if grass cache files exist from previous generation"""
+        try:
+            grass_dir = os.path.join(self.skyrim_path, "Data", "Grass")
+            if not os.path.exists(grass_dir):
+                return False
+            
+            # Look for .cgid files (grass cache files)
+            cgid_files = []
+            for root, dirs, files in os.walk(grass_dir):
+                for file in files:
+                    if file.endswith('.cgid'):
+                        cgid_files.append(file)
+            
+            if cgid_files:
+                self.logger.debug(f"🌱 Found {len(cgid_files)} existing grass cache files")
+                return True
+            
+            return False
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to check existing grass cache: {e}")
+            return False
+    
     def cleanup_processes(self) -> None:
         """Clean up all Skyrim-related processes and files"""
         self.logger.info("🧹 Cleaning up Skyrim processes and files...")
@@ -474,13 +734,27 @@ class GameManager:
         # Clean up any remaining Skyrim processes
         self._cleanup_existing_processes()
         
-        # Clean up grass cache trigger file
+        # Clean up grass cache trigger file (but preserve progress)
         try:
             if os.path.exists(self.grass_cache_file):
-                os.remove(self.grass_cache_file)
-                self.logger.info("🗑️ Removed grass cache trigger file")
+                status = self.check_precache_file_status()
+                
+                # Check if there's an active generation lock
+                if self._has_active_generation():
+                    self.logger.info("🔒 Active generation detected - preserving all progress files")
+                    self.logger.info(f"💾 Preserving PrecacheGrass.txt with {status['content_lines']} cells")
+                elif status['content_lines'] > 0:
+                    self.logger.info(f"💾 Preserving PrecacheGrass.txt with {status['content_lines']} cells for resume")
+                else:
+                    self._we_deleted_precache_file = True
+                    os.remove(self.grass_cache_file)
+                    self.logger.info("🗑️ Removed empty grass cache trigger file")
+            
+            # Always try to remove the progress lock during cleanup
+            self._remove_progress_lock()
+            
         except Exception as e:
-            self.logger.warning(f"Failed to remove grass cache trigger: {e}")
+            self.logger.warning(f"Failed to clean grass cache trigger: {e}")
     
     def get_crash_logs(self) -> List[str]:
         """Get recent crash logs and dumps for analysis"""

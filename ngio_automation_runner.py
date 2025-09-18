@@ -7,6 +7,8 @@ The user-friendly entry point for grass cache generation
 import os
 import sys
 import platform
+import signal
+import atexit
 from pathlib import Path
 
 # Add src to Python path
@@ -133,6 +135,7 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
         seasons_to_generate=seasons_to_generate,
         max_crash_retries=preferences.max_crash_retries,
         crash_timeout_minutes=preferences.crash_timeout_minutes,
+        no_progress_timeout_minutes=preferences.no_progress_timeout_minutes,
         create_archives=preferences.create_archives,
         backup_configs=preferences.backup_configs
     )
@@ -146,13 +149,14 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
     # Show mode and seasons
     if preferences.use_seasonal_mods:
         logger.info(f"   🌿 Mode: Seasonal (with seasonal mods)")
-        logger.info(f"   🌱 Seasons: {', '.join(preferences.seasons_to_generate)}")
+        logger.info(f"   🌱 Season: {preferences.seasons_to_generate[0]}")
     else:
         logger.info(f"   🌿 Mode: Non-seasonal (no seasonal mods)")
         logger.info(f"   🌱 Generation: Single grass cache")
     
     logger.info(f"   🔄 Max retries: {preferences.max_crash_retries}")
-    logger.info(f"   ⏱️  Inactivity timeout: {preferences.crash_timeout_minutes} minutes")
+    logger.info(f"   ⚡ Crash timeout: {preferences.crash_timeout_minutes} minutes (process not running)")
+    logger.info(f"   ⏰ No progress timeout: {preferences.no_progress_timeout_minutes} minutes (file not updating)")
     logger.info(f"   📦 Create archives: {'Yes' if preferences.create_archives else 'No'}")
     logger.separator()
     
@@ -181,6 +185,9 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
     
     try:
         automation_suite = NGIOAutomationSuite(automation_config)
+        
+        # Set global reference for signal handlers
+        globals()['automation_suite'] = automation_suite
         success = automation_suite.run_full_automation()
         
         if success:
@@ -266,8 +273,28 @@ This tool can save the Skyrim modding community thousands of hours!
     logger.info(help_text)
 
 
+# Global reference for signal handlers
+automation_suite = None
+
+def emergency_shutdown(signum=None, frame=None):
+    """Handle emergency shutdown while preserving progress"""
+    if automation_suite:
+        try:
+            print("\n🚨 Emergency shutdown - preserving progress...")
+            automation_suite._emergency_cleanup()
+        except Exception as e:
+            print(f"Error during emergency shutdown: {e}")
+    sys.exit(1)
+
 def main():
     """Main entry point"""
+    global automation_suite
+    
+    # Register signal handlers for graceful shutdown
+    signal.signal(signal.SIGINT, emergency_shutdown)  # Ctrl+C
+    signal.signal(signal.SIGTERM, emergency_shutdown)  # Termination signal
+    atexit.register(emergency_shutdown)  # Normal exit
+    
     print_banner()
     
     # Check system requirements

@@ -53,7 +53,8 @@ class AutomationConfig:
     output_directory: str = ""
     seasons_to_generate: List[Season] = None
     max_crash_retries: int = 5
-    crash_timeout_minutes: int = 60
+    crash_timeout_minutes: int = 5  # Process crash detection
+    no_progress_timeout_minutes: int = 10  # File inactivity detection
     create_archives: bool = True
     backup_configs: bool = True
     
@@ -227,6 +228,12 @@ class NGIOAutomationSuite:
     
     def _run_generation_with_monitoring(self, season: Season) -> bool:
         """Run grass generation with intelligent crash monitoring"""
+        # First check if this season is already completed
+        if self._is_season_completed(season):
+            self.logger.info(f"🏁 {season.display_name} already completed - skipping Skyrim launch")
+            self.logger.info(f"📁 Grass cache files exist, proceeding to post-processing...")
+            return True
+            
         max_retries = self.config.max_crash_retries
         retry_count = 0
         
@@ -254,7 +261,7 @@ class NGIOAutomationSuite:
             
             # Primary monitoring: Wait for PrecacheGrass.txt to be deleted (completion signal)
             generation_completed = self.game_manager.wait_for_precache_completion(
-                timeout_minutes=self.config.crash_timeout_minutes
+                timeout_minutes=self.config.no_progress_timeout_minutes
             )
             
             if generation_completed:
@@ -295,7 +302,8 @@ class NGIOAutomationSuite:
         """Process and rename generated grass cache files"""
         self.logger.info(f"⚡ Processing {season.display_name} files...")
         
-        grass_directory = os.path.join(self.config.output_directory, "Grass")
+        # Grass files are generated in Skyrim's Data/Grass directory
+        grass_directory = os.path.join(self.config.skyrim_path, "Data", "Grass")
         if not os.path.exists(grass_directory):
             self.logger.error("❌ No Grass directory found after generation")
             return False
@@ -408,8 +416,14 @@ class NGIOAutomationSuite:
         self.logger.info("🎉 NGIO AUTOMATION SUITE - COMPLETION REPORT")
         self.logger.info("=" * 60)
         self.logger.info(f"⏱️  Total processing time: {total_time/60:.1f} minutes")
-        self.logger.info(f"✅ Successfully completed: {len(self.completed_seasons)} seasons")
-        self.logger.info(f"❌ Failed: {len(self.failed_seasons)} seasons")
+        
+        if len(self.completed_seasons) > 0:
+            season_name = self.completed_seasons[0].display_name
+            self.logger.info(f"✅ Successfully completed: {season_name}")
+        
+        if len(self.failed_seasons) > 0:
+            season_name = self.failed_seasons[0].display_name
+            self.logger.info(f"❌ Failed: {season_name}")
         
         if self.completed_seasons:
             self.logger.info("📝 Completed seasons:")
@@ -424,14 +438,18 @@ class NGIOAutomationSuite:
         self.logger.info("=" * 60)
         
         if len(self.failed_seasons) == 0:
-            self.logger.info("🎊 ALL SEASONS COMPLETED SUCCESSFULLY!")
-            self.logger.info("🎯 Next steps:")
-            self.logger.info("   1. Enable seasonal grass cache mods in your mod manager")
-            self.logger.info("   2. Disable NGIO mod")
-            self.logger.info("   3. Ensure Grass Cache Helper NG is enabled")
-            self.logger.info("   4. Enjoy your automated grass cache!")
+            if len(self.completed_seasons) > 0:
+                season_name = self.completed_seasons[0].display_name
+                self.logger.info(f"🎊 {season_name.upper()} COMPLETED SUCCESSFULLY!")
+                self.logger.info("🎯 Next steps:")
+                self.logger.info("   1. Install the generated archive in your mod manager")
+                self.logger.info("   2. Keep NGIO mod ENABLED (for future grass generation)")
+                self.logger.info("   3. Ensure Grass Cache Helper NG is enabled")
+                self.logger.info("   4. Run this script again for other seasons!")
+                self.logger.info("   5. Enjoy your automated seasonal grass cache!")
         else:
-            self.logger.warning("⚠️  Some seasons failed. Check logs for details.")
+            season_name = self.failed_seasons[0].display_name
+            self.logger.warning(f"⚠️  {season_name} generation failed. Check logs for details.")
     
     def _emergency_cleanup(self) -> None:
         """Emergency cleanup in case of unexpected failure"""
@@ -446,6 +464,49 @@ class NGIOAutomationSuite:
                 
         except Exception as e:
             self.logger.error(f"💥 Error during emergency cleanup: {e}")
+
+    def _is_season_completed(self, season: Season) -> bool:
+        """
+        Check if a season's grass cache generation is already completed
+        
+        A season is considered completed if:
+        1. No PrecacheGrass.txt exists (plugin deleted it after completion)
+        2. Season-specific grass cache files exist in Data/Grass/
+        
+        Args:
+            season: The season to check
+            
+        Returns:
+            bool: True if season is already completed, False otherwise
+        """
+        try:
+            # Check if PrecacheGrass.txt exists
+            precache_file = os.path.join(self.config.skyrim_path, "PrecacheGrass.txt")
+            if os.path.exists(precache_file):
+                # If PrecacheGrass.txt exists, generation is not completed
+                return False
+            
+            # Check for season-specific grass cache files
+            grass_dir = os.path.join(self.config.skyrim_path, "Data", "Grass")
+            if not os.path.exists(grass_dir):
+                return False
+            
+            # Look for files with the season's extension
+            season_files = []
+            for root, dirs, files in os.walk(grass_dir):
+                for file in files:
+                    if file.endswith(season.extension):
+                        season_files.append(file)
+            
+            if season_files:
+                self.logger.debug(f"🌱 Found {len(season_files)} {season.display_name} grass cache files")
+                return True
+            
+            return False
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to check {season.display_name} completion status: {e}")
+            return False
 
 
 def main():

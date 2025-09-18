@@ -84,6 +84,113 @@ class ConfigManager:
                 
         return None
     
+    def _read_config_with_bom_handling(self, config: configparser.ConfigParser, file_path: str) -> None:
+        """
+        Read INI file with BOM (Byte Order Mark) handling
+        
+        Some text editors add BOM to UTF-8 files, which breaks ConfigParser.
+        This method strips BOM before parsing.
+        
+        Args:
+            config: ConfigParser instance to read into
+            file_path: Path to the INI file
+        """
+        try:
+            # Read file content and strip BOM if present
+            with open(file_path, 'r', encoding='utf-8-sig') as f:
+                content = f.read()
+            
+            # Parse the content directly
+            config.read_string(content)
+            
+        except (UnicodeDecodeError, configparser.Error):
+            # Fallback: try with different encodings
+            for encoding in ['utf-8', 'utf-16', 'cp1252']:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        content = f.read()
+                    config.read_string(content)
+                    self.logger.debug(f"🔧 Successfully read INI with {encoding} encoding")
+                    return
+                except (UnicodeDecodeError, configparser.Error):
+                    continue
+            
+            # If all encodings fail, raise the original error
+            raise
+    
+    def _modify_ini_value(self, file_path: str, section: str, key: str, new_value: str) -> None:
+        """
+        Modify a single INI value while preserving formatting, comments, and case
+        
+        This method reads the file line by line, finds the target key, and replaces
+        only the value part, preserving everything else.
+        
+        Args:
+            file_path: Path to the INI file
+            section: Section name to modify
+            key: Key name to modify (case insensitive search)
+            new_value: New value to set
+        """
+        try:
+            # Read the file with BOM handling
+            with open(file_path, 'r', encoding='utf-8-sig') as f:
+                lines = f.readlines()
+            
+            # Find the section and key
+            in_target_section = False
+            modified = False
+            
+            for i, line in enumerate(lines):
+                stripped = line.strip()
+                
+                # Check for section headers
+                if stripped.startswith('[') and stripped.endswith(']'):
+                    current_section = stripped[1:-1].strip()
+                    in_target_section = (current_section.lower() == section.lower())
+                    continue
+                
+                # Skip if not in target section
+                if not in_target_section:
+                    continue
+                
+                # Skip comments and empty lines
+                if not stripped or stripped.startswith(';') or stripped.startswith('#'):
+                    continue
+                
+                # Check if this line contains our key
+                if '=' in stripped:
+                    line_key, line_value = stripped.split('=', 1)
+                    line_key = line_key.strip()
+                    
+                    if line_key.lower() == key.lower():
+                        # Preserve the original key case and spacing
+                        # Find the '=' position in the original line
+                        equals_pos = line.find('=')
+                        if equals_pos != -1:
+                            # Reconstruct the line with new value
+                            prefix = line[:equals_pos + 1]  # Keep everything up to and including '='
+                            # Add a space after '=' if there wasn't one, preserve if there was
+                            if len(line) > equals_pos + 1 and line[equals_pos + 1] == ' ':
+                                lines[i] = f"{prefix} {new_value}\n"
+                            else:
+                                lines[i] = f"{prefix}{new_value}\n"
+                            modified = True
+                            break
+            
+            if not modified:
+                self.logger.warning(f"⚠️ Key '{key}' not found in section '{section}' of {file_path}")
+                return
+            
+            # Write the file back with preserved formatting
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.writelines(lines)
+            
+            self.logger.debug(f"🔧 Modified {key} = {new_value} in [{section}]")
+            
+        except Exception as e:
+            self.logger.error(f"💥 Failed to modify INI value: {e}")
+            raise
+    
     def backup_all_configs(self) -> bool:
         """
         Create backups of all configuration files
@@ -160,9 +267,9 @@ class ConfigManager:
                 return False
         
         try:
-            # Read current configuration
+            # Read current configuration with BOM handling
             config = configparser.ConfigParser()
-            config.read(seasons_config_path, encoding='utf-8')
+            self._read_config_with_bom_handling(config, seasons_config_path)
             
             # Find the correct section (usually [Settings] or [General])
             target_section = None
@@ -188,11 +295,8 @@ class ConfigManager:
             if not season_key:
                 season_key = "Season Type"
             
-            config[target_section][season_key] = str(season_type)
-            
-            # Write the updated configuration
-            with open(seasons_config_path, 'w', encoding='utf-8') as f:
-                config.write(f)
+            # Use careful modification to preserve formatting
+            self._modify_ini_value(seasons_config_path, target_section, season_key, str(season_type))
             
             self.logger.info(f"✅ Successfully set season to {season_name}")
             return True
@@ -217,7 +321,7 @@ class ConfigManager:
         
         try:
             config = configparser.ConfigParser()
-            config.read(ngio_config_path, encoding='utf-8')
+            self._read_config_with_bom_handling(config, ngio_config_path)
             
             # Ensure [Settings] section exists
             if "Settings" not in config:
@@ -261,7 +365,7 @@ class ConfigManager:
         
         try:
             config = configparser.ConfigParser()
-            config.read(ngio_config_path, encoding='utf-8')
+            self._read_config_with_bom_handling(config, ngio_config_path)
             
             # Ensure [Settings] section exists
             if "Settings" not in config:
@@ -310,7 +414,7 @@ class ConfigManager:
         if seasons_config_path and os.path.exists(seasons_config_path):
             try:
                 config = configparser.ConfigParser()
-                config.read(seasons_config_path, encoding='utf-8')
+                self._read_config_with_bom_handling(config, seasons_config_path)
                 
                 # Check if season type setting exists
                 season_type_found = False
@@ -333,7 +437,7 @@ class ConfigManager:
         if ngio_config_path and os.path.exists(ngio_config_path):
             try:
                 config = configparser.ConfigParser()
-                config.read(ngio_config_path, encoding='utf-8')
+                self._read_config_with_bom_handling(config, ngio_config_path)
                 
                 required_settings = ["UseGrassCache", "DynDOLODGrassMode"]
                 for setting in required_settings:
@@ -423,7 +527,7 @@ class ConfigManager:
         
         try:
             config = configparser.ConfigParser()
-            config.read(seasons_config_path, encoding='utf-8')
+            self._read_config_with_bom_handling(config, seasons_config_path)
             
             # Find season type setting
             for section in config.sections():

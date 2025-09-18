@@ -55,7 +55,8 @@ class UserPreferences:
     seasons_to_generate: List[str] = None
     use_seasonal_mods: bool = True  # Whether user has seasonal mods installed
     max_crash_retries: int = 5
-    crash_timeout_minutes: int = 60
+    crash_timeout_minutes: int = 5  # 5 minutes for process crash detection
+    no_progress_timeout_minutes: int = 10  # 10 minutes for file inactivity
     create_archives: bool = True
     backup_configs: bool = True
     auto_cleanup: bool = True
@@ -301,6 +302,12 @@ class ConfigCache:
                 else:
                     user_input = input(f"   Path: ").strip()
                 
+                # Strip surrounding quotes (for drag-and-drop compatibility)
+                if user_input.startswith('"') and user_input.endswith('"'):
+                    user_input = user_input[1:-1]
+                elif user_input.startswith("'") and user_input.endswith("'"):
+                    user_input = user_input[1:-1]
+                
                 if not user_input:
                     self.logger.error("❌ Path cannot be empty")
                     continue
@@ -415,66 +422,45 @@ class ConfigCache:
             else:
                 self.preferences.use_seasonal_mods = True
                 
-                # Seasons to generate
+                # Single season selection
                 self.logger.info("")
-                self.logger.info("🌱 Which seasons to generate?")
-                self.logger.info("   1. All seasons (Winter, Spring, Summer, Autumn)")
-                self.logger.info("   2. Custom selection")
-                self.logger.info("   3. Specific combinations")
+                self.logger.info("🌱 Which season to generate? (ONE season per run)")
+                self.logger.info("   1. Winter")
+                self.logger.info("   2. Spring")
+                self.logger.info("   3. Summer")
+                self.logger.info("   4. Autumn")
                 
-                choice = input("   Choice (1-3, default 1): ").strip()
+                choice = input("   Choice (1-4, default 1): ").strip()
                 
                 if choice == "2":
-                    seasons = []
-                    for season in ["Winter", "Spring", "Summer", "Autumn"]:
-                        include = input(f"   Include {season}? (y/n, default y): ").strip().lower()
-                        if include not in ['n', 'no']:
-                            seasons.append(season)
-                    
-                    if seasons:
-                        self.preferences.seasons_to_generate = seasons
-                    else:
-                        self.logger.warning("⚠️ No seasons selected, using all seasons")
-                        
+                    self.preferences.seasons_to_generate = ["Spring"]
                 elif choice == "3":
-                    self.logger.info("   Popular combinations:")
-                    self.logger.info("   a. Winter + Summer only")
-                    self.logger.info("   b. Spring + Autumn only") 
-                    self.logger.info("   c. Winter + Spring only")
-                    self.logger.info("   d. Summer + Autumn only")
-                    self.logger.info("   e. Custom combination")
-                    
-                    combo_choice = input("   Choose combination (a-e, default a): ").strip().lower()
-                    
-                    if combo_choice == "b":
-                        self.preferences.seasons_to_generate = ["Spring", "Autumn"]
-                    elif combo_choice == "c":
-                        self.preferences.seasons_to_generate = ["Winter", "Spring"]
-                    elif combo_choice == "d":
-                        self.preferences.seasons_to_generate = ["Summer", "Autumn"]
-                    elif combo_choice == "e":
-                        # Custom combination
-                        seasons = []
-                        for season in ["Winter", "Spring", "Summer", "Autumn"]:
-                            include = input(f"   Include {season}? (y/n): ").strip().lower()
-                            if include in ['y', 'yes']:
-                                seasons.append(season)
-                        if seasons:
-                            self.preferences.seasons_to_generate = seasons
-                    else:  # Default to Winter + Summer
-                        self.preferences.seasons_to_generate = ["Winter", "Summer"]
+                    self.preferences.seasons_to_generate = ["Summer"]
+                elif choice == "4":
+                    self.preferences.seasons_to_generate = ["Autumn"]
+                else:  # Default to Winter
+                    self.preferences.seasons_to_generate = ["Winter"]
             
             # Crash retries
             retries = input(f"   Max crash retries (default {self.preferences.max_crash_retries}): ").strip()
             if retries.isdigit():
                 self.preferences.max_crash_retries = int(retries)
             
-            # Timeout (clarify what this means)
-            self.logger.info("   ⏰ Inactivity timeout: How long to wait if generation stops progressing")
-            self.logger.info("   (Active generation can run longer than this - no hard limit)")
-            timeout = input(f"   Inactivity timeout in minutes (default {self.preferences.crash_timeout_minutes}): ").strip()
-            if timeout.isdigit():
-                self.preferences.crash_timeout_minutes = int(timeout)
+            # Crash detection timeout
+            self.logger.info("")
+            self.logger.info("   ⚡ Crash detection timeout:")
+            self.logger.info("   How long to wait when process stops running")
+            crash_timeout = input(f"   Crash timeout in minutes (default {self.preferences.crash_timeout_minutes}): ").strip()
+            if crash_timeout.isdigit():
+                self.preferences.crash_timeout_minutes = int(crash_timeout)
+            
+            # No progress timeout  
+            self.logger.info("")
+            self.logger.info("   ⏰ No progress timeout:")
+            self.logger.info("   How long to wait when file stops updating (but process still running)")
+            progress_timeout = input(f"   No progress timeout in minutes (default {self.preferences.no_progress_timeout_minutes}): ").strip()
+            if progress_timeout.isdigit():
+                self.preferences.no_progress_timeout_minutes = int(progress_timeout)
             
             # Archive creation
             create_archives = input("   Create mod archives? (y/n, default y): ").strip().lower()
@@ -533,11 +519,12 @@ class ConfigCache:
         self.logger.info("⚙️  Preferences:")
         self.logger.info(f"   Seasonal Mods: {'Yes' if self.preferences.use_seasonal_mods else 'No'}")
         if self.preferences.use_seasonal_mods:
-            self.logger.info(f"   Seasons: {', '.join(self.preferences.seasons_to_generate)}")
+            self.logger.info(f"   Season: {self.preferences.seasons_to_generate[0]}")
         else:
             self.logger.info(f"   Mode: Non-seasonal grass cache")
         self.logger.info(f"   Max Retries: {self.preferences.max_crash_retries}")
-        self.logger.info(f"   Inactivity Timeout: {self.preferences.crash_timeout_minutes} minutes")
+        self.logger.info(f"   Crash Timeout: {self.preferences.crash_timeout_minutes} minutes")
+        self.logger.info(f"   No Progress Timeout: {self.preferences.no_progress_timeout_minutes} minutes")
         self.logger.info(f"   Create Archives: {'Yes' if self.preferences.create_archives else 'No'}")
         self.logger.info(f"   Backup Configs: {'Yes' if self.preferences.backup_configs else 'No'}")
         
