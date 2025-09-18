@@ -1,0 +1,90 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# NGIO specific
+# Skyrim-related files (don't commit these)
+PrecacheGrass.txt
+*.cgid
+*.cgid.bak
+
+# Configuration backups
+config_backups/
+*.ini.backup
+*.ini.bak
+
+# User-specific configurations
+user_config.yaml
+local_settings.yaml
+
+# Temporary development files
+temp/
+scratch/
+test_output/
+
+# Documentation build
+docs/_build/
+docs/.doctrees/
+
+# Distribution
+*.tar.gz
+*.zip
+*.exe
+releases/
