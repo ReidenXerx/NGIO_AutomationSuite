@@ -44,8 +44,8 @@ Transform the painful **4-hour manual process** into a **fully automated workflo
 ### ⚡ **High-Speed File Processing**
 - ✅ **10-25x faster** than batch scripts
 - ✅ Multithreaded file renaming
-- ✅ Automatic mod archive creation
-- ✅ File integrity validation
+- ✅ Per-season archive creation & cleanup
+- ✅ Optimal disk space management
 
 ### 📦 **Mod Archive Generation**
 - ✅ Creates installable ZIP archives for each season
@@ -115,7 +115,8 @@ NGIO_AutomationSuite/
 2. 📁 Provide Skyrim path (one-time setup)
 3. ✅ Select seasons to generate
 4. ☕ Go make coffee (or sleep)
-5. 🎉 Wake up to ready-to-install mod archives!
+5. 📦 Each season automatically archived & cleaned
+6. 🎉 Wake up to ready-to-install mod archives!
 ```
 
 ## 🔧 Development Status

@@ -139,9 +139,10 @@ self.patterns = {
    ↓
 6. Process generated .cgid files:
    - Rename: file.cgid → file.WIN.cgid (for Winter)
-   - Create mod archive
+   - Create mod archive immediately
+   - Clean up season files after successful archive
    ↓
-7. Move to next season (Spring=2) and repeat
+7. Move to next season (Spring=2) with clean Grass directory
 ```
 
 ### **Crash Recovery Workflow:**

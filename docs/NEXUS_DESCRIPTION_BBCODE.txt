@@ -1,0 +1,240 @@
+[center][size=6][color=#4CAF50]🌱 NGIO AUTOMATION SUITE 🌱[/color][/size]
+[size=4][color=#2196F3]The Ultimate Automation Tool for NGIO Grass Cache Generation[/color][/size][/center]
+
+[line]
+
+[size=5][color=#FF5722]🎯 What This Solves[/color][/size]
+
+[size=4][color=#E91E63]Current NGIO Grass Generation Process (PAINFUL):[/color][/size]
+[list]
+[*]⏱️ [b]4+ hours of manual work[/b] across 4 seasons
+[*]🔄 [b]Constant manual restarts[/b] when Skyrim crashes
+[*]📝 [b]Manual config editing[/b] for each season (Winter→Spring→Summer→Autumn)
+[*]📁 [b]Manual file renaming[/b] after each 30-60 minute generation
+[*]😤 [b]High error rates[/b] and frustration
+[*]🎮 [b]Constant babysitting[/b] required
+[/list]
+
+[size=4][color=#4CAF50]With NGIO Automation Suite (AMAZING):[/color][/size]
+[list]
+[*]🚀 [b]5 minutes setup, walk away[/b]
+[*]🛌 [b]Run before bed, wake up completed[/b]
+[*]🤖 [b]Fully automated crash recovery[/b]
+[*]⚡ [b]Intelligent process management[/b]
+[*]📊 [b]Real-time progress tracking[/b]
+[*]✅ [b]Consistent, reliable results[/b]
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]🚀 Key Features[/color][/size]
+
+[size=4][color=#2196F3]🎮 Intelligent Game Manager[/color][/size]
+[list]
+[*]✅ Auto-launch Skyrim for each season
+[*]✅ Detect and handle crashes automatically (up to 5 retries per season)
+[*]✅ Monitor generation progress via PrecacheGrass.txt
+[*]✅ Resume exactly where it left off after crashes
+[/list]
+
+[size=4][color=#2196F3]📝 Smart Configuration Management[/color][/size]
+[list]
+[*]✅ Backup original configurations automatically
+[*]✅ Auto-modify season settings (1→2→3→4→5)
+[*]✅ Persistent path caching (remember your settings)
+[*]✅ Restore everything when done
+[/list]
+
+[size=4][color=#2196F3]⚡ High-Speed File Processing[/color][/size]
+[list]
+[*]✅ [b]10-25x faster[/b] than batch scripts
+[*]✅ Multithreaded file renaming (.cgid → .WIN.cgid, .SPR.cgid, etc.)
+[*]✅ Per-season archive creation & cleanup
+[*]✅ Optimal disk space management
+[/list]
+
+[size=4][color=#2196F3]📦 Professional Mod Archives[/color][/size]
+[list]
+[*]✅ Creates installable ZIP archives for each season
+[*]✅ Proper mod structure with Data/Grass folders
+[*]✅ Includes installation instructions and metadata
+[*]✅ Compatible with MO2, Vortex, and manual installation
+[/list]
+
+[size=4][color=#2196F3]🛡️ Bulletproof Error Handling[/color][/size]
+[list]
+[*]✅ Detect infinite loops and hangs
+[*]✅ Smart retry logic for different crash types
+[*]✅ Activity-based timeouts (won't kill active generation)
+[*]✅ Detailed crash analysis and recovery
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]🌱 Flexible Season Selection[/color][/size]
+
+[size=4][color=#4CAF50]Choose Your Generation Mode:[/color][/size]
+[list]
+[*][b]All Seasons:[/b] Winter, Spring, Summer, Autumn (2-4 hours)
+[*][b]Popular Combinations:[/b] Winter+Summer, Spring+Autumn (1-2 hours)
+[*][b]Custom Selection:[/b] Any combination you want
+[*][b]Non-Seasonal Mode:[/b] For users without seasonal mods
+[*][b]Single Season:[/b] Perfect for testing (30-60 minutes)
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]📋 Requirements[/color][/size]
+
+[list]
+[*][b]Windows 10/11[/b]
+[*][b]Python 3.7+[/b] (auto-installed if needed)
+[*][b]Skyrim SE/AE/VR[/b] with NGIO installed
+[*][b]Seasons of Skyrim[/b] (or compatible seasonal mod) - [i]optional for non-seasonal mode[/i]
+[*][b]SKSE64[/b]
+[*][b]At least 5GB free disk space[/b]
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]🚀 Quick Start[/color][/size]
+
+[size=4][color=#4CAF50]Installation:[/color][/size]
+[list=1]
+[*]Download and extract the archive
+[*]Double-click [font=Courier New]run_ngio_automation.bat[/font]
+[*]Provide your Skyrim installation path (one-time setup)
+[*]Choose which seasons to generate
+[*]Click start and walk away!
+[*]Each season is automatically archived & cleaned after completion
+[/list]
+
+[size=4][color=#4CAF50]What You Get:[/color][/size]
+[list]
+[*][font=Courier New]Grass_Cache_Winter_Season.zip[/font]
+[*][font=Courier New]Grass_Cache_Spring_Season.zip[/font]
+[*][font=Courier New]Grass_Cache_Summer_Season.zip[/font]
+[*][font=Courier New]Grass_Cache_Autumn_Season.zip[/font]
+[*][font=Courier New]INSTALLATION_GUIDE.txt[/font]
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]💡 How It Works[/color][/size]
+
+[size=4]The Magic Behind the Automation:[/size]
+[list=1]
+[*][b]Setup & Validation:[/b] Validates your Skyrim installation and required mods
+[*][b]Configuration Backup:[/b] Safely backs up your po3_SeasonsOfSkyrim.ini
+[*][b]Season Generation:[/b] For each selected season:
+   [list]
+   [*]Sets season type in configuration (Winter=1, Spring=2, etc.)
+   [*]Creates PrecacheGrass.txt trigger file
+   [*]Launches Skyrim and monitors PrecacheGrass.txt for progress
+   [*]Detects completion when NGIO deletes the file and shows completion modal
+   [*]Handles crashes with intelligent retry (preserves progress for resume)
+   [*]Processes and renames generated files (.cgid → .WIN.cgid)
+   [/list]
+[*][b]Archive Creation:[/b] Creates professional mod archives with proper structure
+[*][b]Cleanup & Restore:[/b] Restores original settings (season type 5)
+[*][b]Final Report:[/b] Shows what was completed and what to do next
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]🎯 Perfect For[/color][/size]
+
+[list]
+[*][b]Heavy Mod List Users:[/b] Stop wasting hours on manual generation
+[*][b]Seasonal Mod Enthusiasts:[/b] Get perfect grass for every season
+[*][b]Streamers/Content Creators:[/b] Set it up once, use forever
+[*][b]Mod Authors:[/b] Test grass compatibility across seasons
+[*][b]Anyone Tired of NGIO Crashes:[/b] Let automation handle the pain
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]📊 Before vs After[/color][/size]
+
+[size=4][color=#E91E63]❌ Manual Process vs ✅ Automation Suite[/color][/size]
+
+[quote]
+[b][color=#FF5722]Setup Time:[/color][/b]
+❌ Manual: 30+ minutes per session
+✅ Automation: 5 minutes one-time
+
+[b][color=#FF5722]User Attention:[/color][/b]  
+❌ Manual: Constant babysitting required
+✅ Automation: Set and forget
+
+[b][color=#FF5722]Crash Handling:[/color][/b]
+❌ Manual: Manual restart every time
+✅ Automation: Automatic with resume
+
+[b][color=#FF5722]File Processing:[/color][/b]
+❌ Manual: Slow batch scripts
+✅ Automation: 10-25x faster multithreading
+
+[b][color=#FF5722]Error Rate:[/color][/b]
+❌ Manual: High (human error)
+✅ Automation: Near zero
+
+[b][color=#FF5722]Total Time Investment:[/color][/b]
+❌ Manual: 4+ hours of active work
+✅ Automation: 5 minutes of active work
+[/quote]
+
+[line]
+
+[size=5][color=#FF5722]🛠️ Advanced Features[/color][/size]
+
+[list]
+[*][b]Smart Timeout Logic:[/b] Won't kill active generation, only detects real hangs
+[*][b]Progress Resume:[/b] Crashed at 5000 cells? Resumes from cell 5001
+[*][b]Activity Monitoring:[/b] Real-time cell count and progress tracking
+[*][b]Comprehensive Logging:[/b] Detailed logs for troubleshooting
+[*][b]Configuration Caching:[/b] Remembers your paths and preferences
+[*][b]Flexible Output:[/b] Works with any mod manager or manual installation
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]⚠️ Important Notes[/color][/size]
+
+[list]
+[*][b]This tool automates NGIO,[/b] it doesn't replace it - NGIO must be installed
+[*][b]Generated archives should replace NGIO[/b] - disable NGIO after installing the cache
+[*][b]Requires Grass Cache Helper NG[/b] for seasonal switching functionality
+[*][b]First run may take longer[/b] as it validates your setup
+[*][b]Heavy mod lists[/b] will take longer to generate (this is normal)
+[/list]
+
+[line]
+
+[size=5][color=#FF5722]🙏 Credits & Thanks[/color][/size]
+
+[list]
+[*][b]infernalryan:[/b] For the comprehensive NGIO guide that inspired this automation
+[*][b]NGIO Development Team:[/b] For creating the foundation this builds upon
+[*][b]Grass Cache Helper NG Team:[/b] For enabling seasonal cache loading
+[*][b]Seasons of Skyrim Team:[/b] For the seasonal framework
+[*][b]Skyrim Modding Community:[/b] For enduring the manual process long enough to need this solution
+[/list]
+
+[line]
+
+[center][size=4][color=#4CAF50]🎯 Goal: Save the Skyrim modding community thousands of collective hours and eliminate the biggest pain point in grass generation![/color][/size]
+
+[size=3]⭐ [b]Endorse if this tool saves you hours of frustration![/b] ⭐[/size][/center]
+
+[line]
+
+[size=4][color=#FF5722]📞 Support & Updates[/color][/size]
+
+[list]
+[*][b]GitHub:[/b] [url=https://github.com/ReidenXerx/ngio-automation-suite]Full source code and documentation[/url]
+[*][b]Issues:[/b] Report bugs and request features on GitHub
+[*][b]Updates:[/b] Check back for new features and improvements
+[/list]
+
+[center][size=2][color=#666]Version 1.0 | MIT License | Made with ❤️ for the Skyrim community[/color][/size][/center]

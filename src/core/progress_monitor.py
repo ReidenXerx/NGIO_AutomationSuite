@@ -126,7 +126,7 @@ class ProgressMonitor:
         Returns:
             MonitoringResult with final status
         """
-        self.logger.info(f"👁️ Starting monitoring for {season.name} generation...")
+        self.logger.info(f"👁️ Starting monitoring for {season.display_name} generation...")
         
         self.is_monitoring = True
         self.progress_callback = progress_callback
@@ -155,7 +155,7 @@ class ProgressMonitor:
                 
                 # Check for completion
                 if self.current_progress.state == GenerationState.COMPLETED:
-                    self.logger.success(f"🎉 {season.name} generation completed!")
+                    self.logger.success(f"🎉 {season.display_name} generation completed!")
                     return MonitoringResult(
                         completed=True,
                         crashed=False,
@@ -167,13 +167,13 @@ class ProgressMonitor:
                 
                 # Check for crashes
                 if self.current_progress.state == GenerationState.CRASHED:
-                    self.logger.error(f"💥 {season.name} generation crashed")
+                    self.logger.error(f"💥 {season.display_name} generation crashed")
                     return self._create_crash_result(process_info, start_time)
                 
                 # Check for hangs (no activity for extended period)
                 if time.time() - last_activity > 300:  # 5 minutes no activity
                     if self._detect_process_hang(process_info):
-                        self.logger.warning(f"🔒 {season.name} generation appears hung")
+                        self.logger.warning(f"🔒 {season.display_name} generation appears hung")
                         return MonitoringResult(
                             completed=False,
                             crashed=False,
@@ -191,7 +191,7 @@ class ProgressMonitor:
                 time.sleep(2)
             
             # Timeout reached
-            self.logger.warning(f"⏰ {season.name} generation timed out after {timeout_minutes} minutes")
+            self.logger.warning(f"⏰ {season.display_name} generation timed out after {timeout_minutes} minutes")
             return MonitoringResult(
                 completed=False,
                 crashed=False,

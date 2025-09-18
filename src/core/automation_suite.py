@@ -30,9 +30,9 @@ class Season(Enum):
     AUTUMN = (4, "Autumn", ".AUT.cgid")
     NO_SEASONS = (0, "No Seasons", ".cgid")  # For users without seasonal mods
     
-    def __init__(self, season_type: int, name: str, extension: str):
+    def __init__(self, season_type: int, display_name: str, extension: str):
         self.season_type = season_type
-        self.name = name
+        self.display_name = display_name
         self.extension = extension
     
     @classmethod
@@ -113,14 +113,13 @@ class NGIOAutomationSuite:
             for season in self.config.seasons_to_generate:
                 if not self._generate_season_cache(season):
                     self.failed_seasons.append(season)
-                    self.logger.error(f"❌ Failed to generate cache for {season.name}")
+                    self.logger.error(f"❌ Failed to generate cache for {season.display_name}")
                 else:
                     self.completed_seasons.append(season)
-                    self.logger.info(f"✅ Successfully completed {season.name}")
+                    self.logger.info(f"✅ Successfully completed {season.display_name}")
                     
-            # Phase 4: Create mod archives
-            if self.config.create_archives and self.completed_seasons:
-                self._create_season_archives()
+            # Phase 4: Archive creation handled per-season
+            # (Archives created individually after each season)
             
             # Phase 5: Cleanup and restoration
             self._restore_configurations()
@@ -196,7 +195,7 @@ class NGIOAutomationSuite:
             bool: True if successful, False if failed
         """
         self.current_season = season
-        self.logger.info(f"🌱 Starting {season.name} grass cache generation...")
+        self.logger.info(f"🌱 Starting {season.display_name} grass cache generation...")
         
         try:
             # Step 1: Configure season settings
@@ -211,15 +210,19 @@ class NGIOAutomationSuite:
             if not self._process_generated_files(season):
                 return False
                 
-            # Step 4: Create mod folder structure (if enabled)
-            if self.config.create_mod_folders:
-                if not self._create_mod_folder(season):
+            # Step 4: Create archive for this season
+            if self.config.create_archives:
+                if not self._create_single_season_archive(season):
                     return False
+                    
+                # Step 5: Clean up seasonal files after successful archive creation
+                if not self._cleanup_season_files(season):
+                    self.logger.warning(f"⚠️ Failed to clean up {season.display_name} files, but continuing...")
                     
             return True
             
         except Exception as e:
-            self.logger.error(f"💥 Error generating {season.name}: {e}")
+            self.logger.error(f"💥 Error generating {season.display_name}: {e}")
             return False
     
     def _run_generation_with_monitoring(self, season: Season) -> bool:
@@ -229,7 +232,7 @@ class NGIOAutomationSuite:
         
         while retry_count < max_retries:
             is_retry = retry_count > 0
-            self.logger.info(f"🎮 Launching Skyrim for {season.name} (attempt {retry_count + 1})")
+            self.logger.info(f"🎮 Launching Skyrim for {season.display_name} (attempt {retry_count + 1})")
             
             # Launch Skyrim with grass generation enabled
             # On retry: preserves existing PrecacheGrass.txt for resume
@@ -255,7 +258,7 @@ class NGIOAutomationSuite:
             )
             
             if generation_completed:
-                self.logger.success(f"🎉 {season.name} generation completed successfully!")
+                self.logger.success(f"🎉 {season.display_name} generation completed successfully!")
                 
                 # Verify that Skyrim process has closed (should happen automatically)
                 if self.game_manager.is_process_running():
@@ -283,14 +286,14 @@ class NGIOAutomationSuite:
                     self.logger.info(f"🔄 Retrying generation (attempt {retry_count + 1}/{max_retries})")
                     time.sleep(5)  # Brief pause before retry
                 else:
-                    self.logger.error(f"❌ Max retries exceeded for {season.name}")
+                    self.logger.error(f"❌ Max retries exceeded for {season.display_name}")
                     return False
                 
         return False
     
     def _process_generated_files(self, season: Season) -> bool:
         """Process and rename generated grass cache files"""
-        self.logger.info(f"⚡ Processing {season.name} files...")
+        self.logger.info(f"⚡ Processing {season.display_name} files...")
         
         grass_directory = os.path.join(self.config.output_directory, "Grass")
         if not os.path.exists(grass_directory):
@@ -300,9 +303,9 @@ class NGIOAutomationSuite:
         # Use high-speed file processor to rename files
         return self.file_processor.process_season_files(grass_directory, season)
     
-    def _create_season_archives(self) -> bool:
-        """Create mod archives for all completed seasons"""
-        self.logger.separator("Creating Mod Archives")
+    def _create_single_season_archive(self, season: Season) -> bool:
+        """Create mod archive for a single season immediately after generation"""
+        self.logger.info(f"📦 Creating archive for {season.display_name}...")
         
         grass_directory = os.path.join(self.config.skyrim_path, "Data", "Grass")
         
@@ -310,22 +313,80 @@ class NGIOAutomationSuite:
             self.logger.error("❌ No Grass directory found")
             return False
         
-        # Create archives for completed seasons
-        created_archives = self.archive_creator.create_all_season_archives(
-            grass_directory, 
-            self.completed_seasons
-        )
+        # Create archive for this specific season
+        archive_info = self.archive_creator.create_season_archive(season, grass_directory)
         
-        if created_archives:
-            self.logger.success(f"✅ Created {len(created_archives)} mod archives")
+        if archive_info:
+            self.logger.success(f"✅ Created archive: {archive_info.archive_path}")
+            self.logger.info(f"📊 Archive size: {archive_info.archive_size_mb:.1f} MB")
+            self.logger.info(f"📁 Files included: {archive_info.file_count}")
             
-            # Generate installation guide
+            # Generate/update installation guide
             guide_path = os.path.join(self.config.output_directory, "INSTALLATION_GUIDE.txt")
             self.archive_creator.generate_installation_guide(guide_path)
             
             return True
         else:
-            self.logger.error("❌ Failed to create mod archives")
+            self.logger.error(f"❌ Failed to create archive for {season.display_name}")
+            return False
+    
+    def _cleanup_season_files(self, season: Season) -> bool:
+        """
+        Clean up seasonal grass cache files after successful archive creation
+        
+        This removes the season-specific files from Data/Grass to prevent
+        accumulation of thousands of files from multiple seasons.
+        
+        Args:
+            season: The season whose files should be cleaned up
+            
+        Returns:
+            bool: True if cleanup successful, False if failed
+        """
+        self.logger.info(f"🧹 Cleaning up {season.display_name} files from Grass directory...")
+        
+        grass_directory = os.path.join(self.config.skyrim_path, "Data", "Grass")
+        
+        if not os.path.exists(grass_directory):
+            self.logger.warning("⚠️ Grass directory not found, nothing to clean")
+            return True
+        
+        try:
+            # Find all files with this season's extension
+            seasonal_files = []
+            for root, dirs, files in os.walk(grass_directory):
+                for file in files:
+                    if file.endswith(season.extension):
+                        full_path = os.path.join(root, file)
+                        seasonal_files.append(full_path)
+            
+            if not seasonal_files:
+                self.logger.info(f"✅ No {season.display_name} files found to clean up")
+                return True
+            
+            self.logger.info(f"🗑️ Removing {len(seasonal_files)} {season.display_name} files...")
+            
+            # Remove all seasonal files
+            removed_count = 0
+            failed_count = 0
+            
+            for file_path in seasonal_files:
+                try:
+                    os.remove(file_path)
+                    removed_count += 1
+                except Exception as e:
+                    self.logger.debug(f"Failed to remove {file_path}: {e}")
+                    failed_count += 1
+            
+            if failed_count > 0:
+                self.logger.warning(f"⚠️ Failed to remove {failed_count} files, but {removed_count} removed successfully")
+            else:
+                self.logger.success(f"✅ Successfully removed {removed_count} {season.display_name} files")
+            
+            return failed_count == 0
+            
+        except Exception as e:
+            self.logger.error(f"💥 Error during {season.display_name} file cleanup: {e}")
             return False
     
     def _restore_configurations(self) -> bool:
@@ -353,12 +414,12 @@ class NGIOAutomationSuite:
         if self.completed_seasons:
             self.logger.info("📝 Completed seasons:")
             for season in self.completed_seasons:
-                self.logger.info(f"   ✅ {season.name}")
+                self.logger.info(f"   ✅ {season.display_name}")
                 
         if self.failed_seasons:
             self.logger.info("📝 Failed seasons:")
             for season in self.failed_seasons:
-                self.logger.info(f"   ❌ {season.name}")
+                self.logger.info(f"   ❌ {season.display_name}")
                 
         self.logger.info("=" * 60)
         
