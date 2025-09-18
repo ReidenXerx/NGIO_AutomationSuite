@@ -66,7 +66,7 @@ class GameManager:
                 
         return None
     
-    def launch_for_generation(self) -> Optional[ProcessInfo]:
+    def launch_for_generation(self, is_retry: bool = False) -> Optional[ProcessInfo]:
         """
         Launch Skyrim configured for grass cache generation
         
@@ -76,7 +76,7 @@ class GameManager:
         self.logger.info("🎮 Preparing to launch Skyrim for grass generation...")
         
         # Ensure PrecacheGrass.txt exists to trigger generation
-        if not self._create_precache_trigger():
+        if not self._create_precache_trigger(is_retry):
             return None
             
         # Cleanup any existing Skyrim processes
@@ -118,18 +118,25 @@ class GameManager:
             self.logger.error(f"💥 Failed to launch Skyrim: {e}")
             return None
     
-    def _create_precache_trigger(self) -> bool:
-        """Create PrecacheGrass.txt to trigger grass generation"""
+    def _create_precache_trigger(self, is_retry: bool = False) -> bool:
+        """Create or preserve PrecacheGrass.txt to trigger grass generation"""
         try:
-            # Remove existing file if it exists
             if os.path.exists(self.grass_cache_file):
-                os.remove(self.grass_cache_file)
-                
-            # Create new empty trigger file
+                if is_retry:
+                    # File exists from previous attempt - preserve it for resume!
+                    status = self.check_precache_file_status()
+                    self.logger.info(f"🔄 Found existing PrecacheGrass.txt with {status['content_lines']} cells - will resume")
+                    return True
+                else:
+                    # First attempt - remove old file from different season
+                    self.logger.info("🗑️ Removing old PrecacheGrass.txt from previous season")
+                    os.remove(self.grass_cache_file)
+                    
+            # Create new empty trigger file (first attempt only)
             with open(self.grass_cache_file, 'w') as f:
                 f.write("")  # Empty file is sufficient
                 
-            self.logger.info(f"✅ Created grass cache trigger: {self.grass_cache_file}")
+            self.logger.info(f"✅ Created fresh grass cache trigger: {self.grass_cache_file}")
             return True
             
         except Exception as e:
@@ -325,6 +332,136 @@ class GameManager:
         except Exception as e:
             self.logger.error(f"Error force terminating process: {e}")
             return False
+    
+    def check_precache_file_status(self) -> dict:
+        """
+        Check the status of PrecacheGrass.txt file for generation progress
+        
+        Returns:
+            dict: Status information about the precache file
+        """
+        status = {
+            "exists": False,
+            "size": 0,
+            "modified_time": 0,
+            "content_lines": 0,
+            "last_cell": "",
+            "is_active": False
+        }
+        
+        try:
+            if os.path.exists(self.grass_cache_file):
+                status["exists"] = True
+                
+                # Get file stats
+                stat = os.stat(self.grass_cache_file)
+                status["size"] = stat.st_size
+                status["modified_time"] = stat.st_mtime
+                
+                # Read content to check progress
+                with open(self.grass_cache_file, 'r', encoding='utf-8', errors='ignore') as f:
+                    lines = f.readlines()
+                    status["content_lines"] = len(lines)
+                    
+                    if lines:
+                        # Get last processed cell
+                        last_line = lines[-1].strip()
+                        status["last_cell"] = last_line
+                        
+                        # File is active if it has content and was recently modified
+                        time_since_modified = time.time() - status["modified_time"]
+                        status["is_active"] = time_since_modified < 30  # Modified within 30 seconds
+                        
+        except Exception as e:
+            self.logger.debug(f"Error checking precache file: {e}")
+        
+        return status
+    
+    def wait_for_precache_completion(self, timeout_minutes: int = 60) -> bool:
+        """
+        Wait for grass generation completion by monitoring PrecacheGrass.txt
+        
+        SMART TIMEOUT LOGIC:
+        - If file is actively growing: NO timeout (can run indefinitely)
+        - If no activity for 5+ minutes: Consider hung/crashed
+        - Hard timeout only applies if no progress for extended period
+        
+        This prevents killing active long-running generations!
+        
+        Args:
+            timeout_minutes: Maximum time to wait WITHOUT ACTIVITY
+            
+        Returns:
+            bool: True if completed successfully, False if failed/timeout
+        """
+        self.logger.info("👁️ Monitoring PrecacheGrass.txt for completion...")
+        self.logger.info(f"⏰ Will timeout only after {timeout_minutes} minutes of NO ACTIVITY")
+        
+        start_time = time.time()
+        last_size = 0
+        last_modified = 0
+        last_activity_time = start_time
+        no_activity_timeout_seconds = timeout_minutes * 60
+        
+        # Track progress for user feedback
+        progress_report_interval = 300  # Report every 5 minutes
+        last_progress_report = start_time
+        
+        while True:  # No hard timeout - only activity-based timeout
+            current_time = time.time()
+            status = self.check_precache_file_status()
+            
+            if not status["exists"]:
+                # File was deleted - this means generation completed!
+                total_time = (current_time - start_time) / 60
+                self.logger.success(f"🎉 PrecacheGrass.txt deleted - Generation completed in {total_time:.1f} minutes!")
+                return True
+            
+            # Check for file activity
+            if status["size"] != last_size or status["modified_time"] != last_modified:
+                # File is being updated - generation is ACTIVE
+                last_activity_time = current_time  # Reset activity timer
+                
+                if status["content_lines"] > 0:
+                    self.logger.info(f"📊 Processing: {status['content_lines']} cells completed")
+                    if status["last_cell"]:
+                        self.logger.debug(f"   Last cell: {status['last_cell']}")
+                
+                last_size = status["size"]
+                last_modified = status["modified_time"]
+            else:
+                # No file changes detected - check for timeout
+                time_since_activity = current_time - last_activity_time
+                
+                if time_since_activity > no_activity_timeout_seconds:
+                    # No activity for too long - likely hung or crashed
+                    self.logger.error(f"⏰ No activity for {timeout_minutes} minutes - generation appears hung")
+                    
+                    # Check if process is still running
+                    if not self.is_process_running():
+                        self.logger.warning("💥 Process not running and no activity - crashed")
+                        return False
+                    else:
+                        self.logger.warning("🔒 Process running but no progress - likely hung")
+                        return False
+                elif time_since_activity > 300:  # 5 minutes no activity - warning only
+                    minutes_inactive = time_since_activity / 60
+                    self.logger.warning(f"⚠️ No activity for {minutes_inactive:.1f} minutes (will timeout at {timeout_minutes} minutes)")
+            
+            # Periodic progress report for long-running generations
+            if current_time - last_progress_report > progress_report_interval:
+                total_time = (current_time - start_time) / 60
+                time_since_activity = (current_time - last_activity_time) / 60
+                
+                if time_since_activity < 1:
+                    self.logger.info(f"⏱️ Generation running for {total_time:.1f} minutes - ACTIVE")
+                else:
+                    self.logger.info(f"⏱️ Generation running for {total_time:.1f} minutes - idle for {time_since_activity:.1f} minutes")
+                
+                last_progress_report = current_time
+            
+            # Brief sleep to avoid excessive file system checks
+            time.sleep(5)
     
     def cleanup_processes(self) -> None:
         """Clean up all Skyrim-related processes and files"""

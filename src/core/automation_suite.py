@@ -17,35 +17,44 @@ from .game_manager import GameManager
 from .config_manager import ConfigManager
 from .file_processor import FileProcessor
 from .progress_monitor import ProgressMonitor
+from .archive_creator import ArchiveCreator
 from ..utils.logger import Logger
-from ..utils.skyrim_detector import SkyrimDetector
+from ..utils.config_cache import ConfigCache
 
 
 class Season(Enum):
-    """Enumeration for different seasons"""
+    """Enumeration for different seasons and non-seasonal mode"""
     WINTER = (1, "Winter", ".WIN.cgid")
     SPRING = (2, "Spring", ".SPR.cgid")
     SUMMER = (3, "Summer", ".SUM.cgid")
     AUTUMN = (4, "Autumn", ".AUT.cgid")
+    NO_SEASONS = (0, "No Seasons", ".cgid")  # For users without seasonal mods
     
     def __init__(self, season_type: int, name: str, extension: str):
         self.season_type = season_type
         self.name = name
         self.extension = extension
+    
+    @classmethod
+    def get_seasonal_seasons(cls):
+        """Get only seasonal seasons (excludes NO_SEASONS)"""
+        return [cls.WINTER, cls.SPRING, cls.SUMMER, cls.AUTUMN]
+    
+    @classmethod
+    def get_all_seasons(cls):
+        """Get all seasons including NO_SEASONS"""
+        return list(cls)
 
 
 @dataclass
 class AutomationConfig:
     """Configuration for the automation process"""
     skyrim_path: str
-    mo2_path: Optional[str] = None
-    vortex_path: Optional[str] = None
     output_directory: str = ""
     seasons_to_generate: List[Season] = None
     max_crash_retries: int = 5
-    crash_timeout_minutes: int = 10
-    enable_worldspace_filtering: bool = True
-    create_mod_folders: bool = True
+    crash_timeout_minutes: int = 60
+    create_archives: bool = True
     backup_configs: bool = True
     
     def __post_init__(self):
@@ -70,9 +79,10 @@ class NGIOAutomationSuite:
         
         # Initialize managers
         self.game_manager = GameManager(config.skyrim_path)
-        self.config_manager = ConfigManager()
+        self.config_manager = ConfigManager(config.skyrim_path)
         self.file_processor = FileProcessor()
         self.progress_monitor = ProgressMonitor()
+        self.archive_creator = ArchiveCreator(config.output_directory)
         
         # State tracking
         self.current_season: Optional[Season] = None
@@ -108,10 +118,14 @@ class NGIOAutomationSuite:
                     self.completed_seasons.append(season)
                     self.logger.info(f"✅ Successfully completed {season.name}")
                     
-            # Phase 4: Cleanup and restoration
+            # Phase 4: Create mod archives
+            if self.config.create_archives and self.completed_seasons:
+                self._create_season_archives()
+            
+            # Phase 5: Cleanup and restoration
             self._restore_configurations()
             
-            # Phase 5: Generate final report
+            # Phase 6: Generate final report
             self._generate_completion_report()
             
             return len(self.failed_seasons) == 0
@@ -130,21 +144,35 @@ class NGIOAutomationSuite:
         self.logger.info("🔍 Validating environment...")
         
         # Validate Skyrim installation
-        detector = SkyrimDetector()
-        if not detector.validate_installation(self.config.skyrim_path):
-            self.logger.error("❌ Invalid Skyrim installation")
+        if not os.path.exists(self.config.skyrim_path):
+            self.logger.error("❌ Skyrim path does not exist")
             return False
             
-        # Check for required mods
-        required_mods = ["NGIO", "Seasons of Skyrim", "SKSE"]
-        for mod in required_mods:
-            if not detector.check_mod_installed(mod):
-                self.logger.error(f"❌ Required mod not found: {mod}")
-                return False
-                
-        # Validate output directory
+        # Check for Skyrim executable
+        executables = ["SkyrimSE.exe", "SkyrimVR.exe", "TESV.exe"]
+        found_exe = None
+        for exe in executables:
+            if os.path.exists(os.path.join(self.config.skyrim_path, exe)):
+                found_exe = exe
+                break
+        
+        if not found_exe:
+            self.logger.error("❌ No Skyrim executable found")
+            return False
+        
+        self.logger.info(f"✅ Found Skyrim executable: {found_exe}")
+        
+        # Validate Data directory
+        data_dir = os.path.join(self.config.skyrim_path, "Data")
+        if not os.path.exists(data_dir):
+            self.logger.error("❌ Skyrim Data directory not found")
+            return False
+            
+        # Ensure output directory exists
         if not self.config.output_directory:
-            self.config.output_directory = os.path.join(self.config.skyrim_path, "Data")
+            self.config.output_directory = os.path.join(self.config.skyrim_path, "NGIO_Generated_Mods")
+        
+        os.makedirs(self.config.output_directory, exist_ok=True)
             
         self.logger.info("✅ Environment validation complete")
         return True
@@ -200,36 +228,63 @@ class NGIOAutomationSuite:
         retry_count = 0
         
         while retry_count < max_retries:
+            is_retry = retry_count > 0
             self.logger.info(f"🎮 Launching Skyrim for {season.name} (attempt {retry_count + 1})")
             
             # Launch Skyrim with grass generation enabled
-            process = self.game_manager.launch_for_generation()
+            # On retry: preserves existing PrecacheGrass.txt for resume
+            # On first attempt: creates fresh PrecacheGrass.txt
+            process = self.game_manager.launch_for_generation(is_retry=is_retry)
             if not process:
                 return False
-                
-            # Monitor the process
-            result = self.progress_monitor.monitor_generation_process(
-                process, 
-                season,
+            
+            # Wait for generation to start (file should appear and grow)
+            self.logger.info("⏳ Waiting for grass generation to begin...")
+            time.sleep(10)  # Give Skyrim time to start
+            
+            # Check if PrecacheGrass.txt exists and is being written to
+            precache_status = self.game_manager.check_precache_file_status()
+            if not precache_status["exists"]:
+                self.logger.warning("⚠️ PrecacheGrass.txt not found - generation may not have started")
+            else:
+                self.logger.info("✅ PrecacheGrass.txt found - generation active")
+            
+            # Primary monitoring: Wait for PrecacheGrass.txt to be deleted (completion signal)
+            generation_completed = self.game_manager.wait_for_precache_completion(
                 timeout_minutes=self.config.crash_timeout_minutes
             )
             
-            if result.completed:
-                self.logger.info(f"🎉 {season.name} generation completed successfully!")
+            if generation_completed:
+                self.logger.success(f"🎉 {season.name} generation completed successfully!")
+                
+                # Verify that Skyrim process has closed (should happen automatically)
+                if self.game_manager.is_process_running():
+                    self.logger.info("🔄 Waiting for Skyrim to close...")
+                    time.sleep(5)
+                    
+                    if self.game_manager.is_process_running():
+                        self.logger.warning("⚠️ Skyrim still running, forcing close...")
+                        self.game_manager.force_terminate()
+                
                 return True
-            elif result.crashed:
+            else:
+                # Generation failed - check why
+                if self.game_manager.is_process_running():
+                    # Process still running but no progress - likely hung
+                    self.logger.warning("🔒 Skyrim appears to be hung, forcing restart...")
+                    self.game_manager.force_terminate()
+                else:
+                    # Process crashed
+                    self.logger.warning("💥 Skyrim crashed during generation")
+                
                 retry_count += 1
-                self.logger.warning(f"💥 Skyrim crashed during {season.name} generation (retry {retry_count}/{max_retries})")
                 
                 if retry_count < max_retries:
-                    self.logger.info("🔄 Attempting to resume generation...")
+                    self.logger.info(f"🔄 Retrying generation (attempt {retry_count + 1}/{max_retries})")
                     time.sleep(5)  # Brief pause before retry
                 else:
                     self.logger.error(f"❌ Max retries exceeded for {season.name}")
                     return False
-            else:
-                self.logger.error(f"❌ Unknown error during {season.name} generation")
-                return False
                 
         return False
     
@@ -245,12 +300,33 @@ class NGIOAutomationSuite:
         # Use high-speed file processor to rename files
         return self.file_processor.process_season_files(grass_directory, season)
     
-    def _create_mod_folder(self, season: Season) -> bool:
-        """Create organized mod folder structure"""
-        # This will integrate with MO2/Vortex to create proper mod folders
-        # Implementation depends on mod manager type
-        self.logger.info(f"📁 Creating mod folder for {season.name}...")
-        return True  # Placeholder
+    def _create_season_archives(self) -> bool:
+        """Create mod archives for all completed seasons"""
+        self.logger.separator("Creating Mod Archives")
+        
+        grass_directory = os.path.join(self.config.skyrim_path, "Data", "Grass")
+        
+        if not os.path.exists(grass_directory):
+            self.logger.error("❌ No Grass directory found")
+            return False
+        
+        # Create archives for completed seasons
+        created_archives = self.archive_creator.create_all_season_archives(
+            grass_directory, 
+            self.completed_seasons
+        )
+        
+        if created_archives:
+            self.logger.success(f"✅ Created {len(created_archives)} mod archives")
+            
+            # Generate installation guide
+            guide_path = os.path.join(self.config.output_directory, "INSTALLATION_GUIDE.txt")
+            self.archive_creator.generate_installation_guide(guide_path)
+            
+            return True
+        else:
+            self.logger.error("❌ Failed to create mod archives")
+            return False
     
     def _restore_configurations(self) -> bool:
         """Restore original configuration files"""
