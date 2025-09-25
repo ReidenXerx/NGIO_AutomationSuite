@@ -90,3 +90,9 @@ docs/.doctrees/
 releases/
 release/           # Build system output directory
 *.whl             # Python wheel files
+*.spec            # PyInstaller spec files (if generated)
+
+# PyInstaller build files
+*.spec.bak
+build/            # PyInstaller build directory
+__pycache__/      # Python bytecode cache

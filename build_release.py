@@ -416,6 +416,183 @@ See the `docs/` folder for detailed documentation including:
     
     print(f"   ✅ Created release_info.json and README.txt")
 
+def create_standalone_executable():
+    """Create standalone executable using PyInstaller"""
+    print("🔧 Creating standalone executable...")
+    
+    try:
+        # Check if PyInstaller is available
+        result = subprocess.run([sys.executable, "-c", "import PyInstaller"], 
+                              capture_output=True, text=True)
+        if result.returncode != 0:
+            print("   ⚠️ PyInstaller not found - installing...")
+            subprocess.run([sys.executable, "-m", "pip", "install", "pyinstaller>=6.0.0"], 
+                         check=True)
+        
+        # Build executable using spec file
+        print("   🔄 Building executable with PyInstaller...")
+        result = subprocess.run([
+            sys.executable, "-m", "PyInstaller", 
+            "--clean",
+            "--noconfirm", 
+            "ngio_automation.spec"
+        ], capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            print(f"   ❌ PyInstaller build failed:")
+            print(f"   {result.stderr}")
+            return None
+        
+        # Check if executable was created
+        exe_path = Path("dist") / "NGIO_Automation_Suite.exe"
+        if exe_path.exists():
+            size_mb = exe_path.stat().st_size / (1024 * 1024)
+            print(f"   ✅ Created NGIO_Automation_Suite.exe ({size_mb:.1f} MB)")
+            return exe_path
+        else:
+            print("   ❌ Executable not found after build")
+            return None
+            
+    except Exception as e:
+        print(f"   ❌ Standalone executable creation failed: {e}")
+        return None
+
+def create_bundled_release():
+    """Create a bundled release with complete Python environment (like safe-resource-packer)"""
+    print("📦 Creating bundled release...")
+    
+    # Create bundled package directory
+    bundled_dir = RELEASE_DIR / f"{PROJECT_NAME}-{VERSION}-bundled"
+    bundled_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create virtual environment inside the package
+    venv_dir = bundled_dir / "venv"
+    print("   🔄 Creating virtual environment...")
+    
+    try:
+        result = subprocess.run([
+            sys.executable, "-m", "venv", str(venv_dir)
+        ], capture_output=True, text=True, check=True)
+        print("   ✅ Virtual environment created")
+    except subprocess.CalledProcessError as e:
+        print(f"   ❌ Failed to create virtual environment: {e}")
+        return None
+    
+    # Install dependencies in the virtual environment
+    print("   🔄 Installing dependencies in bundled environment...")
+    venv_python = venv_dir / "Scripts" / "python.exe"
+    venv_pip = venv_dir / "Scripts" / "pip.exe"
+    
+    try:
+        # Use python -m pip instead of direct pip to avoid path issues
+        print("   🔄 Upgrading pip...")
+        result = subprocess.run([
+            str(venv_python), "-m", "pip", "install", "--upgrade", "pip"
+        ], capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            print(f"   ⚠️ Pip upgrade warning: {result.stderr}")
+            print("   🔄 Continuing with existing pip version...")
+        
+        # Install our dependencies
+        print("   🔄 Installing project dependencies...")
+        result = subprocess.run([
+            str(venv_python), "-m", "pip", "install", "-r", "requirements.txt"
+        ], capture_output=True, text=True, check=True)
+        
+        print("   ✅ Dependencies installed in bundled environment")
+    except subprocess.CalledProcessError as e:
+        print(f"   ❌ Failed to install dependencies: {e}")
+        print(f"   Error output: {e.stderr if hasattr(e, 'stderr') else 'No error details'}")
+        return None
+    
+    # Copy main files
+    files_to_copy = [
+        "ngio_automation_runner.py",
+        "README.md",
+        "LICENSE" if Path("LICENSE").exists() else None,
+    ]
+    
+    for file_name in files_to_copy:
+        if file_name and Path(file_name).exists():
+            shutil.copy2(file_name, bundled_dir)
+            print(f"   📄 Copied {file_name}")
+    
+    # Copy src directory
+    if Path("src").exists():
+        shutil.copytree("src", bundled_dir / "src")
+        print("   📁 Copied src/ directory")
+    
+    # Copy docs directory
+    if Path("docs").exists():
+        shutil.copytree("docs", bundled_dir / "docs")
+        print("   📁 Copied docs/ directory")
+    
+    # Create the bundled launcher script (like safe-resource-packer)
+    launcher_content = '''@echo off
+title NGIO Automation Suite - Bundled Edition
+color 0A
+cls
+
+echo ================================================================================
+echo                         NGIO AUTOMATION SUITE
+echo                        Bundled Edition (No Python Required!)
+echo                           Complete Python Environment Included
+echo ================================================================================
+echo.
+echo This bundled version includes a complete Python environment!
+echo No Python installation required - everything is self-contained.
+echo.
+
+REM Get the directory where this batch file is located
+set SCRIPT_DIR=%~dp0
+
+REM Use the bundled Python interpreter
+set BUNDLED_PYTHON=%SCRIPT_DIR%venv\\Scripts\\python.exe
+
+REM Check if bundled Python exists
+if not exist "%BUNDLED_PYTHON%" (
+    echo ERROR: Bundled Python interpreter not found!
+    echo Expected location: %BUNDLED_PYTHON%
+    echo.
+    echo This may indicate a corrupted installation.
+    echo Please re-download the bundled package.
+    pause
+    exit /b 1
+)
+
+echo Using bundled Python environment...
+echo Python location: %BUNDLED_PYTHON%
+echo.
+
+REM Run the automation suite using bundled Python
+"%BUNDLED_PYTHON%" "%SCRIPT_DIR%ngio_automation_runner.py"
+
+echo.
+echo NGIO Automation Suite has finished running.
+echo Check the output directory for your generated archives!
+echo.
+pause
+'''
+    
+    with open(bundled_dir / "start_ngio_automation.bat", "w") as f:
+        f.write(launcher_content)
+    print("   📄 Created start_ngio_automation.bat")
+    
+    # Create ZIP
+    zip_path = RELEASE_DIR / f"{PROJECT_NAME}-{VERSION}-bundled.zip"
+    print("   🔄 Creating ZIP archive (this may take a moment)...")
+    
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(bundled_dir):
+            for file in files:
+                file_path = Path(root) / file
+                zipf.write(file_path, file_path.relative_to(bundled_dir))
+    
+    size_mb = zip_path.stat().st_size / (1024 * 1024)
+    print(f"   ✅ Created {zip_path.name} ({size_mb:.1f} MB)")
+    return zip_path
+
 def main():
     """Main build process."""
     print("🚀 Starting NGIO Automation Suite build process...")
@@ -430,19 +607,23 @@ def main():
         build_python_packages()
         print()
         
-        # Step 3: Create portable release
+        # Step 3: Create bundled release (complete Python environment)
+        create_bundled_release()
+        print()
+        
+        # Step 4: Create portable release
         create_portable_release()
         print()
         
-        # Step 4: Create source release
+        # Step 5: Create source release
         create_source_release()
         print()
         
-        # Step 5: Create installer package
+        # Step 6: Create installer package
         create_installer_package()
         print()
         
-        # Step 6: Create release information
+        # Step 7: Create release information
         create_release_info()
         print()
         

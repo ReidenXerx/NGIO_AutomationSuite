@@ -2,6 +2,6 @@ Transform the painful 4+ hour manual NGIO grass cache generation into a fully au
 
 ⚠️ ANTIVIRUS NOTICE: This tool may trigger false positives due to process monitoring and file automation. It's 100% safe, open-source, and works offline. Add to AV exclusions if blocked.
 
-REQUIREMENTS: Skyrim SE/AE, NGIO mod, SKSE64. Optional: Seasons of Skyrim for seasonal support. NO PYTHON INSTALLATION REQUIRED - complete Python environment bundled inside!
+REQUIREMENTS: Skyrim SE/AE, NGIO mod, SKSE64. Optional: Seasons of Skyrim for seasonal support. Python 3.8+ ONLY needed for portable version (bundled edition has complete Python environment included).
 
 FEATURES: Smart crash recovery, automatic file processing, mod-ready archives, single-season workflow, non-seasonal mode support, progress preservation, activity-based timeouts.

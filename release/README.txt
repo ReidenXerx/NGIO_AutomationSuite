@@ -1,6 +1,6 @@
 # NGIO Automation Suite v1.0.0
 
-**Build Date:** 2025-09-18 22:40:45
+**Build Date:** 2025-09-18 23:26:01
 
 ## 🎮 What is this?
 
@@ -10,9 +10,10 @@ full seasonal support.
 
 ## 📦 Release Files
 
+- **ngio-automation-suite-1.0.0-bundled.zip** (5.16 MB)
 - **ngio-automation-suite-1.0.0-installer.zip** (0.05 MB)
-- **ngio-automation-suite-1.0.0-portable.zip** (0.16 MB)
-- **ngio-automation-suite-1.0.0-source.zip** (0.09 MB)
+- **ngio-automation-suite-1.0.0-portable.zip** (0.18 MB)
+- **ngio-automation-suite-1.0.0-source.zip** (0.1 MB)
 
 ## 🚀 Quick Start
 

@@ -1,10 +1,15 @@
 {
   "project": "ngio-automation-suite",
   "version": "1.0.0",
-  "build_date": "2025-09-18T22:40:45.613856",
+  "build_date": "2025-09-18T23:26:01.620458",
   "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
   "platform": "win32",
   "files": [
+    {
+      "name": "ngio-automation-suite-1.0.0-bundled.zip",
+      "size_mb": 5.16,
+      "type": ".zip"
+    },
     {
       "name": "ngio-automation-suite-1.0.0-installer.zip",
       "size_mb": 0.05,
@@ -12,12 +17,12 @@
     },
     {
       "name": "ngio-automation-suite-1.0.0-portable.zip",
-      "size_mb": 0.16,
+      "size_mb": 0.18,
       "type": ".zip"
     },
     {
       "name": "ngio-automation-suite-1.0.0-source.zip",
-      "size_mb": 0.09,
+      "size_mb": 0.1,
       "type": ".zip"
     }
   ],

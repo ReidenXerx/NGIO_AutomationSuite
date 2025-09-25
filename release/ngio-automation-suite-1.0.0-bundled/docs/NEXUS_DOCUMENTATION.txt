@@ -89,11 +89,17 @@ PERFECT FOR:
 
 ⚠️ ESSENTIAL REQUIREMENTS - You MUST install these or nothing will work:
 
-1. NO PYTHON INSTALLATION REQUIRED! 🐍 ✅
-   • Bundled Edition: Complete Python environment included in download
-   • Self-contained: All dependencies bundled - no system installation needed
-   • Zero setup: Just extract and run - works on any Windows PC
-   • Offline capable: No internet required after download
+1. PYTHON 3.8+ 🐍 ESSENTIAL
+   • Download: https://www.python.org/downloads/
+   • Version: Python 3.8, 3.9, 3.10, 3.11, or 3.12 (latest recommended)
+   • Installation Steps:
+     1. Download the installer from the link above
+     2. ✅ CHECK "Add Python to PATH" during installation (CRITICAL!)
+     3. ✅ Choose "Install for all users" (recommended)
+     4. Wait for installation to complete
+   • Test it worked: Open Command Prompt, type: python --version
+     ✓ Should show: Python 3.8.x (or newer)
+     ✗ If you get 'python' is not recognized, reinstall and check PATH box
 
 2. SKYRIM SPECIAL EDITION 🎮 ESSENTIAL
    • Required: Skyrim SE or Anniversary Edition (VR also works)
@@ -133,24 +139,28 @@ PERFECT FOR:
 • Windows 10/11 (required)
 • At least 8GB RAM (for heavy mod lists)
 • At least 5GB free disk space (for generation process)
-• No internet required (everything bundled - works offline!)
+• Stable internet connection (for Python package downloads)
 
 ================================================================================
 3. 🚀 HOW TO USE (Step-by-Step for Complete Beginners)
 ================================================================================
 
-DOWNLOAD:
+DOWNLOAD OPTIONS:
 
-Download ngio-automation-suite-X.X.X-bundled.zip from Files section
-• Complete bundle - No Python installation required!
-• Self-contained with all dependencies included
-• Works on any Windows PC out of the box
-• Just extract and run - zero configuration needed
+Option A: Portable Version (Recommended for most users)
+1. Download ngio-automation-suite-X.X.X-portable.zip
+2. Extract anywhere on your computer (Desktop is fine)
+3. Double-click start_ngio_automation.bat
+4. Follow the setup wizard
 
-FIRST TIME SETUP (2 minutes):
+Option B: From Source (For advanced users)
+1. Download source code from GitHub
+2. Extract and run python ngio_automation_runner.py
 
-1. Extract: Unzip the downloaded file anywhere on your computer (Desktop is fine)
-2. Run the tool: Double-click start_ngio_automation.bat
+FIRST TIME SETUP (5 minutes):
+
+1. Run the tool: Double-click start_ngio_automation.bat
+2. Python check: Tool will verify Python is installed
 3. Skyrim path: Point to your Skyrim installation folder
    • Usually: C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition
    • Or: C:\Program Files\Steam\steamapps\common\Skyrim Special Edition
@@ -183,13 +193,13 @@ WHAT YOU GET:
 4. 🆘 TROUBLESHOOTING (Common Issues & Solutions)
 ================================================================================
 
-❌ "Failed to find bundled Python" or Python-related errors
-Problem: Corrupted or incomplete extraction
+❌ "python: command not found" or "'python' is not recognized"
+Problem: Python not installed or not in PATH
 Solution:
-1. Re-download the bundled zip file
-2. Extract to a new location using Windows built-in extractor
-3. Make sure the venv/ folder exists in the extracted directory
-4. Run start_ngio_automation.bat from the extracted folder
+1. Download Python from https://www.python.org/downloads/
+2. During installation, ✅ CHECK "Add Python to PATH"
+3. Restart your computer
+4. Test: Open Command Prompt, type python --version
 
 ❌ "SKSE loader not found" or "Skyrim process not found"
 Problem: SKSE64 not installed properly
@@ -250,15 +260,15 @@ Solution:
 1. Check the logs - Tool creates detailed logs for troubleshooting
 2. Try non-seasonal mode - Simpler setup, fewer dependencies
 3. Test with minimal mods - Disable other mods temporarily
-4. Report bugs - Include your Skyrim version and error messages
+4. Report bugs - Include your Python version, Skyrim version, and error messages
 
 📋 BEFORE ASKING FOR HELP, PROVIDE:
+• Python version (python --version)
 • Skyrim version (SE/AE/VR)
 • NGIO mod version
 • Whether SKSE64 works manually
 • Full error message or log file
 • Your mod list (if relevant)
-• Confirm you're using the bundled version
 
 ================================================================================
 5. 🔧 ADVANCED FEATURES
@@ -334,8 +344,8 @@ A: Crash timeout (5min) detects when Skyrim process stops running.
    is still alive.
 
 Q: Can I use this on a different computer?
-A: Yes! The bundled version works on any Windows PC. 
-   Just copy the extracted folder and run it - no installation needed.
+A: The portable version works on any Windows PC with Python installed. 
+   Just copy the extracted folder and run it.
 
 ================================================================================
 7. 🔍 TECHNICAL DETAILS
@@ -387,9 +397,9 @@ SPECIAL THANKS TO:
   need this solution
 
 BUILT WITH:
-• Python 3.8+ with rich, psutil, colorlog, and colorama libraries (bundled)
+• Python 3.8+ with rich, psutil, and colorama libraries
 • Advanced process management and file system monitoring
-• Self-contained virtual environment (no system Python required)
+• Multi-platform compatibility (Windows focus)
 • Professional software development practices
 
 LICENSE:

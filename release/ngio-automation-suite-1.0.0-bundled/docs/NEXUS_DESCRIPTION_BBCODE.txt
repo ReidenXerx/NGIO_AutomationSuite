@@ -124,12 +124,16 @@
 
 [size=4][color=#E91E63]⚠️ CRITICAL REQUIREMENTS (You MUST install these or nothing will work):[/color][/size]
 
-[size=3][color=#4CAF50]1. No Python Installation Required! 🐍 ✅[/color][/size]
+[size=3][color=#FF5722]1. Python 3.8+ 🐍 ONLY for Portable Version[/color][/size]
 [list]
-[*][b]Bundled Edition:[/b] ✅ Complete Python environment is bundled inside - no installation needed!
-[*][b]Self-contained:[/b] All dependencies included in the download
-[*][b]Works anywhere:[/b] Just extract and run - no system changes required
-[*][b]Zero setup:[/b] Double-click the batch file and you're ready to go!
+[*][b]Bundled Edition:[/b] ✅ [b]Skip this![/b] Complete Python environment is bundled inside
+[*][b]Portable Version:[/b] ⚠️ [b]Required[/b] - you must install Python first
+[*][b]Download:[/b] https://www.python.org/downloads/
+[*][b]Version:[/b] Python 3.8, 3.9, 3.10, 3.11, or 3.12 (latest recommended)
+[*][b]Installation:[/b] ✅ CHECK "Add Python to PATH" during installation (CRITICAL!)
+[*][b]Test it worked:[/b] Open Command Prompt, type [font=Courier New]python --version[/font]
+[*]✅ Should show: [font=Courier New]Python 3.8.x[/font] (or newer)
+[*]❌ If you get [font=Courier New]'python' is not recognized[/font], reinstall Python and check the PATH box
 [/list]
 
 [size=3][color=#FF5722]2. Skyrim Special Edition 🎮 ESSENTIAL[/color][/size]
@@ -179,26 +183,32 @@
 [*][b]Windows 10/11[/b] (required)
 [*][b]At least 8GB RAM[/b] (for heavy mod lists)
 [*][b]At least 5GB free disk space[/b] (for generation process)
-[*][b]No internet required[/b] (everything is bundled - works offline!)
+[*][b]Stable internet connection[/b] (for Python package downloads)
 [/list]
 
 [line]
 
 [size=5][color=#FF5722]🚀 HOW TO USE (Step-by-Step for Complete Beginners)[/color][/size]
 
-[size=4][color=#4CAF50]Download:[/color][/size]
+[size=4][color=#4CAF50]Download Options:[/color][/size]
 [list]
-[*][b]Download:[/b] [font=Courier New]ngio-automation-suite-X.X.X-bundled.zip[/font] from Files section
-[*]✅ [b]Complete bundle - No Python installation required![/b]
-[*]✅ Self-contained with all dependencies included
-[*]✅ Works on any Windows PC out of the box
-[*]✅ Just extract and run - zero configuration needed
+[*][b]Bundled Edition (Easiest):[/b] Download [font=Courier New]ngio-automation-suite-X.X.X-bundled.zip[/font]
+   [list]
+   [*]✅ [b]No Python installation required![/b] Complete Python environment bundled inside
+   [*]✅ Just extract and run - works on any Windows PC
+   [*]✅ Self-contained virtual environment with all dependencies
+   [/list]
+[*][b]Portable Version (Requires Python):[/b] Download [font=Courier New]ngio-automation-suite-X.X.X-portable.zip[/font]
+   [list]
+   [*]⚠️ Requires Python 3.8+ to be installed first
+   [*]✅ Smaller download size
+   [/list]
 [/list]
 
-[size=4][color=#4CAF50]First Time Setup (2 minutes):[/color][/size]
+[size=4][color=#4CAF50]First Time Setup (5 minutes):[/color][/size]
 [list=1]
-[*][b]Extract:[/b] Unzip the downloaded file anywhere on your computer (Desktop is fine)
 [*][b]Run the tool:[/b] Double-click [font=Courier New]start_ngio_automation.bat[/font]
+[*][b]Python check:[/b] Tool will verify Python is installed (install if needed)
 [*][b]Skyrim path:[/b] Point to your Skyrim installation folder
    [list]
    [*]Usually: [font=Courier New]C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition[/font]

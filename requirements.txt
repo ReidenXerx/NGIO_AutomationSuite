@@ -4,12 +4,14 @@
 # Core dependencies
 psutil>=5.8.0          # Process management and system monitoring
 colorama>=0.4.4        # Cross-platform colored terminal output
+colorlog>=6.7.0        # Colored logging for enhanced console output
 
 # Development dependencies (optional)
 # Uncomment these if you're developing or building from source
 # build>=0.8.0         # Modern Python build system
 # wheel>=0.37.0        # Wheel package format
 # setuptools>=45.0.0   # Package building tools
+# pyinstaller>=6.0.0   # Standalone executable creation
 
 # Note: Python 3.8+ is required
 # The automation suite has been tested with:
