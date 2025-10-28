@@ -319,13 +319,13 @@
 [size=5][color=#FF5722]🆘 TROUBLESHOOTING (Common Issues & Solutions)[/color][/size]
 
 [size=4][color=#4CAF50]✅ Python Issues: NOT APPLICABLE[/color][/size]
-[b]Note:[/b] The bundled version includes Python - no installation needed!
+[b]Note:[/b] This tool includes Python - no installation needed!
 [b]If you see Python errors:[/b]
 [list=1]
-[*]Make sure you downloaded the [b]BUNDLED[/b] version (not portable)
+[*]Extract the ZIP file completely before running
 [*]Try running [font=Courier New]start_ngio_automation.bat[/font] as Administrator
 [*]Check that your antivirus isn't blocking the Python executable
-[*]Extract the ZIP file completely before running
+[*]Re-download if files are corrupted
 [/list]
 
 [size=4][color=#E91E63]❌ "SKSE loader not found" or "Skyrim process not found"[/color][/size]
@@ -394,7 +394,6 @@
 [*]Whether SKSE64 works manually
 [*]Full error message or log file
 [*]Your mod list (if relevant)
-[*]Which version you downloaded (bundled/portable/installer)
 [/list]
 
 [line]
