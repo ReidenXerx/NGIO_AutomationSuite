@@ -465,23 +465,45 @@ def create_bundled_release():
     bundled_dir = RELEASE_DIR / f"{PROJECT_NAME}-{VERSION}-bundled"
     bundled_dir.mkdir(parents=True, exist_ok=True)
     
-    # Create virtual environment inside the package
-    venv_dir = bundled_dir / "venv"
-    print("   🔄 Creating virtual environment...")
+    # Instead of venv, copy the entire Python installation to make it truly portable
+    python_dir = bundled_dir / "python"
+    print("   🔄 Creating portable Python environment...")
     
     try:
+        python_home = Path(sys.executable).parent
+        
+        # Copy the entire Python directory
+        print("   📦 Copying Python installation...")
+        shutil.copytree(python_home, python_dir, 
+                       ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '*.pyo'),
+                       dirs_exist_ok=True)
+        print("   ✅ Python installation copied")
+        
+        # Create a simple batch wrapper that uses the bundled Python
+        venv_python = python_dir / "python.exe"
+        venv_pip = python_dir / "Scripts" / "pip.exe"
+        
+        if not venv_python.exists():
+            print(f"   ❌ Python executable not found at: {venv_python}")
+            return None
+            
+    except Exception as e:
+        print(f"   ❌ Failed to create portable Python environment: {e}")
+        return None
+    
+    # Test the Python executable
+    try:
         result = subprocess.run([
-            sys.executable, "-m", "venv", str(venv_dir)
+            str(venv_python), "-c", "print('Virtual environment Python test successful')"
         ], capture_output=True, text=True, check=True)
-        print("   ✅ Virtual environment created")
+        print("   ✅ Virtual environment Python executable verified")
     except subprocess.CalledProcessError as e:
-        print(f"   ❌ Failed to create virtual environment: {e}")
+        print(f"   ❌ Virtual environment Python executable test failed: {e}")
+        print(f"   Error output: {e.stderr if hasattr(e, 'stderr') else 'No error details'}")
         return None
     
     # Install dependencies in the virtual environment
     print("   🔄 Installing dependencies in bundled environment...")
-    venv_python = venv_dir / "Scripts" / "python.exe"
-    venv_pip = venv_dir / "Scripts" / "pip.exe"
     
     try:
         # Use python -m pip instead of direct pip to avoid path issues
@@ -548,7 +570,7 @@ REM Get the directory where this batch file is located
 set SCRIPT_DIR=%~dp0
 
 REM Use the bundled Python interpreter
-set BUNDLED_PYTHON=%SCRIPT_DIR%venv\\Scripts\\python.exe
+set BUNDLED_PYTHON=%SCRIPT_DIR%python\\python.exe
 
 REM Check if bundled Python exists
 if not exist "%BUNDLED_PYTHON%" (
@@ -595,65 +617,84 @@ pause
 
 def main():
     """Main build process."""
-    print("🚀 Starting NGIO Automation Suite build process...")
-    print("=" * 80)
+    # Create log file for debugging
+    log_file = Path("build.log")
+    with open(log_file, "w", encoding="utf-8") as f:
+        f.write("NGIO Automation Suite Build Log\n")
+        f.write("=" * 50 + "\n")
+    
+    def log_and_print(message):
+        print(message)
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(message + "\n")
+    
+    log_and_print("🚀 Starting NGIO Automation Suite build process...")
+    log_and_print("=" * 80)
     
     try:
         # Step 1: Clean directories
+        log_and_print("Step 1: Cleaning directories...")
         clean_directories()
-        print()
+        log_and_print("Step 1 completed\n")
         
         # Step 2: Build Python packages
+        log_and_print("Step 2: Building Python packages...")
         build_python_packages()
-        print()
+        log_and_print("Step 2 completed\n")
         
         # Step 3: Create bundled release (complete Python environment)
+        log_and_print("Step 3: Creating bundled release...")
         create_bundled_release()
-        print()
+        log_and_print("Step 3 completed\n")
         
         # Step 4: Create portable release
+        log_and_print("Step 4: Creating portable release...")
         create_portable_release()
-        print()
+        log_and_print("Step 4 completed\n")
         
         # Step 5: Create source release
+        log_and_print("Step 5: Creating source release...")
         create_source_release()
-        print()
+        log_and_print("Step 5 completed\n")
         
         # Step 6: Create installer package
+        log_and_print("Step 6: Creating installer package...")
         create_installer_package()
-        print()
+        log_and_print("Step 6 completed\n")
         
         # Step 7: Create release information
+        log_and_print("Step 7: Creating release information...")
         create_release_info()
-        print()
+        log_and_print("Step 7 completed\n")
         
         # Summary
-        print("=" * 80)
-        print("🎉 Build completed successfully!")
-        print()
-        print("📁 Output directories:")
-        print(f"   📦 dist/     - Python packages (wheel, source)")
-        print(f"   📦 release/  - Distribution files")
-        print()
+        log_and_print("=" * 80)
+        log_and_print("🎉 Build completed successfully!")
+        log_and_print("")
+        log_and_print("📁 Output directories:")
+        log_and_print(f"   📦 dist/     - Python packages (wheel, source)")
+        log_and_print(f"   📦 release/  - Distribution files")
+        log_and_print("")
         
         if RELEASE_DIR.exists():
             release_files = list(RELEASE_DIR.glob("*"))
             total_size = sum(f.stat().st_size for f in release_files if f.is_file())
-            print(f"📊 Release summary:")
-            print(f"   📄 {len(release_files)} files created")
-            print(f"   💾 Total size: {total_size / 1024 / 1024:.1f} MB")
-            print()
-            print("📋 Release files:")
+            log_and_print(f"📊 Release summary:")
+            log_and_print(f"   📄 {len(release_files)} files created")
+            log_and_print(f"   💾 Total size: {total_size / 1024 / 1024:.1f} MB")
+            log_and_print("")
+            log_and_print("📋 Release files:")
             for file_path in sorted(release_files):
                 if file_path.is_file():
                     size_mb = file_path.stat().st_size / 1024 / 1024
-                    print(f"   📄 {file_path.name} ({size_mb:.1f} MB)")
+                    log_and_print(f"   📄 {file_path.name} ({size_mb:.1f} MB)")
         
-        print()
-        print("🎯 Ready for distribution!")
+        log_and_print("")
+        log_and_print("🎯 Ready for distribution!")
         
     except Exception as e:
-        print(f"❌ Build failed: {e}")
+        error_msg = f"❌ Build failed: {e}"
+        log_and_print(error_msg)
         sys.exit(1)
 
 if __name__ == "__main__":
