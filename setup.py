@@ -6,6 +6,11 @@ Backward compatibility setup.py for older Python environments
 
 from setuptools import setup, find_packages
 from pathlib import Path
+import sys
+
+# Add src to path to import version
+sys.path.insert(0, str(Path(__file__).parent / "src"))
+from __version__ import __version__, __title__, __description__, __author__, __license__
 
 # Read README for long description
 readme_path = Path(__file__).parent / "README.md"
@@ -29,9 +34,9 @@ if requirements_path.exists():
 
 setup(
     name="ngio-automation-suite",
-    version="1.0.0",
-    author="Vadim",
-    description="Fully automated grass cache generation suite for Skyrim SE with seasonal support",
+    version=__version__,
+    author=__author__,
+    description=__description__,
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/ngio-automation-suite",
@@ -85,7 +90,7 @@ setup(
     keywords="skyrim modding grass cache ngio automation seasonal game modding",
     
     # Additional metadata
-    license="MIT",
+    license=__license__,
     platforms=["Windows"],
     
     # Development dependencies (optional)

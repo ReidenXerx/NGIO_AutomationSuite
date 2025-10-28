@@ -13,9 +13,13 @@ import json
 from pathlib import Path
 from datetime import datetime
 
+# Import version from single source of truth
+sys.path.insert(0, str(Path(__file__).parent / "src"))
+from __version__ import __version__, __title__
+
 # Project configuration
 PROJECT_NAME = "ngio-automation-suite"
-VERSION = "1.0.0"
+VERSION = __version__
 PYTHON_PACKAGE_NAME = "ngio_automation_suite"
 
 # Directories

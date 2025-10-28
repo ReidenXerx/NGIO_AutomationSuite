@@ -18,13 +18,15 @@ sys.path.insert(0, str(project_root / "src"))
 from src.core.automation_suite import NGIOAutomationSuite, AutomationConfig, Season
 from src.utils.config_cache import ConfigCache
 from src.utils.logger import Logger
+from src.__version__ import __version__
 
 
 def print_banner():
     """Display the application banner"""
-    banner = """
+    banner = f"""
 ╔═══════════════════════════════════════════════════════════════════╗
 ║                    🌱 NGIO AUTOMATION SUITE 🌱                    ║
+║                           Version {__version__}                           ║
 ║                                                                   ║
 ║              Transform 4+ Hours of Manual Work Into              ║
 ║                   5 Minutes of Automated Bliss!                  ║

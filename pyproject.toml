@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ngio-automation-suite"
-version = "1.0.0"
+dynamic = ["version"]
 authors = [
-    {name = "Vadim"},
+    {name = "Dudu"},
 ]
-description = "Fully automated grass cache generation suite for Skyrim SE with seasonal support"
+description = "Automated grass cache generation for Skyrim SE"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.8"
@@ -50,6 +50,9 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "*" = ["*.txt", "*.md", "*.ini", "*.json"]
+
+[tool.setuptools.dynamic]
+version = {attr = "__version__.__version__"}
 
 [tool.black]
 line-length = 88
