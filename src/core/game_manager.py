@@ -50,10 +50,84 @@ class GameManager:
         # Progress protection file to prevent accidental deletion
         self.progress_lock_file = os.path.join(skyrim_path, ".ngio_generation_active")
         
+        # Startup time tracking for adaptive timeouts
+        self.startup_history: List[float] = []
+        self.average_startup_time: float = 180.0  # Default 3 minutes
+        
         # Validate Skyrim executable
         self.skyrim_exe = self._find_skyrim_executable()
         if not self.skyrim_exe:
             raise ValueError(f"Skyrim executable not found in {skyrim_path}")
+    
+    def is_skyrim_already_running(self) -> Optional[psutil.Process]:
+        """
+        Check if Skyrim is already running
+        
+        Returns:
+            psutil.Process if found, None otherwise
+        """
+        skyrim_process_names = [
+            'SkyrimSE.exe',
+            'SkyrimAE.exe', 
+            'SkyrimVR.exe',
+            'Skyrim.exe',
+            'SKSE64_loader.exe',
+            'sksevr_loader.exe',
+            'skse_loader.exe'
+        ]
+        
+        try:
+            for proc in psutil.process_iter(['name', 'pid', 'create_time']):
+                proc_name = proc.info['name']
+                if proc_name and proc_name in skyrim_process_names:
+                    self.logger.warning(f"⚠️ Skyrim already running: {proc_name} (PID: {proc.info['pid']})")
+                    return proc
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+        
+        return None
+    
+    def wait_for_skyrim_to_close(self, timeout_seconds: int = 60) -> bool:
+        """
+        Wait for existing Skyrim process to close
+        
+        Args:
+            timeout_seconds: How long to wait
+            
+        Returns:
+            bool: True if Skyrim closed, False if timeout
+        """
+        self.logger.info("⏳ Waiting for Skyrim to close...")
+        start_time = time.time()
+        
+        while time.time() - start_time < timeout_seconds:
+            if not self.is_skyrim_already_running():
+                self.logger.info("✅ Skyrim closed successfully")
+                return True
+            time.sleep(2)
+        
+        self.logger.warning(f"⏰ Timeout waiting for Skyrim to close after {timeout_seconds}s")
+        return False
+    
+    def track_startup_duration(self, duration: float) -> float:
+        """
+        Track startup duration and return recommended hang timeout
+        
+        Args:
+            duration: Startup duration in seconds
+            
+        Returns:
+            float: Recommended hang timeout (2x average startup time)
+        """
+        self.startup_history.append(duration)
+        if len(self.startup_history) > 5:
+            self.startup_history.pop(0)
+        
+        self.average_startup_time = sum(self.startup_history) / len(self.startup_history)
+        recommended_timeout = self.average_startup_time * 2
+        
+        self.logger.debug(f"📊 Average startup: {self.average_startup_time:.1f}s, Recommended timeout: {recommended_timeout:.1f}s")
+        return recommended_timeout
     
     def _find_skyrim_executable(self) -> Optional[str]:
         """Find the correct Skyrim executable, prioritizing SKSE loader"""
@@ -98,6 +172,23 @@ class GameManager:
             ProcessInfo if successful, None if failed
         """
         self.logger.info("🎮 Preparing to launch Skyrim for grass generation...")
+        
+        # Check if Skyrim is already running (prevents death loop)
+        existing_process = self.is_skyrim_already_running()
+        if existing_process:
+            self.logger.warning("⚠️ Skyrim is already running!")
+            self.logger.info("   This could cause crashes if we launch another instance.")
+            self.logger.info("   Waiting for existing instance to close...")
+            
+            # Wait for it to close (with timeout)
+            if not self.wait_for_skyrim_to_close(timeout_seconds=120):
+                self.logger.error("❌ Skyrim did not close in time")
+                self.logger.error("   Please close Skyrim manually and try again")
+                return None
+            
+            # Add brief delay after closure
+            self.logger.info("⏳ Brief cooldown period...")
+            time.sleep(5)
         
         # Ensure PrecacheGrass.txt exists to trigger generation
         # Check for existing active generation

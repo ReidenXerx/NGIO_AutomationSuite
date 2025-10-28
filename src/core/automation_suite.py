@@ -52,11 +52,13 @@ class AutomationConfig:
     skyrim_path: str
     output_directory: str = ""
     seasons_to_generate: List[Season] = None
-    max_crash_retries: int = 5
+    max_crash_retries: int = 10  # Increased from 5 for complex worldspaces
     crash_timeout_minutes: int = 5  # Process crash detection
-    no_progress_timeout_minutes: int = 10  # File inactivity detection
+    no_progress_timeout_minutes: int = 15  # File inactivity detection (increased from 10)
+    startup_wait_seconds: int = 30  # Wait between retry attempts
     create_archives: bool = True
     backup_configs: bool = True
+    adaptive_timeouts: bool = True  # Use intelligent timeout adjustment
     
     def __post_init__(self):
         if self.seasons_to_generate is None:
@@ -239,14 +241,34 @@ class NGIOAutomationSuite:
         
         while retry_count < max_retries:
             is_retry = retry_count > 0
-            self.logger.info(f"🎮 Launching Skyrim for {season.display_name} (attempt {retry_count + 1})")
+            
+            # Display retry information
+            if retry_count == 0:
+                self.logger.info(f"🎮 Launching Skyrim for {season.display_name}")
+            else:
+                remaining = max_retries - retry_count
+                self.logger.info(f"🔄 Retry {retry_count}/{max_retries} for {season.display_name}")
+                self.logger.info(f"💡 {remaining} attempts remaining")
+                
+                # Intelligent wait time between retries (prevents death loop)
+                wait_time = min(self.config.startup_wait_seconds * retry_count, 120)
+                if wait_time > 0:
+                    self.logger.info(f"⏳ Waiting {wait_time}s before retry (allows system to stabilize)...")
+                    time.sleep(wait_time)
             
             # Launch Skyrim with grass generation enabled
             # On retry: preserves existing PrecacheGrass.txt for resume
             # On first attempt: creates fresh PrecacheGrass.txt
+            launch_start_time = time.time()
             process = self.game_manager.launch_for_generation(is_retry=is_retry)
             if not process:
                 return False
+            
+            # Track startup duration for adaptive timeouts
+            launch_duration = time.time() - launch_start_time
+            if self.config.adaptive_timeouts:
+                recommended_timeout = self.game_manager.track_startup_duration(launch_duration)
+                self.logger.debug(f"📊 Startup took {launch_duration:.1f}s, recommended timeout: {recommended_timeout:.1f}s")
             
             # Wait for generation to start (file should appear and grow)
             self.logger.info("⏳ Waiting for grass generation to begin...")
@@ -290,10 +312,15 @@ class NGIOAutomationSuite:
                 retry_count += 1
                 
                 if retry_count < max_retries:
-                    self.logger.info(f"🔄 Retrying generation (attempt {retry_count + 1}/{max_retries})")
-                    time.sleep(5)  # Brief pause before retry
+                    remaining = max_retries - retry_count
+                    self.logger.info(f"🔄 Will retry generation ({remaining} attempts remaining)")
+                    # Wait time is handled at the top of the loop
                 else:
-                    self.logger.error(f"❌ Max retries exceeded for {season.display_name}")
+                    self.logger.error(f"❌ Max retries ({max_retries}) exceeded for {season.display_name}")
+                    self.logger.error(f"💡 Possible solutions:")
+                    self.logger.error(f"   • Increase max_crash_retries in config (currently {max_retries})")
+                    self.logger.error(f"   • Check Skyrim stability (try generating manually)")
+                    self.logger.error(f"   • This worldspace may be particularly crash-prone")
                     return False
                 
         return False

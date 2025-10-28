@@ -5,7 +5,7 @@ Single source of truth for version number across the entire project.
 Update this file when releasing a new version.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.2"
 __version_info__ = tuple(int(x) for x in __version__.split('.'))
 
 # Release information

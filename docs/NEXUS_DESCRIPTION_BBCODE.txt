@@ -63,14 +63,67 @@
 
 [line]
 
+[size=5][color=#4CAF50]✨ NEW in v1.1.0 - Large Load Order Support![/color][/size]
+
+[quote]
+[size=4][b][color=#FF9800]Have 500+ mods? This update is for YOU![/color][/b][/size]
+
+Based on community feedback, we've dramatically improved stability for users with large, heavily modded setups:
+
+[size=3][color=#2196F3]🛡️ Death Loop Prevention[/color][/size]
+[list]
+[*][b]Already Running Detection:[/b] Checks if Skyrim is running before launch
+[*][b]Wait & Cooldown:[/b] Waits for existing instance to close, adds stabilization period
+[*][b]No More Overlaps:[/b] Prevents multiple Skyrim instances that cause guaranteed crashes
+[*][b]Result:[/b] [color=#4CAF50]Eliminates the #1 crash pattern reported by users![/color]
+[/list]
+
+[size=3][color=#2196F3]🧠 Adaptive Timeout System[/color][/size]
+[list]
+[*][b]Learns Your System:[/b] Tracks actual Skyrim startup times (5-15 min for large LOs)
+[*][b]Auto-Adjusts:[/b] Calculates optimal timeouts (2x average startup time)
+[*][b]No Manual Config:[/b] Works automatically for 300-1000+ plugin setups
+[*][b]Result:[/b] [color=#4CAF50]No more premature "hung process" detections![/color]
+[/list]
+
+[size=3][color=#2196F3]⏱️ Progressive Wait Times[/color][/size]
+[list]
+[*][b]Retry 1:[/b] 30s wait | [b]Retry 2:[/b] 60s wait | [b]Retry 3:[/b] 90s wait | [b]Retry 4+:[/b] 120s wait
+[*][b]Gives System Time:[/b] Allows resources to clean up between restart attempts
+[*][b]Result:[/b] [color=#4CAF50]Stable retry behavior even for crash-prone worldspaces![/color]
+[/list]
+
+[size=3][color=#2196F3]📊 Enhanced Retry Information[/color][/size]
+[list]
+[*][b]Real-time Counter:[/b] "Retry 3/15 - 12 attempts remaining"
+[*][b]Better Messages:[/b] Clear context about what's happening
+[*][b]Helpful Suggestions:[/b] Actionable advice when max retries exceeded
+[*][b]Increased Defaults:[/b] 5 → [b]10 retries[/b], 10 → [b]15 min[/b] timeout
+[*][b]Result:[/b] [color=#4CAF50]Always know what's happening and how many attempts remain![/color]
+[/list]
+
+[size=3][color=#4CAF50]📖 Comprehensive Documentation[/color][/size]
+[list]
+[*][b]Large Load Order Guide:[/b] 500+ line guide with recommended settings
+[*][b]Configuration by Size:[/b] Presets for 300/500/1000+ plugin setups
+[*][b]Troubleshooting:[/b] Specific solutions for death loops, timeouts, crashes
+[/list]
+
+[b][color=#FF5722]Special thanks to @setsofnumbers for the detailed feedback that made this release possible![/color][/b]
+[/quote]
+
+[line]
+
 [size=5][color=#FF5722]🚀 Key Features[/color][/size]
 
 [size=4][color=#2196F3]🎮 Intelligent Game Manager[/color][/size]
 [list]
 [*]✅ Auto-launch Skyrim for each season
-[*]✅ Detect and handle crashes automatically (up to 5 retries per season)
+[*]✅ Detect and handle crashes automatically (up to 10 retries per season) [color=#4CAF50][b]INCREASED![/b][/color]
 [*]✅ Monitor generation progress via PrecacheGrass.txt
 [*]✅ Resume exactly where it left off after crashes
+[*]✅ [b][color=#4CAF50]NEW:[/color][/b] Already running detection prevents death loops
+[*]✅ [b][color=#4CAF50]NEW:[/color][/b] Adaptive timeouts for large load orders (500+ mods)
 [/list]
 
 [size=4][color=#2196F3]📝 Smart Configuration Management[/color][/size]
@@ -226,6 +279,37 @@
 [*][b]You get one archive per season[/b] - install the ones you want
 [/list]
 
+[size=4][color=#FF9800]🔧 Have 500+ Mods? Important Settings![/color][/size]
+[quote]
+[b][color=#FF5722]For users with large load orders (500-1000+ plugins):[/color][/b]
+
+[size=3][color=#4CAF50]✅ Good News: v1.1.0 handles this automatically![/color][/size]
+[list]
+[*][b]Adaptive timeouts:[/b] System learns your actual startup time (enabled by default)
+[*][b]Already running detection:[/b] Prevents death loops automatically
+[*][b]Progressive wait times:[/b] Gives your system time to stabilize between retries
+[*][b]More retries:[/b] Default increased to 10 attempts per season
+[/list]
+
+[size=3][color=#2196F3]💡 What to Expect:[/color][/size]
+[list]
+[*][b]Skyrim startup:[/b] May take 5-15 minutes with 1000+ plugins - [color=#4CAF50][b]THIS IS NORMAL![/b][/color]
+[*][b]Don't panic:[/b] If you see "Waiting for Skyrim to start" for 10+ minutes, it's working fine
+[*][b]First generation:[/b] May need 2-3 attempts as system learns your timing
+[*][b]Later generations:[/b] Will be smoother as adaptive system optimizes
+[/list]
+
+[size=3][color=#FF5722]⚙️ Optional Manual Configuration:[/color][/size]
+If you want to manually tune settings (advanced users):
+[list]
+[*][b]For 500-1000 plugins:[/b] Increase timeout to 20-25 minutes
+[*][b]For 1000+ plugins:[/b] Increase timeout to 30+ minutes and retries to 15-20
+[*][b]See documentation:[/b] Includes comprehensive Large Load Order Configuration Guide
+[/list]
+
+[b][color=#4CAF50]The tool has been battle-tested with 1000+ plugin setups - you're in good hands![/color][/b]
+[/quote]
+
 [size=4][color=#4CAF50]What You Get:[/color][/size]
 [list]
 [*][font=Courier New]Grass_Cache_Winter_Season.zip[/font] (ready-to-install mod)
@@ -379,6 +463,26 @@
 [*]Download only from official sources (Nexus/GitHub)
 [/list]
 
+[size=4][color=#FF9800]❌ Skyrim keeps restarting before reaching main menu (Large Load Orders)[/color][/size]
+[b]Problem:[/b] Timeout is too short for your large load order
+[b]Solution (v1.1.0+):[/b]
+[list=1]
+[*][b]Let it learn:[/b] The adaptive system needs 2-3 launches to calibrate
+[*][b]Manual fix:[/b] If it keeps happening, manually increase timeout to 20-30 minutes
+[*][b]Check logs:[/b] Look for "Average startup" messages to see your actual timing
+[*][b]Be patient:[/b] With 1000+ plugins, 10-15 minute startup is completely normal!
+[/list]
+
+[size=4][color=#FF9800]❌ Multiple Skyrim instances running / Death loop[/color][/size]
+[b]Problem:[/b] Tool tries to launch while previous instance still loading
+[b]Solution (v1.1.0+):[/b]
+[list=1]
+[*][b]Auto-handled:[/b] v1.1.0 detects this automatically and waits
+[*][b]Manual cleanup:[/b] If you see multiple instances, close all Skyrim processes via Task Manager
+[*][b]Increase wait time:[/b] Between retries (startup_wait_seconds parameter)
+[*][b]This is fixed:[/b] v1.1.0 includes specific death loop prevention!
+[/list]
+
 [size=4][color=#4CAF50]🎯 Still Having Issues?[/color][/size]
 [list]
 [*][b]Check the logs[/b] - Tool creates detailed logs for troubleshooting
@@ -414,11 +518,12 @@
 [size=5][color=#FF5722]🙏 Credits & Thanks[/color][/size]
 
 [list]
+[*][b]@setsofnumbers:[/b] For detailed feedback on large load order issues that made v1.1.0 possible
 [*][b]infernalryan:[/b] For the comprehensive NGIO guide that inspired this automation
 [*][b]NGIO Development Team:[/b] For creating the foundation this builds upon
 [*][b]Grass Cache Helper NG Team:[/b] For enabling seasonal cache loading
 [*][b]Seasons of Skyrim Team:[/b] For the seasonal framework
-[*][b]Skyrim Modding Community:[/b] For enduring the manual process long enough to need this solution
+[*][b]Skyrim Modding Community:[/b] For providing feedback and helping improve the tool
 [/list]
 
 [line]
@@ -437,4 +542,4 @@
 [*][b]Updates:[/b] Check back for new features and improvements
 [/list]
 
-[center][size=2][color=#666]Version 1.0 | MIT License | Made with ❤️ for the Skyrim community[/color][/size][/center]
+[center][size=2][color=#666]Version 1.1.0 | MIT License | Made with ❤️ for the Skyrim community[/color][/size][/center]

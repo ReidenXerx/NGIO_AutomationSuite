@@ -38,6 +38,7 @@ Transform the painful **4+ hour manual process** into a **5-minute setup** that 
 - ✅ Detect and handle crashes automatically
 - ✅ Monitor generation progress
 - ✅ Resume exactly where it left off
+- ✅ **NEW v1.1.0**: Adaptive timeouts for large load orders (500+ mods)
 
 ### 📝 **Smart Config Management**
 - ✅ Backup original configurations
@@ -91,6 +92,7 @@ NGIO_AutomationSuite/
 ├── docs/
 │   ├── SETUP.md                     # Setup instructions
 │   ├── TROUBLESHOOTING.md           # Common issues
+│   ├── LARGE_LOAD_ORDER_GUIDE.md    # Configuration for 500+ mods
 │   └── API.md                       # Developer documentation
 ├── examples/
 │   └── config_examples/             # Sample configurations
@@ -254,6 +256,21 @@ python ngio_automation_runner.py
 ### **For Multiple Seasons:**
 - Run the tool again and select a different season
 - Each season is generated separately for optimal disk space usage
+
+### 🔧 **Have 500+ Mods? Read This First!**
+
+If you have a large or heavily modded load order:
+- 📖 **See [Large Load Order Configuration Guide](docs/LARGE_LOAD_ORDER_GUIDE.md)** for optimal settings
+- ⏱️ Skyrim startup times increase significantly with many mods
+- 🎯 v1.1.0+ includes adaptive timeouts that automatically adjust
+- 💡 Key tip: Don't panic if Skyrim takes 5-10 minutes to start - this is normal!
+
+**Quick settings for large load orders:**
+```python
+max_crash_retries=15              # More retries for stability
+no_progress_timeout_minutes=20    # Longer hang detection
+startup_wait_seconds=60           # Prevent "death loops"
+```
 
 ---
 
