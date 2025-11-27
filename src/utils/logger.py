@@ -25,6 +25,33 @@ class Logger:
     - Performance timing
     """
     
+    # Global console log level (default INFO)
+    _console_level = logging.INFO
+    
+    @classmethod
+    def set_console_level(cls, level: str) -> None:
+        """
+        Set global console logging level for all Logger instances
+        
+        Args:
+            level: Log level string ('DEBUG', 'INFO', 'WARNING', 'ERROR')
+        """
+        level_map = {
+            'DEBUG': logging.DEBUG,
+            'INFO': logging.INFO,
+            'WARNING': logging.WARNING,
+            'ERROR': logging.ERROR,
+            'CRITICAL': logging.CRITICAL
+        }
+        
+        cls._console_level = level_map.get(level.upper(), logging.INFO)
+        
+        # Update all existing handlers
+        root_logger = logging.getLogger()
+        for handler in root_logger.handlers:
+            if isinstance(handler, colorlog.StreamHandler):
+                handler.setLevel(cls._console_level)
+    
     def __init__(self, name: str = "NGIO", log_file: Optional[str] = None):
         self.name = name
         self.logger = logging.getLogger(name)
@@ -47,7 +74,7 @@ class Logger:
     def _setup_console_handler(self) -> None:
         """Setup colored console output handler"""
         console_handler = colorlog.StreamHandler()
-        console_handler.setLevel(logging.INFO)
+        console_handler.setLevel(self._console_level)  # Use global console level
         
         # Define color scheme
         color_formatter = colorlog.ColoredFormatter(

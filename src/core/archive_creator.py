@@ -8,6 +8,7 @@ import os
 import shutil
 import zipfile
 import tempfile
+import hashlib
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
@@ -24,6 +25,7 @@ class ArchiveInfo:
     file_count: int
     archive_size_mb: float
     creation_time: float
+    sha256_checksum: Optional[str] = None  # Added for integrity verification
 
 
 class ArchiveCreator:
@@ -372,12 +374,19 @@ Extension: {season.extension}
                 self.logger.error(f"❌ Archive validation failed: {archive_path}")
                 return None
             
+            # Generate checksum for integrity verification
+            checksum = self._generate_checksum(archive_path)
+            if checksum:
+                # Save checksum to file
+                self._save_checksum_file(archive_path, checksum)
+            
             return ArchiveInfo(
                 season_name=season.display_name,
                 archive_path=archive_path,
                 file_count=file_count,
                 archive_size_mb=archive_size_mb,
-                creation_time=creation_time
+                creation_time=creation_time,
+                sha256_checksum=checksum
             )
             
         except Exception as e:
@@ -412,6 +421,97 @@ Extension: {season.extension}
                 
         except Exception as e:
             self.logger.error(f"💥 Error validating archive: {e}")
+            return False
+    
+    def _generate_checksum(self, file_path: str) -> Optional[str]:
+        """
+        Generate SHA256 checksum for file
+        
+        Args:
+            file_path: Path to file
+            
+        Returns:
+            SHA256 hash string, or None if failed
+        """
+        try:
+            sha256_hash = hashlib.sha256()
+            
+            with open(file_path, 'rb') as f:
+                # Read file in chunks to handle large archives
+                for byte_block in iter(lambda: f.read(8192), b""):
+                    sha256_hash.update(byte_block)
+            
+            checksum = sha256_hash.hexdigest()
+            self.logger.debug(f"🔐 Generated checksum: {checksum[:16]}...")
+            return checksum
+            
+        except Exception as e:
+            self.logger.warning(f"⚠️ Failed to generate checksum: {e}")
+            return None
+    
+    def _save_checksum_file(self, archive_path: str, checksum: str) -> bool:
+        """
+        Save checksum to .sha256 file
+        
+        Args:
+            archive_path: Path to archive
+            checksum: SHA256 checksum string
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            checksum_path = archive_path + '.sha256'
+            archive_name = os.path.basename(archive_path)
+            
+            with open(checksum_path, 'w') as f:
+                # Standard format: <checksum>  <filename>
+                f.write(f"{checksum}  {archive_name}\n")
+            
+            self.logger.info(f"🔐 Checksum saved: {os.path.basename(checksum_path)}")
+            return True
+            
+        except Exception as e:
+            self.logger.warning(f"⚠️ Failed to save checksum file: {e}")
+            return False
+    
+    def verify_archive_checksum(self, archive_path: str) -> bool:
+        """
+        Verify archive integrity using checksum file
+        
+        Args:
+            archive_path: Path to archive
+            
+        Returns:
+            True if checksum matches, False otherwise
+        """
+        checksum_path = archive_path + '.sha256'
+        
+        if not os.path.exists(checksum_path):
+            self.logger.warning("⚠️ No checksum file found for verification")
+            return False
+        
+        try:
+            # Read expected checksum
+            with open(checksum_path, 'r') as f:
+                expected_checksum = f.read().strip().split()[0]
+            
+            # Calculate actual checksum
+            actual_checksum = self._generate_checksum(archive_path)
+            
+            if not actual_checksum:
+                return False
+            
+            # Compare
+            if expected_checksum == actual_checksum:
+                self.logger.success("✅ Archive checksum verified")
+                return True
+            else:
+                self.logger.error("❌ Checksum mismatch! Archive may be corrupted")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"💥 Error verifying checksum: {e}")
             return False
     
     def create_all_season_archives(self, grass_directory: str, seasons: List) -> List[ArchiveInfo]:

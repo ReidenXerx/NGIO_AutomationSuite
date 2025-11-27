@@ -1,0 +1,35 @@
+# MANIFEST.in - Controls what gets included in source distributions
+
+# Include version file (critical for build process)
+include src/__version__.py
+
+# Include documentation
+include README.md
+include LICENSE
+include USER_REQUIREMENTS.md
+include DEVELOPER_SETUP.md
+include DEVELOPMENT_NOTES.md
+recursive-include docs *.md *.txt
+
+# Include configuration files
+include pyproject.toml
+include setup.py
+include requirements.txt
+include *.spec
+
+# Include runner script
+include ngio_automation_runner.py
+
+# Include batch files
+include *.bat
+recursive-include scripts *.bat
+
+# Exclude unnecessary files from distribution
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.so
+global-exclude .git*
+prune release
+prune .git
+

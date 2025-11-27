@@ -6,11 +6,23 @@ Backward compatibility setup.py for older Python environments
 
 from setuptools import setup, find_packages
 from pathlib import Path
-import sys
+import re
 
-# Add src to path to import version
-sys.path.insert(0, str(Path(__file__).parent / "src"))
-from __version__ import __version__, __title__, __description__, __author__, __license__
+# Read version from __version__.py without importing (avoids import issues in build environment)
+def get_version():
+    version_file = Path(__file__).parent / "src" / "__version__.py"
+    with open(version_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+        version_match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE)
+        if version_match:
+            return version_match.group(1)
+        raise RuntimeError('Unable to find version string in __version__.py')
+
+__version__ = get_version()
+__title__ = "NGIO Automation Suite"
+__description__ = "Automated grass cache generation for Skyrim SE"
+__author__ = "Dudu"
+__license__ = "MIT"
 
 # Read README for long description
 readme_path = Path(__file__).parent / "README.md"
@@ -90,15 +102,5 @@ setup(
     keywords="skyrim modding grass cache ngio automation seasonal game modding",
     
     # Additional metadata
-    license=__license__,
     platforms=["Windows"],
-    
-    # Development dependencies (optional)
-    extras_require={
-        "dev": [
-            "build>=0.8.0",
-            "wheel>=0.37.0", 
-            "twine>=4.0.0",
-        ],
-    },
 )

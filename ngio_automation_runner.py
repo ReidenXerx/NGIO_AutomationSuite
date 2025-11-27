@@ -9,6 +9,7 @@ import sys
 import platform
 import signal
 import atexit
+import argparse
 from pathlib import Path
 
 # Add src to Python path
@@ -18,21 +19,94 @@ sys.path.insert(0, str(project_root / "src"))
 from src.core.automation_suite import NGIOAutomationSuite, AutomationConfig, Season
 from src.utils.config_cache import ConfigCache
 from src.utils.logger import Logger
-from src.__version__ import __version__
+from src.__version__ import __version__, __title__, __description__
+
+
+def parse_arguments():
+    """Parse command-line arguments"""
+    parser = argparse.ArgumentParser(
+        prog='ngio-automation',
+        description=__description__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  ngio-automation                        Run in interactive menu mode
+  ngio-automation --version              Show version and exit
+  ngio-automation --season winter        Generate Winter season
+  ngio-automation --season winter -v     Generate with verbose output
+  ngio-automation --dry-run              Test workflow without launching Skyrim
+  ngio-automation --config custom.yaml   Use custom configuration file
+
+For more information, visit: https://github.com/yourusername/ngio-automation-suite
+        """
+    )
+    
+    parser.add_argument(
+        '--version',
+        action='version',
+        version=f'{__title__} v{__version__}'
+    )
+    
+    parser.add_argument(
+        '--season',
+        choices=['winter', 'spring', 'summer', 'autumn', 'all'],
+        help='Generate specific season (or all seasons)',
+        metavar='SEASON'
+    )
+    
+    parser.add_argument(
+        '--config',
+        type=str,
+        help='Path to custom configuration file',
+        metavar='FILE'
+    )
+    
+    parser.add_argument(
+        '-v', '--verbose',
+        action='store_true',
+        help='Enable verbose debug output'
+    )
+    
+    parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help='Test workflow without launching Skyrim'
+    )
+    
+    parser.add_argument(
+        '--no-banner',
+        action='store_true',
+        help='Suppress banner display'
+    )
+    
+    parser.add_argument(
+        '--unattended',
+        action='store_true',
+        help='Run without user interaction (for scheduled tasks)'
+    )
+    
+    return parser.parse_args()
 
 
 def print_banner():
     """Display the application banner"""
+    # Enhanced banner with more info (v1.4.0+)
     banner = f"""
 ╔═══════════════════════════════════════════════════════════════════╗
 ║                    🌱 NGIO AUTOMATION SUITE 🌱                    ║
-║                           Version {__version__}                           ║
+║                         Version {__version__} - Power User Edition                   ║
 ║                                                                   ║
-║              Transform 4+ Hours of Manual Work Into              ║
-║                   5 Minutes of Automated Bliss!                  ║
+║      Transform 4+ Hours of Manual Work Into Automated Magic!     ║
 ║                                                                   ║
-║  ✨ Fully Automated Grass Cache Generation for All Seasons ✨   ║
+║  ✨ NEW: Resume • Validation • Scheduler • Crash Analytics ✨    ║
+║  🚀 CLI • Checksums • Notifications • Progress Bars • YAML 🚀    ║
 ╚═══════════════════════════════════════════════════════════════════╝
+
+💡 Quick Start:
+   • Interactive Mode: Just press Enter!
+   • CLI Mode:        ngio-automation --season winter -v
+   • Get Help:        ngio-automation --help
+   • Schedule Task:   python -m src.utils.task_scheduler guide
 """
     print(banner)
 
@@ -292,25 +366,78 @@ def main():
     """Main entry point"""
     global automation_suite
     
+    # Parse command-line arguments
+    args = parse_arguments()
+    
     # Register signal handlers for graceful shutdown
     signal.signal(signal.SIGINT, emergency_shutdown)  # Ctrl+C
     signal.signal(signal.SIGTERM, emergency_shutdown)  # Termination signal
     atexit.register(emergency_shutdown)  # Normal exit
     
-    print_banner()
+    # Show banner unless suppressed
+    if not args.no_banner:
+        print_banner()
     
     # Check system requirements
     if not check_system_requirements():
-        input("Press Enter to exit...")
+        if not args.unattended:
+            input("Press Enter to exit...")
         return 1
+    
+    # Set verbose logging if requested (v1.2.0+)
+    if args.verbose:
+        Logger.set_console_level('DEBUG')
     
     # Initialize config cache
     config_cache = ConfigCache()
     logger = Logger("Main")
     
+    if args.verbose:
+        logger.debug("🔧 Verbose DEBUG mode enabled")
+    
     # Load existing configuration
     config_loaded = config_cache.load_config()
     
+    # CLI MODE: If season argument provided, run generation directly
+    if args.season:
+        logger.info(f"🎯 CLI Mode: Generating {args.season} season")
+        
+        # Map season string to Season enum
+        season_map = {
+            'winter': Season.WINTER,
+            'spring': Season.SPRING,
+            'summer': Season.SUMMER,
+            'autumn': Season.AUTUMN,
+        }
+        
+        if args.season == 'all':
+            # Generate all seasons
+            seasons_to_generate = list(season_map.values())
+        else:
+            # Generate single season
+            seasons_to_generate = [season_map[args.season]]
+        
+        # Override config cache with CLI season selection
+        if config_cache.preferences:
+            config_cache.preferences.seasons_to_generate = [s.display_name for s in seasons_to_generate]
+        
+        # Handle dry-run mode
+        if args.dry_run:
+            logger.info("🔍 DRY RUN MODE - Simulating workflow")
+            logger.info(f"   Would generate: {', '.join([s.display_name for s in seasons_to_generate])}")
+            logger.info("   Skyrim path: " + (config_cache.get_paths().skyrim_path if config_cache.get_paths() else "Not configured"))
+            logger.info("   No actual changes will be made")
+            return 0
+        
+        # Run generation
+        success = handle_grass_generation(config_cache)
+        
+        if not args.unattended:
+            input("\nPress Enter to exit...")
+        
+        return 0 if success else 1
+    
+    # INTERACTIVE MODE: Show menu if no CLI arguments
     # Main application loop
     while True:
         try:
