@@ -68,6 +68,15 @@ class NGIOConfig:
     max_worker_threads: int = 8
     verify_mod_load_order: bool = True
     
+    # v1.5.0: NEW - NGIO Grass Generation Settings
+    extend_grass_distance: bool = True  # Required for LOD compatibility
+    extend_grass_count: bool = False  # WARNING: Dramatically increases generation time
+    super_dense_grass: bool = False  # WARNING: Can take MANY hours
+    overwrite_min_grass_size: int = 67  # Grass density (20-100, higher = less dense)
+    global_grass_scale: float = 1.0  # Grass height multiplier (0.5-2.0)
+    ensure_max_grass_types: int = 15  # Max grass types per texture (grass mod specific)
+    only_pregenerate_worldspaces: str = ""  # Comma-separated worldspace filter (optional)
+    
     def validate(self) -> tuple[bool, list[str]]:
         """
         Validate configuration
@@ -299,7 +308,7 @@ class ConfigLoader:
             True if successful
         """
         try:
-            template = """# NGIO Automation Suite Configuration (v1.2.0+)
+            template = """# NGIO Automation Suite Configuration (v1.5.0+)
 # This file allows you to customize all aspects of grass cache generation
 
 # === CORE SETTINGS ===
@@ -312,6 +321,39 @@ generate_spring: true
 generate_summer: true
 generate_autumn: true
 generate_no_seasons: false  # Enable for non-seasonal setups
+
+# === GRASS GENERATION SETTINGS (v1.5.0+) ===
+# ⚠️  WARNING: These settings are BAKED INTO THE CACHE!
+# Once generated, you must regenerate everything to change them.
+# Use the interactive profile selector for guided configuration.
+
+extend_grass_distance: true      # Extend grass distance (REQUIRED for LOD)
+extend_grass_count: false        # WARNING: Dramatically increases time (2-6 hours)
+super_dense_grass: false         # WARNING: Can take MANY hours!
+overwrite_min_grass_size: 67     # Grass density (20-100, higher = less dense)
+global_grass_scale: 1.0          # Grass height multiplier (0.5-2.0)
+ensure_max_grass_types: 15       # Max grass types per texture (grass mod specific)
+only_pregenerate_worldspaces: "" # Comma-separated list (optional, speeds up generation)
+
+# GRASS PROFILES (Recommended Settings):
+# Fast Generation:
+#   extend_grass_distance: false
+#   overwrite_min_grass_size: 80
+#   ensure_max_grass_types: 7
+#   Estimated: 30-45 minutes
+#
+# LOD Compatible (Recommended):
+#   extend_grass_distance: true
+#   overwrite_min_grass_size: 67
+#   ensure_max_grass_types: 15
+#   Estimated: 60-90 minutes
+#
+# Maximum Quality:
+#   extend_grass_distance: true
+#   extend_grass_count: true
+#   overwrite_min_grass_size: 40
+#   global_grass_scale: 1.15
+#   Estimated: 2-6 hours!
 
 # === CRASH & HANG DETECTION ===
 max_crash_retries: 10            # Max retries per season before giving up

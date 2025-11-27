@@ -64,6 +64,15 @@ class AutomationConfig:
     enable_notifications: bool = True  # Windows toast notifications (v1.2.0+)
     enable_sounds: bool = True  # System sound alerts (v1.2.0+)
     
+    # v1.5.0: NEW - NGIO Grass Generation Settings
+    extend_grass_distance: bool = True  # Required for LOD compatibility
+    extend_grass_count: bool = False  # WARNING: Dramatically increases generation time
+    super_dense_grass: bool = False  # WARNING: Can take MANY hours
+    overwrite_min_grass_size: int = 67  # Grass density (20-100, higher = less dense)
+    global_grass_scale: float = 1.0  # Grass height multiplier (0.5-2.0)
+    ensure_max_grass_types: int = 15  # Max grass types per texture (grass mod specific)
+    only_pregenerate_worldspaces: str = ""  # Comma-separated worldspace filter (optional)
+    
     def __post_init__(self):
         if self.seasons_to_generate is None:
             self.seasons_to_generate = list(Season)
@@ -148,7 +157,15 @@ class NGIOAutomationSuite:
                 return False
                 
             # Phase 3: Generate grass cache for each season
-            for season in self.config.seasons_to_generate:
+            total_seasons = len(self.config.seasons_to_generate)
+            
+            for idx, season in enumerate(self.config.seasons_to_generate, 1):
+                # v1.5.1: Show progress for multi-season
+                if total_seasons > 1:
+                    self.logger.separator()
+                    self.logger.info(f"🌱 SEASON {idx}/{total_seasons}: {season.display_name}")
+                    self.logger.separator()
+                
                 # Update state before starting season (v1.3.0+)
                 if self.automation_state:
                     self.automation_state.current_season = season.display_name
@@ -167,7 +184,15 @@ class NGIOAutomationSuite:
                     self.logger.error(f"❌ Failed to generate cache for {season.display_name}")
                 else:
                     self.completed_seasons.append(season)
-                    self.logger.info(f"✅ Successfully completed {season.display_name}")
+                    
+                    # v1.5.1: Multi-season progress update
+                    if total_seasons > 1:
+                        remaining = total_seasons - idx
+                        self.logger.success(f"✅ Completed: {season.display_name} (Season {idx}/{total_seasons})")
+                        if remaining > 0:
+                            self.logger.info(f"📊 Progress: {idx}/{total_seasons} seasons complete, {remaining} remaining")
+                    else:
+                        self.logger.info(f"✅ Successfully completed {season.display_name}")
                     
             # Phase 4: Archive creation handled per-season
             # (Archives created individually after each season)
@@ -265,6 +290,19 @@ class NGIOAutomationSuite:
             # Step 1: Configure season settings
             if not self.config_manager.set_season(season.season_type):
                 self.notifier.notify_error(f"Failed to configure {season.display_name} settings")
+                return False
+            
+            # v1.5.0: NEW - Configure NGIO settings for generation
+            if not self.config_manager.configure_ngio_for_generation(
+                extend_grass_distance=self.config.extend_grass_distance,
+                extend_grass_count=self.config.extend_grass_count,
+                super_dense_grass=self.config.super_dense_grass,
+                overwrite_min_grass_size=self.config.overwrite_min_grass_size,
+                global_grass_scale=self.config.global_grass_scale,
+                ensure_max_grass_types=self.config.ensure_max_grass_types,
+                only_pregenerate_worldspaces=self.config.only_pregenerate_worldspaces
+            ):
+                self.notifier.notify_error(f"Failed to configure NGIO for {season.display_name}")
                 return False
                 
             # Step 2: Launch Skyrim and monitor generation
@@ -500,6 +538,11 @@ class NGIOAutomationSuite:
             return True
             
         self.logger.info("🔄 Restoring original configurations...")
+        
+        # v1.5.0: NEW - Configure NGIO to use cache (set OnlyLoadFromCache=True)
+        self.logger.info("⚙️ Configuring NGIO for cache usage...")
+        if not self.config_manager.configure_ngio_for_cache_use():
+            self.logger.warning("⚠️ Failed to configure NGIO for cache usage")
         
         # Restore to seasonal mode (type 5)
         self.config_manager.set_season(5)  # Seasonal mode

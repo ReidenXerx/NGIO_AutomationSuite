@@ -1,8 +1,27 @@
 # NGIO Automation Suite - Improvement Roadmap
 
 **Last Updated:** 2025-11-27  
-**Current Version:** 1.1.2  
+**Current Version:** 1.5.0  
 **Purpose:** Strategic improvements and feature roadmap for future development
+
+---
+
+## ✅ Recently Completed (v1.5.0)
+
+### Critical NGIO Fixes & Configuration System
+- ✅ **Added 7 Missing NGIO Settings**: ExtendGrassDistance, ExtendGrassCount, SuperDenseGrass, OverwriteMinGrassSize, GlobalGrassScale, EnsureMaxGrassTypes, OnlyPregenerateWorldSpaces
+- ✅ **Fixed OnlyLoadFromCache Bug**: Properly set to True after generation (was causing slow game loading)
+- ✅ **Grass Generation Profiles**: Fast, LOD Compatible, Maximum Quality, Custom
+- ✅ **Interactive Profile Selection**: User-friendly wizard with confirmation and customization
+- ✅ **"Baked Settings" Warnings**: User education about permanent cache settings
+- ✅ **Complete YAML Config**: All NGIO settings now configurable with defaults and warnings
+
+**Impact:** 100% NGIO settings coverage (was 36%), proper LOD compatibility, prevented accidental multi-hour generations
+
+**Research Sources:**
+- [Step Modifications: Grass LOD Guide](https://stepmodifications.org/wiki/SkyrimSE:Grass_LOD_Guide)
+- [Nexus: NGIO Articles 6919 & 6920](https://www.nexusmods.com/skyrimspecialedition/articles/)
+- See `NGIO_RESEARCH_FINDINGS.md` for full analysis
 
 ---
 
@@ -16,6 +35,138 @@
 6. [Performance Optimizations](#performance-optimizations)
 7. [Prioritized Roadmap](#prioritized-roadmap)
 8. [Implementation Details](#implementation-details)
+
+---
+
+## 🎯 HIGH PRIORITY: LOD Integration (v1.6.0)
+
+### DynDOLOD & TexGen Grass LOD Generation
+
+**Priority:** HIGH  
+**Estimated Effort:** 2-3 weeks  
+**Impact:** MAJOR - Complete grass LOD workflow automation
+
+#### Overview
+
+Integrate TexGen and DynDOLOD to automatically generate grass LOD billboards after grass cache generation.
+
+#### Requirements
+
+**Based on research:**
+1. **TexGen Integration**
+   - Detect TexGen installation (`TexGenx64.exe`)
+   - Run TexGen with grass LOD enabled
+   - Configure settings: Units per pixel, ambient/direct lighting
+   - Parse TexGen output
+   - Handle errors gracefully
+
+2. **DynDOLOD Integration**
+   - Detect DynDOLOD 3 installation
+   - Require DynDOLOD Resources SE 3
+   - Run DynDOLOD with Grass LOD checkbox
+   - Configure Mode (1 or 2) and Density (35-100)
+   - Generate for LOD4
+   - Parse output
+
+3. **Workflow Changes**
+   ```
+   Current: Cache → Rename → Archive
+   New: Cache → Rename → TexGen → DynDOLOD → Archive
+   ```
+
+4. **Archive Integration**
+   - Include TexGen_Output in archives
+   - Include DynDOLOD_Output in archives
+   - Update installation instructions for LODs
+
+#### Implementation Plan
+
+**Phase 1: Detection & Validation**
+- Detect TexGen/DynDOLOD installations
+- Validate versions (DynDOLOD 3+)
+- Check for DynDOLOD Resources
+- Warn if not found (make optional)
+
+**Phase 2: TexGen Integration**
+- Create `src/tools/texgen_manager.py`
+- Execute TexGen with appropriate flags
+- Monitor progress
+- Parse output logs
+- Handle errors
+
+**Phase 3: DynDOLOD Integration**
+- Create `src/tools/dyndolod_manager.py`
+- Execute DynDOLOD with grass settings
+- Configure Mode and Density
+- Monitor progress
+- Parse output
+
+**Phase 4: Archive Integration**
+- Update `ArchiveCreator` to include LOD files
+- Create separate LOD archives or include in main?
+- Update installation instructions
+- Add LOD-specific metadata
+
+**Phase 5: Configuration**
+- Add LOD settings to YAML config:
+  ```yaml
+  # === GRASS LOD (v1.6.0+) ===
+  generate_grass_lod: true
+  texgen_path: "C:/Modding/DynDOLOD/TexGenx64.exe"
+  dyndolod_path: "C:/Modding/DynDOLOD/DynDOLODx64.exe"
+  grass_lod_density: 50  # 35-100, lower = better performance
+  grass_lod_mode: 1      # 1 = uGridsToLoad, 2 = uLargeRefLODGridSize
+  ```
+
+#### User Experience
+
+**New Profile Option:**
+```
+Profile Selection:
+1. Fast (no LOD)
+2. LOD Compatible (grass cache only)
+3. Full LOD Generation (cache + TexGen + DynDOLOD) [Slowest]
+4. Custom
+```
+
+**Time Estimates:**
+- Grass Cache Only: 60-90 min
+- + TexGen: +10-20 min
+- + DynDOLOD: +20-40 min
+- **Total with LOD: 90-150 min**
+
+#### Technical Challenges
+
+1. **External Tool Dependencies**
+   - TexGen/DynDOLOD may not be installed
+   - Version compatibility issues
+   - Path detection across different setups
+
+2. **Error Handling**
+   - TexGen/DynDOLOD can fail independently
+   - Need graceful degradation
+   - Resume capability if LOD fails
+
+3. **Archive Size**
+   - LOD files can be large (100MB-1GB)
+   - May need separate archives
+   - Compression optimization
+
+#### Success Criteria
+
+- ✅ Detect and validate TexGen/DynDOLOD
+- ✅ Successfully generate grass LOD billboards
+- ✅ Include LODs in archives
+- ✅ Update documentation with LOD workflow
+- ✅ Graceful handling of missing tools
+- ✅ Resume capability if LOD generation fails
+
+#### References
+
+- [Step Guide: Grass LOD](https://stepmodifications.org/wiki/SkyrimSE:Grass_LOD_Guide)
+- DynDOLOD 3 Documentation
+- TexGen Documentation
+- `NGIO_RESEARCH_FINDINGS.md`
 
 ---
 

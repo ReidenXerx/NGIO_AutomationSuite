@@ -181,6 +181,26 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
         logger.info("💡 Please configure paths first (option 2)")
         return False
     
+    # v1.5.0: NEW - Grass Profile Selection
+    from src.utils.grass_profiles import select_profile_interactive
+    
+    logger.info("")
+    logger.info("=" * 60)
+    logger.info("⚙️  GRASS GENERATION SETTINGS")
+    logger.info("=" * 60)
+    logger.info("")
+    
+    # Let user select profile
+    grass_profile, confirmed = select_profile_interactive()
+    
+    if not confirmed or grass_profile is None:
+        logger.warning("⚠️ Generation cancelled by user")
+        return False
+    
+    logger.info("")
+    logger.info("✅ Profile selected successfully!")
+    logger.info("")
+    
     # Get paths and preferences
     paths = config_cache.get_paths()
     preferences = config_cache.get_preferences()
@@ -213,7 +233,14 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
         crash_timeout_minutes=preferences.crash_timeout_minutes,
         no_progress_timeout_minutes=preferences.no_progress_timeout_minutes,
         create_archives=preferences.create_archives,
-        backup_configs=preferences.backup_configs
+        backup_configs=preferences.backup_configs,
+        # v1.5.0: NEW - Grass profile settings
+        extend_grass_distance=grass_profile.extend_grass_distance,
+        extend_grass_count=grass_profile.extend_grass_count,
+        super_dense_grass=grass_profile.super_dense_grass,
+        overwrite_min_grass_size=grass_profile.overwrite_min_grass_size,
+        global_grass_scale=grass_profile.global_grass_scale,
+        ensure_max_grass_types=grass_profile.ensure_max_grass_types
     )
     
     # Show generation summary
@@ -225,7 +252,19 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
     # Show mode and seasons
     if preferences.use_seasonal_mods:
         logger.info(f"   🌿 Mode: Seasonal (with seasonal mods)")
-        logger.info(f"   🌱 Season: {preferences.seasons_to_generate[0]}")
+        
+        # v1.5.1: Show all seasons if multiple selected
+        if len(preferences.seasons_to_generate) > 1:
+            season_list = ", ".join(preferences.seasons_to_generate)
+            logger.info(f"   🌱 Seasons: {season_list}")
+            logger.info(f"   🌈 Multi-Season Mode: {len(preferences.seasons_to_generate)} seasons")
+            estimated_minutes = len(preferences.seasons_to_generate) * 75  # ~75 min average per season
+            estimated_hours = estimated_minutes / 60
+            logger.info(f"   ⏰ Estimated Total Time: {estimated_hours:.1f} hours ({estimated_minutes} minutes)")
+            logger.info(f"   💤 Perfect for overnight generation!")
+        else:
+            logger.info(f"   🌱 Season: {preferences.seasons_to_generate[0]}")
+            logger.info(f"   ⏰ Estimated Time: 60-90 minutes")
     else:
         logger.info(f"   🌿 Mode: Non-seasonal (no seasonal mods)")
         logger.info(f"   🌱 Generation: Single grass cache")

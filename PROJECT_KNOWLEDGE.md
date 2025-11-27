@@ -1,7 +1,7 @@
 # NGIO Automation Suite - Project Knowledge Base
 
 **Last Updated:** 2025-11-27  
-**Version:** 1.1.2  
+**Version:** 1.5.0  
 **Purpose:** Complete context for AI assistants and developers working on this project
 
 ---
@@ -2333,9 +2333,232 @@ pip show psutil
 
 ---
 
+## 🌱 v1.5.0: NGIO Settings & Grass Profiles
+
+**Release Date:** November 27, 2025  
+**Major Update:** Complete NGIO configuration system with preset profiles
+
+### Critical Fixes
+
+#### 1. Missing NGIO Settings (7 new settings added!)
+
+Previously, we only configured 4 basic NGIO settings. v1.5.0 adds **7 critical missing settings**:
+
+```ini
+# NEW in v1.5.0:
+ExtendGrassDistance=True        # Required for LOD compatibility
+ExtendGrassCount=False          # Can add 2-6 hours to generation!
+SuperDenseGrass=False           # Can add MANY hours!
+OverwriteMinGrassSize=67        # Grass density (BAKED into cache)
+GlobalGrassScale=1.0            # Grass height (BAKED into cache)
+EnsureMaxGrassTypesPerTextureSetting=15  # Grass variety (BAKED)
+OnlyPregenerateWorldSpaces=...  # Optional filter (can halve generation time)
+```
+
+**Impact:**
+- LOD compatibility now properly configured
+- Performance warnings for slow settings
+- Prevents accidental multi-hour generations
+- Proper grass density and appearance control
+
+#### 2. OnlyLoadFromCache State Management Bug
+
+**The Bug:**
+- Set `OnlyLoadFromCache=False` during generation ✅ Correct
+- **Never set it back to True after completion** ❌ Bug!
+- Result: Game tries to regenerate cache on every launch
+
+**The Fix (v1.5.0):**
+- Properly set `OnlyLoadFromCache=True` after all generations complete
+- Game now uses pre-generated cache (fast loading)
+- Added to cleanup/restore phase
+
+### New Features
+
+#### Grass Generation Profiles
+
+Users can now choose from preset profiles or customize settings interactively:
+
+**Profile 1: Fast Generation**
+```yaml
+extend_grass_distance: false
+overwrite_min_grass_size: 80
+ensure_max_grass_types: 7
+Estimated Time: 30-45 minutes
+```
+- Quick testing
+- Lower density
+- No extended features
+
+**Profile 2: LOD Compatible** (Recommended)
+```yaml
+extend_grass_distance: true
+overwrite_min_grass_size: 67
+ensure_max_grass_types: 15
+Estimated Time: 60-90 minutes
+```
+- Works with DynDOLOD grass LOD
+- Medium density (Cathedral Landscapes default)
+- Best balance of quality/time
+
+**Profile 3: Maximum Quality**
+```yaml
+extend_grass_distance: true
+extend_grass_count: true
+overwrite_min_grass_size: 40
+global_grass_scale: 1.15
+Estimated Time: 2-6 hours!
+```
+- Highest quality
+- Very dense grass
+- ⚠️  WARNING: Takes significantly longer
+
+**Profile 4: Custom**
+- Interactive configuration
+- Modify any setting
+- Real-time impact warnings
+
+#### Interactive Profile Selection
+
+```
+┌──────────────────────────────────────────────────────┐
+│        🌱 Grass Generation Profile Selection         │
+└──────────────────────────────────────────────────────┘
+
+⚠️  IMPORTANT: These settings are PERMANENTLY BAKED!
+   Once generated, you must regenerate to change them.
+
+1. Fast (30-45 min)
+2. LOD Compatible (60-90 min) [Recommended]
+3. Maximum Quality (2-6 hours)
+4. Custom Settings
+
+Select profile [1-4]: _
+```
+
+After selection:
+- Shows complete settings summary
+- Estimated time warning
+- Options: [C]ontinue, [M]odify, [B]ack
+- Interactive override for individual settings
+
+#### Baked Settings Warning
+
+**Critical User Education:**
+
+Some settings are **permanently written into grass cache files**:
+- `OverwriteMinGrassSize` - Density
+- `GlobalGrassScale` - Height
+- `ExtendGrassDistance` - Distance
+- `ExtendGrassCount` - Count
+- `SuperDenseGrass` - Ultra density
+- `EnsureMaxGrassTypesPerTextureSetting` - Variety
+
+**Consequence:** Must regenerate ALL seasons to change these!
+
+Users are warned:
+1. During profile selection
+2. On confirmation screen
+3. In YAML config comments
+4. In documentation
+
+### Technical Implementation
+
+#### New Files
+
+**`src/utils/grass_profiles.py`**
+- `ProfileType` enum
+- `GrassProfile` dataclass
+- Preset profile definitions
+- Interactive selection system
+- Settings modification interface
+
+#### Updated Files
+
+**`src/core/config_manager.py`**
+- `configure_ngio_for_generation()` now accepts all 7 new settings
+- Logs important settings and warnings
+- Validates boolean/numeric types
+
+**`src/core/automation_suite.py`**
+- `AutomationConfig` includes all 7 new settings
+- Calls `configure_ngio_for_generation()` with settings
+- Calls `configure_ngio_for_cache_use()` after completion (FIX!)
+
+**`ngio_automation_runner.py`**
+- Integrates profile selection into grass generation flow
+- Passes profile settings to `AutomationConfig`
+
+**`src/utils/config_loader.py`**
+- `NGIOConfig` dataclass includes new settings
+- YAML template updated with:
+  - All 7 new settings
+  - Profile recommendations
+  - Performance warnings
+  - "BAKED" warnings
+
+### Research Sources
+
+Based on comprehensive research from:
+- [Step Modifications: Grass LOD Guide](https://stepmodifications.org/wiki/SkyrimSE:Grass_LOD_Guide)
+- [Nexus: NGIO Generation Guide](https://www.nexusmods.com/skyrimspecialedition/articles/6919)
+- [Nexus: NGIO Seasonal Guide](https://www.nexusmods.com/skyrimspecialedition/articles/6920)
+
+See `NGIO_RESEARCH_FINDINGS.md` for complete analysis.
+
+### User Impact
+
+**Before v1.5.0:**
+- 36% of NGIO settings configured (4/11)
+- OnlyLoadFromCache bug caused slow loading
+- No guidance on performance impact
+- Users couldn't customize grass appearance
+- No warnings about multi-hour generation times
+
+**After v1.5.0:**
+- 100% of NGIO settings configured (11/11) ✅
+- OnlyLoadFromCache properly managed ✅
+- Clear performance warnings ✅
+- Flexible profile system ✅
+- User-friendly customization ✅
+- "Baked settings" education ✅
+
+### Backwards Compatibility
+
+**Configuration:**
+- New settings have sensible defaults
+- Old YAML configs still work (uses defaults)
+- CLI arguments not affected
+
+**Generated Files:**
+- No changes to file format
+- Archives remain compatible
+- No re-generation required
+
+**Process:**
+- Profile selection is interactive (skippable via YAML/CLI)
+- Default profile is "LOD Compatible" (recommended)
+
+---
+
 ## 🔮 Future Enhancements
 
-### Planned Features
+### Planned Features (Updated for v1.5.0+)
+
+1. **DynDOLOD & TexGen Integration** (v1.6.0 - HIGH PRIORITY)
+   - Automatic TexGen billboard generation
+   - DynDOLOD grass LOD creation
+   - Include LODs in archives
+   - Complete grass LOD workflow
+   - See `NGIO_RESEARCH_FINDINGS.md` for details
+
+2. **Worldspace Filtering** (v1.5.1 or v1.6.0)
+   - xEdit script integration
+   - Auto-detect worldspaces with grass
+   - Filter irrelevant worldspaces
+   - Can cut generation time by 25-50%
+
+3. **GUI Version** (Future)
 
 1. **GUI Version** (Future)
    - Tkinter or PyQt interface

@@ -63,7 +63,118 @@
 
 [line]
 
-[size=5][color=#4CAF50]✨ NEW in v1.4.0 - The Complete Edition![/color][/size]
+[size=5][color=#FF5722]✨ NEW in v1.5.1 - Multi-Season Overnight Generation! 🌈[/color][/size]
+
+[quote]
+[size=4][b][color=#4CAF50]🌈 USER REQUESTED: "ALL 4 SEASONS" MODE! 🌈[/color][/b][/size]
+
+[b]Set it before bed → Wake up to 4 completed archives![/b]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+
+[size=3][color=#2196F3]🌈 NEW: Multi-Season Overnight Generation[/color][/size]
+[list]
+[*][b]"All 4 Seasons" Option:[/b] Select option 5 in menu for overnight generation
+[*][b]CLI Support:[/b] ngio-automation --season all
+[*][b]Estimated Time:[/b] 4-6 hours total (60-90 min per season)
+[*][b]Per-Season Notifications:[/b] Get notified after EACH season completes
+[*][b]Progress Tracking:[/b] "Season 2/4 - Spring" status display
+[*][b]Perfect for Overnight:[/b] Start before bed, wake up to 4 ready archives!
+[*][b]Seamless Transitions:[/b] Automatic PrecacheGrass.txt recreation between seasons
+[*][b]Resume Capability:[/b] If interrupted, continue from current season
+[*][b]Result:[/b] [color=#4CAF50]1 run instead of 4, zero monitoring needed![/color]
+[/list]
+
+[b][color=#FF9800]User Experience:[/color][/b]
+[list]
+[*][b]Before:[/b] Run 4 times (Winter, Spring, Summer, Autumn) - constant monitoring
+[*][b]After:[/b] Select "All 4 Seasons" → Sleep → Done! 🌈💤
+[/list]
+[/quote]
+
+[line]
+
+[size=5][color=#FF5722]✨ v1.5.0 - Complete NGIO Configuration & Grass Profiles[/color][/size]
+
+[quote]
+[size=4][b][color=#FF9800]🚨 CRITICAL FIXES + MAJOR NEW FEATURES! 🚨[/color][/b][/size]
+
+[b]Research-Based Update with Professional Configuration System![/b]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]Critical Fixes:[/b]
+
+[size=3][color=#E91E63]🐛 1. OnlyLoadFromCache State Management Bug FIXED[/color][/size]
+[list]
+[*][b]The Bug:[/b] After generation, NGIO setting stayed at "allow regeneration" instead of "use cache"
+[*][b]Impact:[/b] Game tried to regenerate cache on EVERY launch (slow loading!)
+[*][b]The Fix:[/b] Properly sets OnlyLoadFromCache=True after completion
+[*][b]Result:[/b] [color=#4CAF50]Fast game loading with pre-generated cache![/color]
+[/list]
+
+[size=3][color=#E91E63]🎯 2. Complete NGIO Settings Coverage (36% → 100%)[/color][/size]
+[list]
+[*][b]Added 7 Missing Settings:[/b] ExtendGrassDistance, ExtendGrassCount, SuperDenseGrass, OverwriteMinGrassSize, GlobalGrassScale, EnsureMaxGrassTypes, OnlyPregenerateWorldSpaces
+[*][b]Before:[/b] Only 4 of 11 NGIO settings configured (36% coverage!)
+[*][b]After:[/b] All 11 settings properly configured (100% coverage!)
+[*][b]Impact:[/b] [color=#4CAF50]LOD compatibility, performance control, user customization![/color]
+[/list]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]New Features:[/b]
+
+[size=3][color=#2196F3]🌱 1. Grass Generation Profiles[/color][/size]
+[list]
+[*][b]Profile 1: Fast[/b] (30-45 min) - Quick testing, lower density
+[*][b]Profile 2: LOD Compatible[/b] (60-90 min) [color=#4CAF50][DEFAULT][/color] - Works with DynDOLOD grass LOD
+[*][b]Profile 3: Maximum Quality[/b] (2-6 hours) - Highest quality, very dense grass
+[*][b]Profile 4: Custom[/b] - Full control over all settings
+[*][b]Clear Time Estimates:[/b] Know exactly how long generation will take
+[*][b]Performance Warnings:[/b] Prevents accidental multi-hour generations
+[*][b]Result:[/b] [color=#4CAF50]User-friendly, flexible, professional configuration![/color]
+[/list]
+
+[size=3][color=#2196F3]🎨 2. Interactive Profile Selection[/color][/size]
+[list]
+[*][b]Guided Wizard:[/b] Beautiful menu with profile descriptions
+[*][b]Settings Confirmation:[/b] Review all settings before starting
+[*][b]Interactive Modification:[/b] Change individual settings if needed
+[*][b]"Baked Settings" Warnings:[/b] Know what's permanent before generation
+[*][b]Hybrid Approach:[/b] Presets OR custom - your choice!
+[*][b]Result:[/b] [color=#4CAF50]No more guessing, no regrets, full control![/color]
+[/list]
+
+[size=3][color=#2196F3]⚠️ 3. "Baked Settings" Education[/color][/size]
+[list]
+[*][b]Critical Knowledge:[/b] Some settings are PERMANENTLY written into cache files
+[*][b]Cannot Change After:[/b] Grass density, height, distance, count - must regenerate to change
+[*][b]User Warnings:[/b] Clear warnings during selection, confirmation, and in docs
+[*][b]Smart Defaults:[/b] LOD Compatible profile works for 90% of users
+[*][b]Result:[/b] [color=#4CAF50]Users understand what they're choosing before committing![/color]
+[/list]
+
+[size=3][color=#2196F3]📚 4. Research-Based Configuration[/color][/size]
+[list]
+[*][b]Step Modifications Guide:[/b] Based on official Grass LOD documentation
+[*][b]Nexus NGIO Articles:[/b] Official NGIO generation guides
+[*][b]Community Best Practices:[/b] Tested by thousands of users
+[*][b]All Settings Documented:[/b] What they do, why they matter, performance impact
+[*][b]Result:[/b] [color=#4CAF50]Professional-grade configuration backed by research![/color]
+[/list]
+
+[b][color=#FF9800]Impact of v1.5.0:[/color][/b]
+[list]
+[*]✅ [b]Faster Game Loading:[/b] OnlyLoadFromCache bug fix
+[*]✅ [b]LOD Compatible:[/b] Default settings work with grass LOD
+[*]✅ [b]No More Accidents:[/b] Clear warnings prevent 6-hour generations
+[*]✅ [b]User Education:[/b] Understand what settings do before choosing
+[*]✅ [b]Professional Quality:[/b] Research-based, tested, documented
+[/list]
+[/quote]
+
+[line]
+
+[size=5][color=#4CAF50]✨ v1.4.0 - The Complete Edition (Previous Release)[/color][/size]
 
 [quote]
 [size=4][b][color=#FF9800]🎊 MEGA UPDATE: 15 Game-Changing Features! 🎊[/color][/b][/size]

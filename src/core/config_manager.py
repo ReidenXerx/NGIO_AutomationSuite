@@ -305,9 +305,25 @@ class ConfigManager:
             self.logger.error(f"💥 Failed to set season: {e}")
             return False
     
-    def configure_ngio_for_generation(self) -> bool:
+    def configure_ngio_for_generation(self, 
+                                     extend_grass_distance: bool = True,
+                                     extend_grass_count: bool = False,
+                                     super_dense_grass: bool = False,
+                                     overwrite_min_grass_size: int = 67,
+                                     global_grass_scale: float = 1.0,
+                                     ensure_max_grass_types: int = 15,
+                                     only_pregenerate_worldspaces: str = "") -> bool:
         """
         Configure NGIO settings for grass cache generation
+        
+        Args:
+            extend_grass_distance: Extend grass rendering distance (required for LOD)
+            extend_grass_count: Increase grass blade count (WARNING: Can take HOURS)
+            super_dense_grass: Ultra density mode (WARNING: Can take MANY HOURS)
+            overwrite_min_grass_size: Grass density (20-100, higher = less dense)
+            global_grass_scale: Grass height multiplier (0.5-2.0)
+            ensure_max_grass_types: Max grass types per texture (grass mod specific)
+            only_pregenerate_worldspaces: Comma-separated worldspace list (optional)
         
         Returns:
             bool: True if successful, False if failed
@@ -327,14 +343,33 @@ class ConfigManager:
             if "Settings" not in config:
                 config.add_section("Settings")
             
-            # Configure NGIO for cache generation
+            # Core settings (always set)
             ngio_settings = {
-                "UseGrassCache": "1",
-                "OnlyLoadFromCache": "0",  # Allow generation
+                "UseGrassCache": "True",
+                "OnlyLoadFromCache": "False",  # Allow generation (v1.5.0: Will be True after completion)
                 "DynDOLODGrassMode": "1",
-                "EnableGrassGeneration": "1"
+                "EnableGrassGeneration": "True"
             }
             
+            # v1.5.0: NEW - Extended settings for LOD compatibility and performance
+            ngio_settings.update({
+                "ExtendGrassDistance": str(extend_grass_distance),
+                "ExtendGrassCount": str(extend_grass_count),
+                "SuperDenseGrass": str(super_dense_grass),
+            })
+            
+            # v1.5.0: NEW - Grass appearance settings (BAKED into cache!)
+            ngio_settings.update({
+                "OverwriteMinGrassSize": str(overwrite_min_grass_size),
+                "GlobalGrassScale": f"{global_grass_scale:.2f}",
+                "EnsureMaxGrassTypesPerTextureSetting": str(ensure_max_grass_types),
+            })
+            
+            # v1.5.0: NEW - Worldspace filtering (optional performance optimization)
+            if only_pregenerate_worldspaces:
+                ngio_settings["OnlyPregenerateWorldSpaces"] = only_pregenerate_worldspaces
+            
+            # Apply all settings
             for key, value in ngio_settings.items():
                 config["Settings"][key] = value
             
@@ -342,7 +377,17 @@ class ConfigManager:
             with open(ngio_config_path, 'w', encoding='utf-8') as f:
                 config.write(f)
             
+            # Log important settings
             self.logger.info("✅ NGIO configured for grass generation")
+            self.logger.info(f"   📏 Grass Density: {overwrite_min_grass_size} (higher = less dense)")
+            self.logger.info(f"   📐 Grass Scale: {global_grass_scale}x")
+            self.logger.info(f"   📡 Extended Distance: {'Yes' if extend_grass_distance else 'No'} {'(LOD Compatible)' if extend_grass_distance else ''}")
+            
+            if extend_grass_count:
+                self.logger.warning("⚠️  ExtendGrassCount enabled - Generation may take HOURS longer!")
+            if super_dense_grass:
+                self.logger.warning("⚠️  SuperDenseGrass enabled - Generation may take MANY HOURS!")
+            
             return True
             
         except Exception as e:
