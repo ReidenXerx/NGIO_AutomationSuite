@@ -8,35 +8,6 @@ AUTHOR: Dudu
 LICENSE: MIT License
 GITHUB: https://github.com/yourusername/ngio-automation-suite
 
-================================================================================
-                    ⭐ KILLER FEATURE: OVERNIGHT MODE ⭐
-           🌙 Generate ALL 4 Seasons While You Sleep! 🌙
-================================================================================
-
-🎯 THE ULTIMATE TIME-SAVER:
-
-   Manual Method:  4-6 hours of babysitting across 4 separate sessions
-   Overnight Mode: 5 minutes setup → Sleep → Wake up to 4 completed mods!
-
-🌈 HOW IT WORKS:
-
-   10:00 PM - Launch tool, select "All 4 Seasons", click Start
-   10:05 PM - Go to bed 🛌💤
-   06:00 AM - Wake up to 4 completed grass cache mods! ☀️
-
-✨ WHAT HAPPENS WHILE YOU SLEEP:
-
-   • Tool automatically runs Winter → Spring → Summer → Autumn
-   • Handles all Skyrim crashes and restarts (common during generation)
-   • Renames files correctly for each season
-   • Creates 4 ready-to-install mod archives
-   • Sends you notifications after each season completes
-   • If interrupted, can resume from where it stopped
-
-💤 ZERO MONITORING REQUIRED - Just start it and walk away!
-
-================================================================================
-
 🆕 NEW IN v1.5.1 - MULTI-SEASON OVERNIGHT GENERATION! 🌈
 
 USER REQUESTED: "Let me run it overnight for all seasons"

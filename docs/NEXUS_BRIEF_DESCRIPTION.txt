@@ -1,11 +1,22 @@
-Transform the painful 4+ hour manual NGIO grass cache generation into a fully automated 5-minute setup! Automatically generates seasonal grass cache for Winter, Spring, Summer, and Autumn. NEW v1.5.1: "All 4 Seasons" overnight mode - select once, wake up to 4 completed archives! Perfect for users with heavy mod lists who are tired of babysitting Skyrim through endless crashes. 
+🌱 NGIO AUTOMATION SUITE v1.5.1
+The Ultimate NGIO Grass Cache Generation Tool
 
-🆕 v1.5.1: Multi-season overnight generation! Select "All 4 Seasons" → sleep → done! CLI: --season all. 4-6 hours unattended, per-season notifications, seamless transitions.
+⭐ KILLER FEATURE: OVERNIGHT MODE 🌙
+Generate ALL 4 seasons while you sleep! Set it before bed → Wake up to 4 completed mods!
 
-🎯 v1.5.0: Complete NGIO configuration (100% settings coverage!), grass generation profiles (Fast/LOD/Quality), OnlyLoadFromCache bug fix for faster game loading. Research-based defaults from Step Modifications guide.
+What took 4-6 hours of babysitting now takes 5 minutes of setup.
 
-⚠️ ANTIVIRUS NOTICE: This tool may trigger false positives due to process monitoring and file automation. It's 100% safe, open-source, and works offline. Add to AV exclusions if blocked.
+✨ Key Features:
+• 🌈 Overnight Mode - Generate all 4 seasons unattended (4-6 hours total)
+• 🔄 Automatic crash recovery & retry logic
+• 📦 Creates ready-to-install mod archives
+• 🎯 Grass generation profiles (Fast/LOD/Quality)
+• 🔔 Toast notifications when seasons complete
+• 💾 Session resume if interrupted
+• ⚡ Smart process management & monitoring
 
-REQUIREMENTS: Skyrim SE/AE, NGIO mod, SKSE64. Optional: Seasons of Skyrim for seasonal support. NO PYTHON INSTALLATION REQUIRED - complete Python environment bundled inside!
+Perfect for users with Seasons of Skyrim, Cathedral Seasons, or any seasonal grass mod!
 
-FEATURES: Grass generation profiles, 100% NGIO settings, smart crash recovery, automatic file processing, mod-ready archives, CLI automation, progress bars, notifications, resume capability, system validation, LOD compatibility.
+⚠️ IMPORTANT: Configure 20GB+ Windows pagefile for overnight mode! (2-minute setup guide included)
+
+No Python installation required - single .exe file, just download and run!

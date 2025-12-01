@@ -44,7 +44,8 @@ echo.
 REM Launch the automation suite
 echo 🚀 Starting NGIO Automation Suite...
 echo.
-python ngio_automation_runner.py
+REM Run Python with unbuffered output (-u flag) so you see messages immediately
+python -u ngio_automation_runner.py
 
 REM Keep window open if there was an error
 if errorlevel 1 (

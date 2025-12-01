@@ -39,58 +39,112 @@
 
 [line]
 
-[size=5][color=#FF5722]🎯 What This Solves[/color][/size]
+[center][size=6][color=#FFD700]⭐ KILLER FEATURE: OVERNIGHT MODE ⭐[/color][/size]
+[size=5][color=#FF5722]🌈 Generate ALL 4 Seasons While You Sleep! 🌈[/color][/size][/center]
 
-[size=4][color=#E91E63]Current NGIO Grass Generation Process (PAINFUL):[/color][/size]
+[quote][center][size=5][b][color=#4CAF50]Set it before bed → Wake up to FOUR completed grass cache mods![/color][/b][/size]
+
+[size=4][color=#2196F3]The Ultimate Time-Saver:[/color][/size]
+[b]⏱️ Manual method: 4-6 hours of babysitting across 4 separate sessions[/b]
+[b]⚡ Overnight Mode: 5 minutes setup → Go to sleep → Wake up to completed mods![/b][/center][/quote]
+
+[size=5][color=#FF9800]🌙 How Overnight Mode Works:[/color][/size]
 [list]
-[*]⏱️ [b]4+ hours of manual work[/b] across 4 seasons
+[*]🎯 [b]ONE button press:[/b] Select "All 4 Seasons" in the interactive menu
+[*]🛌 [b]Walk away:[/b] Tool runs completely unattended for 4-6 hours
+[*]🔄 [b]Automatic season transitions:[/b] Winter → Spring → Summer → Autumn
+[*]💤 [b]Sleep through it:[/b] Tool handles everything while you rest
+[*]📦 [b]Wake up to success:[/b] 4 ready-to-install mod archives waiting!
+[*]🔔 [b]Per-season notifications:[/b] Optional toast alerts after each season completes
+[*]📊 [b]Smart progress tracking:[/b] "Season 2/4 - Spring" display
+[*]💾 [b]Crash recovery:[/b] If interrupted, resume from current season
+[*]🎊 [b]Result:[/b] [color=#4CAF50][b]1 run instead of 4, zero monitoring needed![/b][/color]
+[/list]
+
+[size=4][color=#E91E63][b]Real User Experience:[/b][/color][/size]
+[quote]
+[b]WITHOUT Overnight Mode:[/b]
+[list]
+[*]Day 1: Generate Winter (1 hour), manually edit configs, rename files
+[*]Day 2: Generate Spring (1 hour), manually edit configs, rename files  
+[*]Day 3: Generate Summer (1 hour), manually edit configs, rename files
+[*]Day 4: Generate Autumn (1 hour), manually edit configs, rename files
+[*][color=#FF0000]Total: 4 sessions, 4-6 hours of active monitoring[/color]
+[/list]
+
+[b]WITH Overnight Mode:[/b]
+[list]
+[*]10:00 PM: Launch tool → Select "All 4 Seasons" → Click "Start"
+[*]10:05 PM: Go to bed 🛌💤
+[*]6:00 AM: Wake up to 4 completed mods ☀️
+[*][color=#4CAF50]Total: 1 session, 5 minutes of your time[/color]
+[/list]
+[/quote]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[center][size=4][b][color=#FF0000]⚠️ CRITICAL: Configure 20GB+ Windows Pagefile for Overnight Mode! ⚠️[/color][/b][/size]
+[b]Skyrim can consume ALL available RAM during generation![/b]
+Without proper pagefile, your system WILL crash during overnight runs.
+[b]Don't worry - tool includes auto-check and 2-minute setup guide![/b][/center]
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+
+[line]
+
+[size=5][color=#FFD700]💎 Why Overnight Mode is a Game-Changer[/color][/size]
+
+[quote]
+[b][color=#4CAF50]Before this tool existed:[/color][/b]
+[list]
+[*]📅 [b]Day 1 Evening:[/b] Generate Winter (1 hour), manually edit INIs, rename files, test
+[*]📅 [b]Day 2 Evening:[/b] Generate Spring (1 hour), manually edit INIs, rename files, test  
+[*]📅 [b]Day 3 Evening:[/b] Generate Summer (1 hour), manually edit INIs, rename files, test
+[*]📅 [b]Day 4 Evening:[/b] Generate Autumn (1 hour), manually edit INIs, rename files, test
+[*]😫 [b]Result:[/b] [color=#FF0000]4 DAYS of work, 4-6 hours of active time, high frustration[/color]
+[*]🔄 If Skyrim crashes? Start over, lose progress
+[*]📝 Miss one INI setting? Incompatible with DynDOLOD
+[*]😤 Most users gave up and only generated 1 season
+[/list]
+
+[b][color=#FFD700]With Overnight Mode:[/color][/b]
+[list]
+[*]🌙 [b]10 PM Tonight:[/b] Launch tool → Select "All 4 Seasons" → Start (5 minutes)
+[*]😴 [b]10 PM - 6 AM:[/b] Sleep peacefully while tool works
+[*]☀️ [b]6 AM Tomorrow:[/b] Wake up to 4 completed, ready-to-install mods
+[*]✅ [b]Result:[/b] [color=#4CAF50]DONE IN ONE NIGHT, 5 minutes of your time, perfect results[/color]
+[*]🤖 Skyrim crashes? Tool handles it automatically
+[*]🎯 Perfect configuration? Every time, LOD-compatible
+[*]🎊 User satisfaction? [color=#FFD700]★★★★★[/color]
+[/list]
+
+[b][color=#FF5722]This is THE feature that makes grass cache generation ACCESSIBLE to everyone.[/color][/b]
+No more "I don't have time for this", no more "it's too complicated", no more giving up.
+Just click Start before bed. That's it.
+[/quote]
+
+[line]
+
+[size=5][color=#FF5722]🎯 What This Tool Solves[/color][/size]
+
+[size=4][color=#E91E63]Current NGIO Grass Generation (Manual Method):[/color][/size]
+[list]
+[*]⏱️ [b]4+ hours of manual work[/b] across 4 separate sessions
 [*]🔄 [b]Constant manual restarts[/b] when Skyrim crashes
 [*]📝 [b]Manual config editing[/b] for each season (Winter→Spring→Summer→Autumn)
 [*]📁 [b]Manual file renaming[/b] after each 30-60 minute generation
 [*]😤 [b]High error rates[/b] and frustration
-[*]🎮 [b]Constant babysitting[/b] required
+[*]🎮 [b]Constant babysitting[/b] required - can't walk away
 [/list]
 
-[size=4][color=#4CAF50]With NGIO Automation Suite (AMAZING):[/color][/size]
+[size=4][color=#4CAF50]With NGIO Automation Suite:[/color][/size]
 [list]
 [*]🚀 [b]5 minutes setup, walk away[/b]
-[*]🛌 [b]Run unattended - 30-60 min per season (or overnight for all 4 seasons)[/b]
+[*]🌙 [b]OVERNIGHT MODE: Generate all 4 seasons while you sleep![/b]
 [*]🤖 [b]Fully automated crash recovery[/b]
 [*]⚡ [b]Intelligent process management[/b]
 [*]📊 [b]Real-time progress tracking[/b]
 [*]✅ [b]Consistent, reliable results[/b]
+[*]💤 [b]Zero monitoring required[/b]
 [/list]
-
-[line]
-
-[size=5][color=#FF5722]✨ NEW in v1.5.1 - Multi-Season Overnight Generation! 🌈[/color][/size]
-
-[quote]
-[size=4][b][color=#4CAF50]🌈 USER REQUESTED: "ALL 4 SEASONS" MODE! 🌈[/color][/b][/size]
-
-[b]Set it before bed → Wake up to 4 completed archives![/b]
-
-[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
-
-[size=3][color=#2196F3]🌈 NEW: Multi-Season Overnight Generation[/color][/size]
-[list]
-[*][b]"All 4 Seasons" Option:[/b] Select option 5 in menu for overnight generation
-[*][b]CLI Support:[/b] ngio-automation --season all
-[*][b]Estimated Time:[/b] 4-6 hours total (60-90 min per season)
-[*][b]Per-Season Notifications:[/b] Get notified after EACH season completes
-[*][b]Progress Tracking:[/b] "Season 2/4 - Spring" status display
-[*][b]Perfect for Overnight:[/b] Start before bed, wake up to 4 ready archives!
-[*][b]Seamless Transitions:[/b] Automatic PrecacheGrass.txt recreation between seasons
-[*][b]Resume Capability:[/b] If interrupted, continue from current season
-[*][b]Result:[/b] [color=#4CAF50]1 run instead of 4, zero monitoring needed![/color]
-[/list]
-
-[b][color=#FF9800]User Experience:[/color][/b]
-[list]
-[*][b]Before:[/b] Run 4 times (Winter, Spring, Summer, Autumn) - constant monitoring
-[*][b]After:[/b] Select "All 4 Seasons" → Sleep → Done! 🌈💤
-[/list]
-[/quote]
 
 [line]
 
@@ -465,16 +519,26 @@ Based on community feedback, we've dramatically improved stability for users wit
 
 [line]
 
-[size=5][color=#FF5722]🌱 Flexible Season Selection[/color][/size]
+[size=5][color=#FF5722]🌱 Season Generation Modes[/color][/size]
 
-[size=4][color=#4CAF50]Choose Your Generation Mode:[/color][/size]
+[size=4][color=#FFD700]⭐ OVERNIGHT MODE (RECOMMENDED):[/color][/size]
 [list]
-[*][b]All Seasons:[/b] Winter, Spring, Summer, Autumn (2-4 hours)
-[*][b]Popular Combinations:[/b] Winter+Summer, Spring+Autumn (1-2 hours)
-[*][b]Custom Selection:[/b] Any combination you want
-[*][b]Non-Seasonal Mode:[/b] For users without seasonal mods
-[*][b]Single Season:[/b] Perfect for testing (30-60 minutes)
+[*][b]🌙 All 4 Seasons:[/b] Winter + Spring + Summer + Autumn (4-6 hours)
+[*][b]Set it and forget it:[/b] Start before bed, wake up to 4 completed mods
+[*][b]Zero monitoring:[/b] Tool handles everything automatically
+[*][b]Perfect for:[/b] Initial setup, mod list updates, lazy weekends
+[*][b]User experience:[/b] [color=#4CAF50]5 minutes of your time = 4 complete mods![/color]
 [/list]
+
+[size=4][color=#4CAF50]Other Generation Modes:[/color][/size]
+[list]
+[*][b]Single Season:[/b] Perfect for testing or quick updates (60-90 minutes)
+[*][b]Popular Combos:[/b] Winter+Summer (cold/warm) or Spring+Autumn (transitional) 
+[*][b]Custom Selection:[/b] Any combination you want
+[*][b]Non-Seasonal Mode:[/b] For users without seasonal grass mods
+[/list]
+
+[size=4][color=#FF9800]Pro Tip:[/color][/size] [b]Most users should use Overnight Mode (All 4 Seasons) on first run![/b] You get complete coverage and can test which seasons you like. Takes the same time whether you're watching or sleeping. 🌙
 
 [line]
 
@@ -534,10 +598,16 @@ Based on community feedback, we've dramatically improved stability for users wit
 
 [size=4][color=#2196F3]💾 System Requirements:[/color][/size]
 [list]
-[*][b]Windows 10/11[/b] (required)
-[*][b]At least 8GB RAM[/b] (for heavy mod lists)
-[*][b]At least 5GB free disk space[/b] (for generation process)
-[*][b]No internet required[/b] (everything is bundled - works offline!)
+[*][b]OS:[/b] Windows 10/11 (64-bit)
+[*][b]RAM:[/b] 16GB+ recommended for heavy mod lists
+[*][b][color=#FF0000]⚠️ CRITICAL - Windows Pagefile:[/color][/b] [color=#FF0000]20GB+ REQUIRED for overnight mode![/color]
+   [b]Why:[/b] Skyrim can consume ALL RAM during generation. System WILL crash without proper pagefile!
+   [b]Setup:[/b] System Properties → Performance Settings → Virtual Memory → Custom: 20480 MB
+   [b]Details:[/b] See PAGEFILE_SETUP_GUIDE.txt in installation folder (2-minute setup)
+   [b]Tool validates automatically:[/b] Pre-flight check warns if pagefile too small
+[*][b]Storage:[/b] 5-10GB free space (grass cache can be several GB per season)
+[*][b]Python:[/b] Bundled! (No installation needed)
+[*][b]Game:[/b] Skyrim Special Edition (not LE, not VR)
 [/list]
 
 [line]
@@ -555,8 +625,9 @@ Based on community feedback, we've dramatically improved stability for users wit
 
 [size=4][color=#4CAF50]First Time Setup (2 minutes):[/color][/size]
 [list=1]
+[*][b]⚠️ CRITICAL FIRST![/b] Configure 20GB+ Windows pagefile (see System Requirements section - takes 2 minutes, prevents crashes!)
 [*][b]Extract:[/b] Unzip the downloaded file anywhere on your computer (Desktop is fine)
-[*][b]Run the tool:[/b] Double-click [font=Courier New]start_ngio_automation.bat[/font]
+[*][b]Run the tool:[/b] Double-click [font=Courier New]start_ngio_automation.bat[/font] (or the .exe file)
 [*][b]Skyrim path:[/b] Point to your Skyrim installation folder
    [list]
    [*]Usually: [font=Courier New]C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition[/font]
@@ -564,25 +635,29 @@ Based on community feedback, we've dramatically improved stability for users wit
    [*][b]Tip:[/b] You can drag and drop the folder into the console
    [/list]
 [*][b]Output path:[/b] Where to save generated archives (any folder you want)
-[*][b]Seasonal mods:[/b] Tell the tool if you have Seasons of Skyrim installed
-[*][b]Season selection:[/b] Pick ONE season to generate at a time (you can run the tool again for other seasons)
-[*][b]Timeouts:[/b] Leave defaults (works automatically for most setups, even large load orders)
+[*][b]Seasonal mods:[/b] Tell the tool if you have Seasons of Skyrim or Cathedral Seasons
+[*][b]Grass profile:[/b] Choose "LOD Compatible" (works for 90% of users)
 [/list]
 
-[size=4][color=#4CAF50]Generation Process (20-60 minutes per season):[/color][/size]
+[size=4][color=#FFD700]⭐ RECOMMENDED: Overnight Mode (Generate All 4 Seasons):[/color][/size]
 [list=1]
-[*][b]Start generation:[/b] Tool automatically launches Skyrim
-[*][b]Walk away:[/b] Tool handles everything (crashes, retries, progress monitoring)
-[*][b]Completion:[/b] Tool creates archive and cleans up files automatically
-[*][b]Install:[/b] Use the generated archive in your mod manager like any other mod
+[*][b]Season selection:[/b] Choose option 5: "All 4 Seasons"
+[*][b]Start before bed:[/b] Click "Start Generation" around 10 PM
+[*][b]Go to sleep:[/b] Tool runs completely unattended (4-6 hours)
+[*][b]Wake up:[/b] 4 completed, ready-to-install mod archives waiting!
+[*][b]Result:[/b] [color=#4CAF50]5 minutes of your time = Complete grass cache for all seasons![/color]
 [/list]
 
-[size=4][color=#4CAF50]For Multiple Seasons:[/color][/size]
-[list]
-[*][b]Run the tool again[/b] and select a different season
-[*][b]Each season is generated separately[/b] for optimal disk space usage
-[*][b]You get one archive per season[/b] - install the ones you want
+[size=4][color=#2196F3]Alternative: Single Season Mode (For Testing):[/color][/size]
+[list=1]
+[*][b]Season selection:[/b] Pick one season (Winter, Spring, Summer, or Autumn)
+[*][b]Start generation:[/b] Tool automatically launches Skyrim
+[*][b]Walk away:[/b] Tool handles everything (60-90 minutes)
+[*][b]Completion:[/b] One season archive ready to install
+[*][b]Repeat:[/b] Run tool again for other seasons if desired
 [/list]
+
+[size=4][color=#FF9800]💡 Pro Tip:[/color][/size] [b]Most users should use Overnight Mode on first run![/b] Why generate one season when you can generate all 4 with the same effort? Takes the same time whether you're watching or sleeping. 🌙
 
 [size=4][color=#FF9800]🔧 Have 500+ Mods? Important Settings![/color][/size]
 [quote]

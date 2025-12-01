@@ -166,6 +166,15 @@ class StateManager:
             self.logger.error(f"Failed to load state: {e}")
             return None
     
+    def has_saved_state(self) -> bool:
+        """
+        Check if there's a saved state file
+        
+        Returns:
+            True if state file exists
+        """
+        return self.state_file.exists()
+    
     def clear_state(self) -> bool:
         """
         Clear saved state (after successful completion)

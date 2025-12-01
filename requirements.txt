@@ -11,12 +11,14 @@ pyyaml>=6.0            # Configuration file support
 win10toast>=0.9        # Windows 10/11 toast notifications
 tqdm>=4.66.0           # Progress bars with ETA
 
+# Build dependencies (required for creating releases)
+pyinstaller>=6.0.0    # Standalone executable creation (single .exe file)
+
 # Development dependencies (optional)
-# Uncomment these if you're developing or building from source
+# Uncomment these if you need them for development
 # build>=0.8.0         # Modern Python build system
 # wheel>=0.37.0        # Wheel package format
 # setuptools>=45.0.0   # Package building tools
-# pyinstaller>=6.0.0   # Standalone executable creation
 # pytest>=7.4.0        # Testing framework
 # pytest-cov>=4.1.0    # Coverage reporting
 # mypy>=1.5.0          # Static type checking

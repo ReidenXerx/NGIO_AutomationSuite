@@ -4,22 +4,66 @@ NGIO Automation Suite - Main Runner
 The user-friendly entry point for grass cache generation
 """
 
+# IMMEDIATE output to see if script starts
+print("[DEBUG] Python script started", flush=True)
+
 import os
 import sys
 import platform
 import signal
 import atexit
 import argparse
+import time
 from pathlib import Path
+from datetime import datetime
+from typing import Optional
+
+print("[DEBUG] Basic imports done", flush=True)
 
 # Add src to Python path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root / "src"))
 
+print("[DEBUG] About to import automation_suite...", flush=True)
 from src.core.automation_suite import NGIOAutomationSuite, AutomationConfig, Season
+print("[DEBUG] automation_suite imported", flush=True)
+
+print("[DEBUG] About to import config_cache...", flush=True)
 from src.utils.config_cache import ConfigCache
+print("[DEBUG] config_cache imported", flush=True)
+
+print("[DEBUG] About to import logger...", flush=True)
 from src.utils.logger import Logger
+print("[DEBUG] logger imported", flush=True)
+
+print("[DEBUG] About to import state_manager...", flush=True)
+from src.utils.state_manager import StateManager, AutomationState
+print("[DEBUG] state_manager imported", flush=True)
+
+print("[DEBUG] About to import version...", flush=True)
 from src.__version__ import __version__, __title__, __description__
+print("[DEBUG] All imports complete!", flush=True)
+
+# Import dependencies at module level (faster than in function)
+print("[DEBUG] Checking dependencies...", flush=True)
+try:
+    import psutil
+    import colorlog
+    import configparser
+    DEPENDENCIES_OK = True
+    print("[DEBUG] Dependencies OK", flush=True)
+except ImportError:
+    DEPENDENCIES_OK = False
+    print("[DEBUG] Dependencies MISSING", flush=True)
+
+# Cache platform check at module level
+# WORKAROUND: platform.system() can hang for 2+ minutes on some systems!
+# Assume Windows since this tool is Windows-only anyway
+print("[DEBUG] Caching platform info...", flush=True)
+IS_WINDOWS = True  # This tool only works on Windows anyway - skip detection
+PYTHON_VERSION = sys.version_info
+print("[DEBUG] Platform cached: Windows=True (assumed)", flush=True)
+print("[DEBUG] Module initialization complete!", flush=True)
 
 
 def parse_arguments():
@@ -98,6 +142,9 @@ def print_banner():
 ║                                                                   ║
 ║      Transform 4+ Hours of Manual Work Into Automated Magic!     ║
 ║                                                                   ║
+║  ⚠️  OVERNIGHT MODE USERS: Ensure 20GB+ Windows Pagefile!  ⚠️     ║
+║      (Skyrim can consume ALL RAM during generation!)             ║
+║                                                                   ║
 ║  ✨ NEW: Resume • Validation • Scheduler • Crash Analytics ✨    ║
 ║  🚀 CLI • Checksums • Notifications • Progress Bars • YAML 🚀    ║
 ╚═══════════════════════════════════════════════════════════════════╝
@@ -116,28 +163,25 @@ def check_system_requirements() -> bool:
     logger = Logger("SystemCheck")
     logger.info("🔍 Checking system requirements...")
     
-    # Check Python version
-    if sys.version_info < (3, 7):
+    # Check Python version (cached at module level)
+    if PYTHON_VERSION < (3, 7):
         logger.error("❌ Python 3.7+ required")
         return False
     
-    # Check OS
-    if platform.system() != "Windows":
+    # Check OS (cached at module level)
+    if not IS_WINDOWS:
         logger.error("❌ Windows is required for Skyrim modding")
         return False
     
-    # Check dependencies
-    try:
-        import psutil
-        import colorlog
-        import configparser
-        logger.info("✅ All dependencies available")
-    except ImportError as e:
-        logger.error(f"❌ Missing dependency: {e}")
+    # Check dependencies (already imported at module level)
+    if not DEPENDENCIES_OK:
+        logger.error("❌ Missing dependencies: psutil, colorlog, or configparser")
         logger.info("💡 Run: pip install -r requirements.txt")
         return False
     
-    logger.success("✅ System requirements met")
+    logger.success("✅ System requirements met (Python {}.{}, Windows, Dependencies OK)".format(
+        PYTHON_VERSION.major, PYTHON_VERSION.minor
+    ))
     return True
 
 
@@ -180,6 +224,68 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
         logger.error("❌ Configuration is invalid or incomplete")
         logger.info("💡 Please configure paths first (option 2)")
         return False
+    
+    # Check for previous interrupted session FIRST
+    paths = config_cache.get_paths()
+    state_manager = StateManager(paths.output_directory)
+    
+    if state_manager.has_saved_state():
+        saved_state = state_manager.load_state()
+        
+        if saved_state and saved_state.current_season:
+            # Show session info
+            logger.separator("Previous Session Detected")
+            logger.info("🔄 An interrupted automation session was found!")
+            logger.info("")
+            logger.info(f"   📅 Last updated: {datetime.fromtimestamp(saved_state.last_updated).strftime('%Y-%m-%d %H:%M:%S')}")
+            logger.info(f"   🌱 Current season: {saved_state.current_season}")
+            logger.info(f"   ✅ Completed: {', '.join(saved_state.completed_seasons) if saved_state.completed_seasons else 'None'}")
+            
+            remaining = [s for s in saved_state.seasons_to_generate if s not in saved_state.completed_seasons]
+            logger.info(f"   📊 Remaining: {len(remaining)} seasons")
+            logger.info("")
+            logger.separator()
+            logger.info("")
+            logger.info("Do you want to continue from where you left off?")
+            logger.info("")
+            logger.info("   [Y] Yes - Resume previous session (skips profile selection)")
+            logger.info("   [N] No - Start fresh (clears previous session)")
+            logger.info("")
+            
+            choice = input("Your choice [Y/n]: ").strip().lower()
+            
+            if choice in ['', 'y', 'yes']:
+                # User confirmed resume - extract remaining seasons and update config
+                logger.success("✅ Resuming previous session...")
+                logger.info("")
+                
+                # Extract remaining seasons
+                remaining_seasons = [s for s in saved_state.seasons_to_generate if s not in saved_state.completed_seasons]
+                logger.info(f"📊 Will generate: {', '.join(remaining_seasons)}")
+                logger.info(f"🔄 Previous retry count: {saved_state.retry_count}/{saved_state.total_retries}")
+                logger.info("")
+                
+                # Update config cache with remaining seasons
+                preferences = config_cache.get_preferences()
+                preferences.seasons_to_generate = remaining_seasons
+                config_cache.save_config()
+                
+                # Clear the saved state - user confirmed, we'll create a fresh one with remaining seasons
+                # This prevents the double-prompt issue
+                state_manager.clear_state()
+                
+                # Skip profile selection - continue to generation with LOD Compatible default
+                automation_config = create_automation_config_from_cache(config_cache)
+                automation_suite = NGIOAutomationSuite(automation_config)
+                
+                # Start fresh generation with remaining seasons
+                return automation_suite.run_full_automation()
+            else:
+                # User wants fresh start
+                logger.info("🗑️  Clearing previous session...")
+                state_manager.clear_state()
+                logger.success("✅ Starting fresh session")
+                # Continue to profile selection below
     
     # v1.5.0: NEW - Grass Profile Selection
     from src.utils.grass_profiles import select_profile_interactive
@@ -401,21 +507,191 @@ def emergency_shutdown(signum=None, frame=None):
             print(f"Error during emergency shutdown: {e}")
     sys.exit(1)
 
+
+def create_automation_config_from_cache(config_cache: ConfigCache, grass_profile=None) -> AutomationConfig:
+    """
+    Create AutomationConfig from cached configuration
+    
+    Args:
+        config_cache: Configuration cache
+        grass_profile: Optional grass profile (uses LOD Compatible if None)
+        
+    Returns:
+        AutomationConfig instance
+    """
+    paths = config_cache.get_paths()
+    preferences = config_cache.get_preferences()
+    
+    # Convert season names to Season enums
+    season_map = {
+        "Winter": Season.WINTER,
+        "Spring": Season.SPRING, 
+        "Summer": Season.SUMMER,
+        "Autumn": Season.AUTUMN,
+        "No Seasons": Season.NO_SEASONS
+    }
+    
+    seasons_to_generate = []
+    for season_name in preferences.seasons_to_generate:
+        if season_name in season_map:
+            seasons_to_generate.append(season_map[season_name])
+    
+    # Use default LOD Compatible profile if none provided
+    if grass_profile is None:
+        from src.utils.grass_profiles import PROFILES, ProfileType
+        grass_profile = PROFILES[ProfileType.LOD_COMPATIBLE]
+    
+    # Create automation config
+    return AutomationConfig(
+        skyrim_path=paths.skyrim_path,
+        output_directory=paths.output_directory,
+        seasons_to_generate=seasons_to_generate,
+        max_crash_retries=preferences.max_crash_retries,
+        crash_timeout_minutes=preferences.crash_timeout_minutes,
+        no_progress_timeout_minutes=preferences.no_progress_timeout_minutes,
+        create_archives=preferences.create_archives,
+        backup_configs=preferences.backup_configs,
+        # Grass profile settings
+        extend_grass_distance=grass_profile.extend_grass_distance,
+        extend_grass_count=grass_profile.extend_grass_count,
+        super_dense_grass=grass_profile.super_dense_grass,
+        overwrite_min_grass_size=grass_profile.overwrite_min_grass_size,
+        global_grass_scale=grass_profile.global_grass_scale,
+        ensure_max_grass_types=grass_profile.ensure_max_grass_types
+    )
+
+
+def check_for_previous_session(config_cache: ConfigCache, logger: Logger) -> Optional[AutomationState]:
+    """
+    Check if there's an interrupted/previous session and prompt user to resume
+    
+    Args:
+        config_cache: Configuration cache with paths
+        logger: Logger instance
+        
+    Returns:
+        AutomationState if user wants to resume, None otherwise
+    """
+    paths = config_cache.get_paths()
+    if not paths or not paths.output_directory:
+        return None
+    
+    # Initialize state manager
+    state_manager = StateManager(paths.output_directory)
+    
+    # Check if there's a saved state
+    if not state_manager.has_saved_state():
+        return None
+    
+    # Load the saved state
+    saved_state = state_manager.load_state()
+    
+    if not saved_state or not saved_state.current_season:
+        return None
+    
+    # Check if state is stale (older than 7 days)
+    if saved_state.last_updated:
+        age_days = (time.time() - saved_state.last_updated) / (24 * 3600)
+        if age_days > 7:
+            logger.warning(f"⚠️  Found old session state ({age_days:.1f} days old) - ignoring")
+            state_manager.clear_state()
+            return None
+    
+    # Display session info
+    logger.separator("Previous Session Detected")
+    logger.info("🔄 An interrupted automation session was found!")
+    logger.info("")
+    logger.info(f"   📅 Last updated: {datetime.fromtimestamp(saved_state.last_updated).strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info(f"   🌱 Current season: {saved_state.current_season}")
+    logger.info(f"   ✅ Completed: {', '.join(saved_state.completed_seasons) if saved_state.completed_seasons else 'None'}")
+    logger.info(f"   📊 Remaining: {len([s for s in saved_state.seasons_to_generate if s not in saved_state.completed_seasons])} seasons")
+    
+    if saved_state.retry_count > 0:
+        logger.info(f"   🔄 Retries: {saved_state.retry_count}/{saved_state.total_retries}")
+    
+    logger.info("")
+    logger.separator()
+    
+    # Prompt user
+    logger.info("Do you want to continue from where you left off?")
+    logger.info("")
+    logger.info("   [Y] Yes - Resume previous session")
+    logger.info("   [N] No - Start fresh (clears previous session)")
+    logger.info("")
+    
+    while True:
+        try:
+            choice = input("Your choice [Y/n]: ").strip().lower()
+            
+            if choice in ['', 'y', 'yes']:
+                # User wants to resume
+                logger.success("✅ Resuming previous session...")
+                
+                # Validate that paths still exist
+                logger.info("🔍 Validating previous session configuration...")
+                
+                if saved_state.skyrim_path and not os.path.exists(saved_state.skyrim_path):
+                    logger.error(f"❌ Skyrim path no longer exists: {saved_state.skyrim_path}")
+                    logger.error("   Cannot resume - please start fresh")
+                    state_manager.clear_state()
+                    input("Press Enter to continue...")
+                    return None
+                
+                if saved_state.output_directory and not os.path.exists(saved_state.output_directory):
+                    logger.warning(f"⚠️  Output directory missing: {saved_state.output_directory}")
+                    logger.info("   Creating output directory...")
+                    try:
+                        os.makedirs(saved_state.output_directory, exist_ok=True)
+                    except Exception as e:
+                        logger.error(f"❌ Failed to create output directory: {e}")
+                        logger.error("   Cannot resume - please start fresh")
+                        state_manager.clear_state()
+                        input("Press Enter to continue...")
+                        return None
+                
+                logger.success("✅ Configuration validated")
+                return saved_state
+            
+            elif choice in ['n', 'no']:
+                # User wants fresh start
+                logger.info("🗑️  Clearing previous session...")
+                state_manager.clear_state()
+                logger.success("✅ Starting fresh session")
+                return None
+            
+            else:
+                logger.warning("Invalid choice. Please enter Y or N")
+        
+        except KeyboardInterrupt:
+            logger.info("\n⚠️  Cancelled - starting fresh session")
+            state_manager.clear_state()
+            return None
+        except Exception as e:
+            logger.error(f"Error prompting for resume: {e}")
+            return None
+
 def main():
     """Main entry point"""
+    print("[DEBUG] main() started", flush=True)
     global automation_suite
     
     # Parse command-line arguments
+    print("[DEBUG] Parsing arguments...", flush=True)
     args = parse_arguments()
+    print("[DEBUG] Arguments parsed", flush=True)
     
     # Register signal handlers for graceful shutdown
+    print("[DEBUG] Registering signal handlers...", flush=True)
     signal.signal(signal.SIGINT, emergency_shutdown)  # Ctrl+C
     signal.signal(signal.SIGTERM, emergency_shutdown)  # Termination signal
     atexit.register(emergency_shutdown)  # Normal exit
+    print("[DEBUG] Signal handlers registered", flush=True)
     
     # Show banner unless suppressed
+    print("[DEBUG] Showing banner...", flush=True)
     if not args.no_banner:
         print_banner()
+    print("[DEBUG] Banner shown", flush=True)
     
     # Check system requirements
     if not check_system_requirements():
@@ -428,14 +704,24 @@ def main():
         Logger.set_console_level('DEBUG')
     
     # Initialize config cache
+    temp_logger = Logger("Init")
+    temp_logger.info("⏳ Initializing ConfigCache...")
     config_cache = ConfigCache()
+    temp_logger.info("✅ ConfigCache initialized")
+    
     logger = Logger("Main")
     
     if args.verbose:
         logger.debug("🔧 Verbose DEBUG mode enabled")
     
     # Load existing configuration
+    logger.info("⏳ Loading configuration...")
     config_loaded = config_cache.load_config()
+    logger.info("✅ Configuration loaded")
+    
+    # NOTE: Session resume is handled automatically by NGIOAutomationSuite.run_full_automation()
+    # It will detect interrupted sessions and prompt the user during generation
+    # No need to check here - let the automation suite handle it
     
     # CLI MODE: If season argument provided, run generation directly
     if args.season:
@@ -528,8 +814,11 @@ def main():
 
 
 if __name__ == "__main__":
+    print("[DEBUG] Entering __main__ block", flush=True)
     try:
+        print("[DEBUG] About to call main()...", flush=True)
         exit_code = main()
+        print("[DEBUG] main() returned", flush=True)
         sys.exit(exit_code)
     except Exception as e:
         print(f"💥 Fatal error: {e}")

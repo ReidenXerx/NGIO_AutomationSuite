@@ -34,6 +34,7 @@ class SystemValidator:
     - Skyrim installation
     - Required mods (NGIO, SKSE)
     - Disk space
+    - System RAM and pagefile (critical for overnight mode!)
     - Python environment
     - File permissions
     - Optional dependencies
@@ -62,7 +63,9 @@ class SystemValidator:
         self._check_disk_space()
         self._check_write_permissions()
         
-        # Warning checks
+        # Warning checks (RAM/Pagefile are WARNING, not CRITICAL)
+        self._check_system_memory()
+        self._check_pagefile_settings()
         self._check_python_version()
         self._check_dependencies()
         self._check_mod_manager()
@@ -193,6 +196,7 @@ class SystemValidator:
             return
         
         try:
+            self.logger.debug("Checking disk space...")
             stat = shutil.disk_usage(self.skyrim_path)
             free_gb = stat.free / (1024 ** 3)
             
@@ -224,6 +228,88 @@ class SystemValidator:
                 ))
         except Exception as e:
             self.logger.warning(f"Failed to check disk space: {e}")
+    
+    def _check_system_memory(self):
+        """Check system RAM - Critical for overnight generation"""
+        try:
+            import psutil
+            
+            self.logger.debug("Checking system RAM...")
+            memory = psutil.virtual_memory()
+            total_gb = memory.total / (1024 ** 3)
+            available_gb = memory.available / (1024 ** 3)
+            
+            # Check if system has enough RAM
+            if total_gb < 12:
+                self.results.append(ValidationResult(
+                    passed=True,
+                    category="Memory",
+                    check_name="System RAM",
+                    message=f"⚠️  Low RAM: {total_gb:.1f} GB total (Skyrim can crash during generation!)",
+                    severity="warning",
+                    suggestion="🔥 CRITICAL: With <16GB RAM, you MUST configure Windows pagefile to 20GB+ to prevent crashes during overnight generation!"
+                ))
+            elif total_gb < 16:
+                self.results.append(ValidationResult(
+                    passed=True,
+                    category="Memory",
+                    check_name="System RAM",
+                    message=f"⚠️  Limited RAM: {total_gb:.1f} GB total (Configure 20GB+ pagefile recommended)",
+                    severity="warning",
+                    suggestion="Skyrim can consume ALL available RAM during grass generation. Set Windows pagefile to 20GB+ to prevent crashes!"
+                ))
+            else:
+                self.results.append(ValidationResult(
+                    passed=True,
+                    category="Memory",
+                    check_name="System RAM",
+                    message=f"{total_gb:.1f} GB total, {available_gb:.1f} GB available",
+                    severity="info"
+                ))
+        except ImportError:
+            self.logger.warning("psutil not available - cannot check system memory")
+        except Exception as e:
+            self.logger.warning(f"Failed to check system memory: {e}")
+    
+    def _check_pagefile_settings(self):
+        """Check Windows pagefile (virtual memory) configuration"""
+        try:
+            import psutil
+            
+            self.logger.debug("Checking Windows pagefile...")
+            swap = psutil.swap_memory()
+            pagefile_gb = swap.total / (1024 ** 3)
+            
+            if pagefile_gb < 10:
+                self.results.append(ValidationResult(
+                    passed=False,
+                    category="Memory",
+                    check_name="Windows Pagefile",
+                    message=f"🚨 CRITICAL: Pagefile too small: {pagefile_gb:.1f} GB",
+                    severity="warning",  # Warning not critical - user can still try
+                    suggestion="⚠️  SET PAGEFILE TO 20GB+ IMMEDIATELY! Skyrim WILL crash during overnight generation otherwise. Go to: System Properties → Advanced → Performance Settings → Advanced → Virtual Memory → Custom size: 20480 MB"
+                ))
+            elif pagefile_gb < 20:
+                self.results.append(ValidationResult(
+                    passed=True,
+                    category="Memory",
+                    check_name="Windows Pagefile",
+                    message=f"⚠️  Pagefile: {pagefile_gb:.1f} GB (Minimum, 20GB+ recommended)",
+                    severity="warning",
+                    suggestion="Increase pagefile to 20GB+ for safer overnight generation (especially with <16GB RAM)"
+                ))
+            else:
+                self.results.append(ValidationResult(
+                    passed=True,
+                    category="Memory",
+                    check_name="Windows Pagefile",
+                    message=f"✅ Pagefile: {pagefile_gb:.1f} GB (Good for overnight generation!)",
+                    severity="info"
+                ))
+        except ImportError:
+            self.logger.warning("psutil not available - cannot check pagefile")
+        except Exception as e:
+            self.logger.warning(f"Failed to check pagefile: {e}")
     
     def _check_write_permissions(self):
         """Check write permissions for output directory"""
