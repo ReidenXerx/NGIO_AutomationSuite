@@ -1,0 +1,56 @@
+# NGIO Automation Suite v1.5.0 - Quick Start
+
+## What's in this package?
+
+- **NGIO_Automation_Suite_v1.5.0.exe** - The main application (single file, no Python needed!)
+- **docs/** - Complete documentation and guides
+- **README.md** - Full project documentation
+
+## Quick Start (3 Steps)
+
+1. **Setup your pagefile** (CRITICAL!):
+   - Read: docs/PAGEFILE_SETUP_GUIDE.txt
+   - Ensure at least 20GB pagefile allocated
+
+2. **Run the application**:
+   - Double-click the .exe file
+   - Follow the interactive prompts
+
+3. **Select your season(s)**:
+   - Single season: ~60-90 minutes
+   - All 4 seasons (overnight): ~4-6 hours
+
+## Important Notes
+
+⚠️ **PAGEFILE SETUP IS MANDATORY**
+Without proper pagefile, Skyrim WILL crash during generation!
+
+📁 **First-Time Setup**
+The tool will guide you through:
+- Locating your Skyrim installation
+- Selecting output directory
+- Choosing grass generation profile
+
+🌱 **Grass Profiles**
+- Fast: ~30-45 minutes (basic density)
+- LOD Compatible: ~60-90 minutes (recommended for DynDOLOD)
+- Maximum Quality: ~90-120 minutes (highest density)
+
+## Documentation
+
+- **Complete Guide**: docs/NEXUS_DOCUMENTATION.txt
+- **Pagefile Setup**: docs/PAGEFILE_SETUP_GUIDE.txt
+- **Release Notes**: docs/V1.5.1_RELEASE_NOTES.md
+- **Full README**: README.md
+
+## System Requirements
+
+- Windows 10/11
+- Skyrim SE/AE/VR with NGIO mod
+- 16GB+ RAM (recommended)
+- 20GB+ pagefile (required!)
+- SKSE64 (recommended)
+
+---
+
+Enjoy your automated grass cache generation! 🌱

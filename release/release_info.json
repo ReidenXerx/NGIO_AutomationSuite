@@ -1,0 +1,40 @@
+{
+  "project": "NGIO_Automation_Suite",
+  "version": "1.5.0",
+  "build_date": "2025-12-02T00:56:08.970313",
+  "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "platform": "win32",
+  "files": [
+    {
+      "name": "ngio-automation-suite-1.1.2-bundled.zip",
+      "size_mb": 42.46,
+      "type": "unknown",
+      "sha256": "92efec011f77badf22e05dc36c76df22c2ddf57cb482ff1cf3aedfcbf8cf72ac"
+    },
+    {
+      "name": "NGIO_Automation_Suite_v1.5.0_Portable.zip",
+      "size_mb": 0.19,
+      "type": "portable_source",
+      "sha256": "d54f4e7ce7f1de718c77cd73c7ff72001ab14e4926db82e5d41ebd5012d07944"
+    },
+    {
+      "name": "NGIO_Automation_Suite_v1.5.0_Release.zip",
+      "size_mb": 10.5,
+      "type": "single_exe_package",
+      "sha256": "b98563621e3911f0229afb2096c76ef246c058348d514301f908ee48f0ea3468"
+    },
+    {
+      "name": "NGIO_Automation_Suite_v1.5.0.exe",
+      "size_mb": 10.67,
+      "type": "standalone_exe",
+      "sha256": "5725974863c080a715c2c92bbe314e29f870a76b4102c4c97a8bd3e1e90cb343",
+      "note": "Standalone executable (no Python required)"
+    }
+  ],
+  "checksums": {
+    "ngio-automation-suite-1.1.2-bundled.zip": "92efec011f77badf22e05dc36c76df22c2ddf57cb482ff1cf3aedfcbf8cf72ac",
+    "NGIO_Automation_Suite_v1.5.0_Portable.zip": "d54f4e7ce7f1de718c77cd73c7ff72001ab14e4926db82e5d41ebd5012d07944",
+    "NGIO_Automation_Suite_v1.5.0_Release.zip": "b98563621e3911f0229afb2096c76ef246c058348d514301f908ee48f0ea3468",
+    "NGIO_Automation_Suite_v1.5.0.exe": "5725974863c080a715c2c92bbe314e29f870a76b4102c4c97a8bd3e1e90cb343"
+  }
+}

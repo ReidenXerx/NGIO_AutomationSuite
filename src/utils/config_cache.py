@@ -422,15 +422,18 @@ class ConfigCache:
             else:
                 self.preferences.use_seasonal_mods = True
                 
-                # Single season selection
+                # v1.5.1: NEW - Multi-season selection!
                 self.logger.info("")
-                self.logger.info("🌱 Which season to generate? (ONE season per run)")
-                self.logger.info("   1. Winter")
-                self.logger.info("   2. Spring")
-                self.logger.info("   3. Summer")
-                self.logger.info("   4. Autumn")
+                self.logger.info("🌱 Which season(s) to generate?")
+                self.logger.info("   1. Winter only")
+                self.logger.info("   2. Spring only")
+                self.logger.info("   3. Summer only")
+                self.logger.info("   4. Autumn only")
+                self.logger.info("   5. All 4 Seasons 🌈 (Overnight Mode)")
+                self.logger.info("      ⏰ Estimated: 4-6 hours total")
+                self.logger.info("      💤 Perfect for overnight generation!")
                 
-                choice = input("   Choice (1-4, default 1): ").strip()
+                choice = input("   Choice (1-5, default 1): ").strip()
                 
                 if choice == "2":
                     self.preferences.seasons_to_generate = ["Spring"]
@@ -438,6 +441,11 @@ class ConfigCache:
                     self.preferences.seasons_to_generate = ["Summer"]
                 elif choice == "4":
                     self.preferences.seasons_to_generate = ["Autumn"]
+                elif choice == "5":
+                    self.preferences.seasons_to_generate = ["Winter", "Spring", "Summer", "Autumn"]
+                    self.logger.info("✅ All 4 Seasons selected! 🌈")
+                    self.logger.info("⏰ This will take 4-6 hours")
+                    self.logger.info("🔔 You'll receive notifications for each season")
                 else:  # Default to Winter
                     self.preferences.seasons_to_generate = ["Winter"]
             

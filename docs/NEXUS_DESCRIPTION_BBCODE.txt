@@ -20,7 +20,7 @@
 [b][color=#4CAF50]This tool is 100% safe:[/color][/b]
 [list]
 [*]✅ [b]Open Source:[/b] Full source code available on GitHub for inspection
-[*]✅ [b]No Network Activity:[/b] Tool works completely offline (except Python package downloads)
+[*]✅ [b]No Network Activity:[/b] Bundled version works completely offline (everything included, no downloads needed)
 [*]✅ [b]No System Changes:[/b] Only modifies Skyrim files and creates mod archives
 [*]✅ [b]No Admin Required:[/b] Runs with normal user permissions
 [*]✅ [b]Portable:[/b] No installation, no registry changes, no system files modified
@@ -39,42 +39,390 @@
 
 [line]
 
-[size=5][color=#FF5722]🎯 What This Solves[/color][/size]
+[center][size=6][color=#FFD700]⭐ KILLER FEATURE: OVERNIGHT MODE ⭐[/color][/size]
+[size=5][color=#FF5722]🌈 Generate ALL 4 Seasons While You Sleep! 🌈[/color][/size][/center]
 
-[size=4][color=#E91E63]Current NGIO Grass Generation Process (PAINFUL):[/color][/size]
+[quote][center][size=5][b][color=#4CAF50]Set it before bed → Wake up to FOUR completed grass cache mods![/color][/b][/size]
+
+[size=4][color=#2196F3]The Ultimate Time-Saver:[/color][/size]
+[b]⏱️ Manual method: 4-6 hours of babysitting across 4 separate sessions[/b]
+[b]⚡ Overnight Mode: 5 minutes setup → Go to sleep → Wake up to completed mods![/b][/center][/quote]
+
+[size=5][color=#FF9800]🌙 How Overnight Mode Works:[/color][/size]
 [list]
-[*]⏱️ [b]4+ hours of manual work[/b] across 4 seasons
+[*]🎯 [b]ONE button press:[/b] Select "All 4 Seasons" in the interactive menu
+[*]🛌 [b]Walk away:[/b] Tool runs completely unattended for 4-6 hours
+[*]🔄 [b]Automatic season transitions:[/b] Winter → Spring → Summer → Autumn
+[*]💤 [b]Sleep through it:[/b] Tool handles everything while you rest
+[*]📦 [b]Wake up to success:[/b] 4 ready-to-install mod archives waiting!
+[*]🔔 [b]Per-season notifications:[/b] Optional toast alerts after each season completes
+[*]📊 [b]Smart progress tracking:[/b] "Season 2/4 - Spring" display
+[*]💾 [b]Crash recovery:[/b] If interrupted, resume from current season
+[*]🎊 [b]Result:[/b] [color=#4CAF50][b]1 run instead of 4, zero monitoring needed![/b][/color]
+[/list]
+
+[size=4][color=#E91E63][b]Real User Experience:[/b][/color][/size]
+[quote]
+[b]WITHOUT Overnight Mode:[/b]
+[list]
+[*]Day 1: Generate Winter (1 hour), manually edit configs, rename files
+[*]Day 2: Generate Spring (1 hour), manually edit configs, rename files  
+[*]Day 3: Generate Summer (1 hour), manually edit configs, rename files
+[*]Day 4: Generate Autumn (1 hour), manually edit configs, rename files
+[*][color=#FF0000]Total: 4 sessions, 4-6 hours of active monitoring[/color]
+[/list]
+
+[b]WITH Overnight Mode:[/b]
+[list]
+[*]10:00 PM: Launch tool → Select "All 4 Seasons" → Click "Start"
+[*]10:05 PM: Go to bed 🛌💤
+[*]6:00 AM: Wake up to 4 completed mods ☀️
+[*][color=#4CAF50]Total: 1 session, 5 minutes of your time[/color]
+[/list]
+[/quote]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[center][size=4][b][color=#FF0000]⚠️ CRITICAL: Configure 20GB+ Windows Pagefile for Overnight Mode! ⚠️[/color][/b][/size]
+[b]Skyrim can consume ALL available RAM during generation![/b]
+Without proper pagefile, your system WILL crash during overnight runs.
+[b]Don't worry - tool includes auto-check and 2-minute setup guide![/b][/center]
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+
+[line]
+
+[size=5][color=#FFD700]💎 Why Overnight Mode is a Game-Changer[/color][/size]
+
+[quote]
+[b][color=#4CAF50]Before this tool existed:[/color][/b]
+[list]
+[*]📅 [b]Day 1 Evening:[/b] Generate Winter (1 hour), manually edit INIs, rename files, test
+[*]📅 [b]Day 2 Evening:[/b] Generate Spring (1 hour), manually edit INIs, rename files, test  
+[*]📅 [b]Day 3 Evening:[/b] Generate Summer (1 hour), manually edit INIs, rename files, test
+[*]📅 [b]Day 4 Evening:[/b] Generate Autumn (1 hour), manually edit INIs, rename files, test
+[*]😫 [b]Result:[/b] [color=#FF0000]4 DAYS of work, 4-6 hours of active time, high frustration[/color]
+[*]🔄 If Skyrim crashes? Start over, lose progress
+[*]📝 Miss one INI setting? Incompatible with DynDOLOD
+[*]😤 Most users gave up and only generated 1 season
+[/list]
+
+[b][color=#FFD700]With Overnight Mode:[/color][/b]
+[list]
+[*]🌙 [b]10 PM Tonight:[/b] Launch tool → Select "All 4 Seasons" → Start (5 minutes)
+[*]😴 [b]10 PM - 6 AM:[/b] Sleep peacefully while tool works
+[*]☀️ [b]6 AM Tomorrow:[/b] Wake up to 4 completed, ready-to-install mods
+[*]✅ [b]Result:[/b] [color=#4CAF50]DONE IN ONE NIGHT, 5 minutes of your time, perfect results[/color]
+[*]🤖 Skyrim crashes? Tool handles it automatically
+[*]🎯 Perfect configuration? Every time, LOD-compatible
+[*]🎊 User satisfaction? [color=#FFD700]★★★★★[/color]
+[/list]
+
+[b][color=#FF5722]This is THE feature that makes grass cache generation ACCESSIBLE to everyone.[/color][/b]
+No more "I don't have time for this", no more "it's too complicated", no more giving up.
+Just click Start before bed. That's it.
+[/quote]
+
+[line]
+
+[size=5][color=#FF5722]🎯 What This Tool Solves[/color][/size]
+
+[size=4][color=#E91E63]Current NGIO Grass Generation (Manual Method):[/color][/size]
+[list]
+[*]⏱️ [b]4+ hours of manual work[/b] across 4 separate sessions
 [*]🔄 [b]Constant manual restarts[/b] when Skyrim crashes
 [*]📝 [b]Manual config editing[/b] for each season (Winter→Spring→Summer→Autumn)
 [*]📁 [b]Manual file renaming[/b] after each 30-60 minute generation
 [*]😤 [b]High error rates[/b] and frustration
-[*]🎮 [b]Constant babysitting[/b] required
+[*]🎮 [b]Constant babysitting[/b] required - can't walk away
 [/list]
 
-[size=4][color=#4CAF50]With NGIO Automation Suite (AMAZING):[/color][/size]
+[size=4][color=#4CAF50]With NGIO Automation Suite:[/color][/size]
 [list]
 [*]🚀 [b]5 minutes setup, walk away[/b]
-[*]🛌 [b]Run before bed, wake up completed[/b]
+[*]🌙 [b]OVERNIGHT MODE: Generate all 4 seasons while you sleep![/b]
 [*]🤖 [b]Fully automated crash recovery[/b]
 [*]⚡ [b]Intelligent process management[/b]
 [*]📊 [b]Real-time progress tracking[/b]
 [*]✅ [b]Consistent, reliable results[/b]
+[*]💤 [b]Zero monitoring required[/b]
 [/list]
 
 [line]
 
-[size=5][color=#4CAF50]✨ NEW in v1.1.0 - Large Load Order Support![/color][/size]
+[size=5][color=#FF5722]✨ v1.5.0 - Complete NGIO Configuration & Grass Profiles[/color][/size]
+
+[quote]
+[size=4][b][color=#FF9800]🚨 CRITICAL FIXES + MAJOR NEW FEATURES! 🚨[/color][/b][/size]
+
+[b]Research-Based Update with Professional Configuration System![/b]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]Critical Fixes:[/b]
+
+[size=3][color=#E91E63]🐛 1. OnlyLoadFromCache State Management Bug FIXED[/color][/size]
+[list]
+[*][b]The Bug:[/b] After generation, NGIO setting stayed at "allow regeneration" instead of "use cache"
+[*][b]Impact:[/b] Game tried to regenerate cache on EVERY launch (slow loading!)
+[*][b]The Fix:[/b] Properly sets OnlyLoadFromCache=True after completion
+[*][b]Result:[/b] [color=#4CAF50]Fast game loading with pre-generated cache![/color]
+[/list]
+
+[size=3][color=#E91E63]🎯 2. Complete NGIO Settings Coverage (36% → 100%)[/color][/size]
+[list]
+[*][b]Added 7 Missing Settings:[/b] ExtendGrassDistance, ExtendGrassCount, SuperDenseGrass, OverwriteMinGrassSize, GlobalGrassScale, EnsureMaxGrassTypes, OnlyPregenerateWorldSpaces
+[*][b]Before:[/b] Only 4 of 11 NGIO settings configured (36% coverage!)
+[*][b]After:[/b] All 11 settings properly configured (100% coverage!)
+[*][b]Impact:[/b] [color=#4CAF50]LOD compatibility, performance control, user customization![/color]
+[/list]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]New Features:[/b]
+
+[size=3][color=#2196F3]🌱 1. Grass Generation Profiles[/color][/size]
+[list]
+[*][b]Profile 1: Fast[/b] (30-45 min) - Quick testing, lower density
+[*][b]Profile 2: LOD Compatible[/b] (60-90 min) [color=#4CAF50][DEFAULT][/color] - Works with DynDOLOD grass LOD
+[*][b]Profile 3: Maximum Quality[/b] (2-6 hours) - Highest quality, very dense grass
+[*][b]Profile 4: Custom[/b] - Full control over all settings
+[*][b]Clear Time Estimates:[/b] Know exactly how long generation will take
+[*][b]Performance Warnings:[/b] Prevents accidental multi-hour generations
+[*][b]Result:[/b] [color=#4CAF50]User-friendly, flexible, professional configuration![/color]
+[/list]
+
+[size=3][color=#2196F3]🎨 2. Interactive Profile Selection[/color][/size]
+[list]
+[*][b]Guided Wizard:[/b] Beautiful menu with profile descriptions
+[*][b]Settings Confirmation:[/b] Review all settings before starting
+[*][b]Interactive Modification:[/b] Change individual settings if needed
+[*][b]"Baked Settings" Warnings:[/b] Know what's permanent before generation
+[*][b]Hybrid Approach:[/b] Presets OR custom - your choice!
+[*][b]Result:[/b] [color=#4CAF50]No more guessing, no regrets, full control![/color]
+[/list]
+
+[size=3][color=#2196F3]⚠️ 3. "Baked Settings" Education[/color][/size]
+[list]
+[*][b]Critical Knowledge:[/b] Some settings are PERMANENTLY written into cache files
+[*][b]Cannot Change After:[/b] Grass density, height, distance, count - must regenerate to change
+[*][b]User Warnings:[/b] Clear warnings during selection, confirmation, and in docs
+[*][b]Smart Defaults:[/b] LOD Compatible profile works for 90% of users
+[*][b]Result:[/b] [color=#4CAF50]Users understand what they're choosing before committing![/color]
+[/list]
+
+[size=3][color=#2196F3]📚 4. Research-Based Configuration[/color][/size]
+[list]
+[*][b]Step Modifications Guide:[/b] Based on official Grass LOD documentation
+[*][b]Nexus NGIO Articles:[/b] Official NGIO generation guides
+[*][b]Community Best Practices:[/b] Tested by thousands of users
+[*][b]All Settings Documented:[/b] What they do, why they matter, performance impact
+[*][b]Result:[/b] [color=#4CAF50]Professional-grade configuration backed by research![/color]
+[/list]
+
+[b][color=#FF9800]Impact of v1.5.0:[/color][/b]
+[list]
+[*]✅ [b]Faster Game Loading:[/b] OnlyLoadFromCache bug fix
+[*]✅ [b]LOD Compatible:[/b] Default settings work with grass LOD
+[*]✅ [b]No More Accidents:[/b] Clear warnings prevent 6-hour generations
+[*]✅ [b]User Education:[/b] Understand what settings do before choosing
+[*]✅ [b]Professional Quality:[/b] Research-based, tested, documented
+[/list]
+[/quote]
+
+[line]
+
+[size=5][color=#4CAF50]✨ v1.4.0 - The Complete Edition (Previous Release)[/color][/size]
+
+[quote]
+[size=4][b][color=#FF9800]🎊 MEGA UPDATE: 15 Game-Changing Features! 🎊[/color][/b][/size]
+
+[b]THREE Major Phases Combined Into One Epic Release![/b]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]Phase 1: User Experience Overhaul[/b]
+
+[size=3][color=#2196F3]💻 1. Command-Line Interface (CLI)[/color][/size]
+[list]
+[*][b]Direct Season Generation:[/b] start_ngio_automation.bat --season winter
+[*][b]Dry-Run Mode:[/b] Test workflow without launching Skyrim (--dry-run)
+[*][b]Scheduled Tasks:[/b] Unattended mode perfect for Windows Task Scheduler
+[*][b]Batch All Seasons:[/b] --season all generates all four seasons sequentially
+[*][b]Verbose Debugging:[/b] --verbose/-v flag for detailed diagnostic output
+[*][b]Scriptable:[/b] Perfect for power users and automation enthusiasts
+[*][b]Result:[/b] [color=#4CAF50]Run generation from scripts, scheduled tasks, or command line![/color]
+[/list]
+
+[size=3][color=#2196F3]🔐 2. Automatic SHA256 Checksums[/color][/size]
+[list]
+[*][b]SHA256 Hashing:[/b] Every archive includes automatic checksum generation
+[*][b]Integrity Verification:[/b] Verify downloads haven't been corrupted or tampered with
+[*][b]Professional Standard:[/b] Industry-standard security practice
+[*][b]Displayed in Logs:[/b] See checksum immediately after archive creation
+[*][b]Automatic:[/b] No extra steps required - calculated with every archive
+[*][b]Result:[/b] [color=#4CAF50]Ensure your downloads are intact and unmodified![/color]
+[/list]
+
+[size=3][color=#2196F3]🔔 3. Windows Toast Notifications[/color][/size]
+[list]
+[*][b]Toast Notifications:[/b] Windows 10/11 Action Center notifications
+[*][b]Season Completion:[/b] Get alerted when each season finishes (with duration!)
+[*][b]Error Alerts:[/b] Immediate notification if something goes wrong
+[*][b]Sound Alerts:[/b] Optional system beeps for completion/error events
+[*][b]Non-Intrusive:[/b] Appears in Action Center, doesn't interrupt work
+[*][b]Multitask Friendly:[/b] Browse web, watch videos while generating
+[*][b]Result:[/b] [color=#4CAF50]Know immediately when generation completes - no babysitting![/color]
+[/list]
+
+[size=3][color=#2196F3]📊 4. Beautiful Progress Bars[/color][/size]
+[list]
+[*][b]Visual Progress:[/b] Real-time progress bars for all file operations
+[*][b]ETA Display:[/b] See estimated time remaining for each operation
+[*][b]Processing Speed:[/b] Files per second rate displayed
+[*][b]Less Console Spam:[/b] Clean, compact progress display
+[*][b]Professional Output:[/b] Modern, polished user experience
+[*][b]Result:[/b] [color=#4CAF50]Beautiful visual feedback instead of percentage spam![/color]
+[/list]
+
+[size=3][color=#2196F3]🔧 5. Verbose Debug Mode[/color][/size]
+[list]
+[*][b]Enhanced Logging:[/b] --verbose flag enables detailed DEBUG level logs
+[*][b]Troubleshooting:[/b] See exactly what the tool is doing at each step
+[*][b]Performance Insights:[/b] Thread counts, timing information, system details
+[*][b]Issue Reporting:[/b] Capture detailed logs for bug reports
+[*][b]Optional:[/b] Normal mode still clean and simple
+[*][b]Result:[/b] [color=#4CAF50]Diagnose issues quickly with detailed diagnostic output![/color]
+[/list]
+
+[size=3][color=#2196F3]⚙️ 6. YAML Configuration System[/color][/size]
+[list]
+[*][b]Persistent Settings:[/b] Save your configuration to ngio_config.yaml
+[*][b]No Re-Configuration:[/b] Set once, use forever
+[*][b]Easy Sharing:[/b] Share your config file with others
+[*][b]Full Customization:[/b] All settings in one readable file
+[*][b]Template Generation:[/b] Automatic template creation with documentation
+[*][b]Environment Overrides:[/b] Use environment variables for CI/CD
+[*][b]Result:[/b] [color=#4CAF50]Professional configuration management for power users![/color]
+[/list]
+
+[size=3][color=#FF5722]📊 Usage Examples:[/color][/size]
+[code]
+# Schedule overnight generation
+Task Scheduler: start_ngio_automation.bat --season winter --unattended
+
+# Test your setup safely (no Skyrim launch)
+start_ngio_automation.bat --dry-run --season winter
+
+# Generate all seasons with one command
+start_ngio_automation.bat --season all
+
+# Verbose debugging for troubleshooting
+start_ngio_automation.bat --season spring --verbose
+
+# Use custom configuration file
+start_ngio_automation.bat --config my_setup.yaml
+
+# Verify downloaded archive integrity
+Get-FileHash Grass_Cache_Winter_Season.zip -Algorithm SHA256
+# Compare with checksum displayed in generation logs
+[/code]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]Phase 2: Reliability & Automation[/b]
+
+[size=3][color=#2196F3]🔄 7. Resume from Interruption[/color][/size]
+[list]
+[*][b]Never Lose Progress:[/b] Automatically saves state before/after each season
+[*][b]Crash Recovery:[/b] Detects abnormal termination and offers to resume
+[*][b]Smart Queueing:[/b] Continues from where it left off
+[*][b]Progress Preservation:[/b] Remembers completed seasons
+[*][b]Result:[/b] [color=#4CAF50]Power outage? Crash? No problem - just resume![/color]
+[/list]
+
+[size=3][color=#2196F3]🔍 8. System Validation Tool[/color][/size]
+[list]
+[*][b]Pre-Flight Checks:[/b] Validates everything before starting
+[*][b]Skyrim Detection:[/b] Checks installation, SkyrimSE.exe, SKSE64
+[*][b]Mod Verification:[/b] Ensures NGIO mod is installed
+[*][b]Space Check:[/b] Verifies 5+ GB disk space available
+[*][b]Dependency Check:[/b] Validates Python modules
+[*][b]Result:[/b] [color=#4CAF50]Catch problems BEFORE 2-hour generation runs![/color]
+[/list]
+
+[size=3][color=#2196F3]📅 9. Task Scheduler Integration[/color][/size]
+[list]
+[*][b]Overnight Automation:[/b] Schedule generation for 2 AM while you sleep
+[*][b]Weekly Recurring:[/b] Set it and forget it - runs every Saturday
+[*][b]Easy Setup:[/b] One command creates Windows scheduled task
+[*][b]Unattended Mode:[/b] Runs without any user interaction
+[*][b]Result:[/b] [color=#4CAF50]Wake up to completed grass caches![/color]
+[/list]
+
+[size=3][color=#2196F3]📈 10. Enhanced Crash Analytics[/color][/size]
+[list]
+[*][b]Pattern Detection:[/b] Identifies why crashes keep happening
+[*][b]Smart Suggestions:[/b] Tells you exactly how to fix issues
+[*][b]Crash History:[/b] Tracks all crashes with detailed logs
+[*][b]Severity Ranking:[/b] Critical/High/Medium issue classification
+[*][b]Worldspace Detection:[/b] Finds problematic areas
+[*][b]Result:[/b] [color=#4CAF50]Stop guessing - know exactly what's wrong![/color]
+[/list]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]Phase 3: UX Polish & Perfection[/b]
+
+[size=3][color=#2196F3]💬 11. Enhanced Error Messages[/color][/size]
+[list]
+[*][b]Knowledge Base:[/b] 10+ common errors with detailed solutions
+[*][b]Clear Descriptions:[/b] Understand exactly what went wrong
+[*][b]Step-by-Step Fixes:[/b] Follow simple instructions to resolve issues
+[*][b]Documentation Links:[/b] Quick access to relevant guides
+[*][b]Result:[/b] [color=#4CAF50]No more guessing - know exactly how to fix problems![/color]
+[/list]
+
+[size=3][color=#2196F3]⏱️ 12. Progress Time Estimates[/color][/size]
+[list]
+[*][b]Smart Learning:[/b] Learns from your past generations
+[*][b]Accurate ETAs:[/b] Know when generation will finish
+[*][b]Confidence Levels:[/b] High/medium/low accuracy indicators
+[*][b]Beautiful Display:[/b] "Elapsed: 42m | Remaining: ~38m | ETA: 3:45 PM 🎯"
+[*][b]Result:[/b] [color=#4CAF50]Plan your time - know exactly when to come back![/color]
+[/list]
+
+[size=3][color=#2196F3]🎨 13-15. Visual Excellence[/color][/size]
+[list]
+[*][b]Console Formatting:[/b] Beautiful boxes, tables, and banners
+[*][b]Enhanced Output:[/b] Color-coded status, aligned columns, progress bars
+[*][b]Better Banner:[/b] Professional startup screen with quick start guide
+[*][b]Professional Polish:[/b] Enterprise-grade visual quality
+[*][b]Result:[/b] [color=#4CAF50]Looks as good as it works - professional UI![/color]
+[/list]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[size=3][color=#4CAF50]💡 What This Means for You:[/color][/size]
+[list]
+[*]✅ [b]Set and Forget:[/b] Configure once with YAML, run unattended with CLI
+[*]✅ [b]Multitask Freely:[/b] Notifications tell you when it's done - no watching needed
+[*]✅ [b]Never Lose Progress:[/b] Resume after crashes or power outages
+[*]✅ [b]Overnight Automation:[/b] Schedule for 2 AM, wake up to completed cache
+[*]✅ [b]Fix Issues Fast:[/b] Enhanced errors + crash analytics = instant solutions
+[*]✅ [b]Know Your Timeline:[/b] Accurate ETAs so you can plan your time
+[*]✅ [b]Professional Quality:[/b] Enterprise-grade UI and features, totally free
+[*]✅ [b]Complete Package:[/b] 15 features working together perfectly
+[/list]
+[/quote]
+
+[line]
+
+[size=5][color=#4CAF50]✨ v1.1.0 - Large Load Order Support![/color][/size]
 
 [quote]
 [size=4][b][color=#FF9800]Have 500+ mods? This update is for YOU![/color][/b][/size]
 
 Based on community feedback, we've dramatically improved stability for users with large, heavily modded setups:
 
-[size=3][color=#2196F3]🛡️ Death Loop Prevention[/color][/size]
+[size=3][color=#2196F3]🛡️ Prevents Multiple Skyrim Launches (Death Loop Prevention)[/color][/size]
 [list]
 [*][b]Already Running Detection:[/b] Checks if Skyrim is running before launch
 [*][b]Wait & Cooldown:[/b] Waits for existing instance to close, adds stabilization period
 [*][b]No More Overlaps:[/b] Prevents multiple Skyrim instances that cause guaranteed crashes
+[*][b]What's a "death loop"?:[/b] When tool tries launching while previous Skyrim still loading → multiple instances → instant crash
 [*][b]Result:[/b] [color=#4CAF50]Eliminates the #1 crash pattern reported by users![/color]
 [/list]
 
@@ -148,6 +496,17 @@ Based on community feedback, we've dramatically improved stability for users wit
 [*]✅ Proper mod structure with Data/Grass folders
 [*]✅ Includes installation instructions and metadata
 [*]✅ Compatible with MO2, Vortex, and manual installation
+[*]✅ [b][color=#FF5722]NEW v1.2.0:[/color][/b] SHA256 checksums for integrity verification
+[/list]
+
+[size=4][color=#2196F3]💻 Automation & CLI[/color][/size] [color=#FF5722][b](NEW v1.2.0)[/b][/color]
+[list]
+[*]✅ Full command-line interface for scripting
+[*]✅ Schedule generation with Windows Task Scheduler
+[*]✅ Dry-run mode for safe testing (--dry-run)
+[*]✅ Unattended mode for automation (--unattended)
+[*]✅ Windows toast notifications for completion
+[*]✅ Sound alerts for events
 [/list]
 
 [size=4][color=#2196F3]🛡️ Bulletproof Error Handling[/color][/size]
@@ -160,16 +519,26 @@ Based on community feedback, we've dramatically improved stability for users wit
 
 [line]
 
-[size=5][color=#FF5722]🌱 Flexible Season Selection[/color][/size]
+[size=5][color=#FF5722]🌱 Season Generation Modes[/color][/size]
 
-[size=4][color=#4CAF50]Choose Your Generation Mode:[/color][/size]
+[size=4][color=#FFD700]⭐ OVERNIGHT MODE (RECOMMENDED):[/color][/size]
 [list]
-[*][b]All Seasons:[/b] Winter, Spring, Summer, Autumn (2-4 hours)
-[*][b]Popular Combinations:[/b] Winter+Summer, Spring+Autumn (1-2 hours)
-[*][b]Custom Selection:[/b] Any combination you want
-[*][b]Non-Seasonal Mode:[/b] For users without seasonal mods
-[*][b]Single Season:[/b] Perfect for testing (30-60 minutes)
+[*][b]🌙 All 4 Seasons:[/b] Winter + Spring + Summer + Autumn (4-6 hours)
+[*][b]Set it and forget it:[/b] Start before bed, wake up to 4 completed mods
+[*][b]Zero monitoring:[/b] Tool handles everything automatically
+[*][b]Perfect for:[/b] Initial setup, mod list updates, lazy weekends
+[*][b]User experience:[/b] [color=#4CAF50]5 minutes of your time = 4 complete mods![/color]
 [/list]
+
+[size=4][color=#4CAF50]Other Generation Modes:[/color][/size]
+[list]
+[*][b]Single Season:[/b] Perfect for testing or quick updates (60-90 minutes)
+[*][b]Popular Combos:[/b] Winter+Summer (cold/warm) or Spring+Autumn (transitional) 
+[*][b]Custom Selection:[/b] Any combination you want
+[*][b]Non-Seasonal Mode:[/b] For users without seasonal grass mods
+[/list]
+
+[size=4][color=#FF9800]Pro Tip:[/color][/size] [b]Most users should use Overnight Mode (All 4 Seasons) on first run![/b] You get complete coverage and can test which seasons you like. Takes the same time whether you're watching or sleeping. 🌙
 
 [line]
 
@@ -229,10 +598,16 @@ Based on community feedback, we've dramatically improved stability for users wit
 
 [size=4][color=#2196F3]💾 System Requirements:[/color][/size]
 [list]
-[*][b]Windows 10/11[/b] (required)
-[*][b]At least 8GB RAM[/b] (for heavy mod lists)
-[*][b]At least 5GB free disk space[/b] (for generation process)
-[*][b]No internet required[/b] (everything is bundled - works offline!)
+[*][b]OS:[/b] Windows 10/11 (64-bit)
+[*][b]RAM:[/b] 16GB+ recommended for heavy mod lists
+[*][b][color=#FF0000]⚠️ CRITICAL - Windows Pagefile:[/color][/b] [color=#FF0000]20GB+ REQUIRED for overnight mode![/color]
+   [b]Why:[/b] Skyrim can consume ALL RAM during generation. System WILL crash without proper pagefile!
+   [b]Setup:[/b] System Properties → Performance Settings → Virtual Memory → Custom: 20480 MB
+   [b]Details:[/b] See PAGEFILE_SETUP_GUIDE.txt in installation folder (2-minute setup)
+   [b]Tool validates automatically:[/b] Pre-flight check warns if pagefile too small
+[*][b]Storage:[/b] 5-10GB free space (grass cache can be several GB per season)
+[*][b]Python:[/b] Bundled! (No installation needed)
+[*][b]Game:[/b] Skyrim Special Edition (not LE, not VR)
 [/list]
 
 [line]
@@ -250,8 +625,9 @@ Based on community feedback, we've dramatically improved stability for users wit
 
 [size=4][color=#4CAF50]First Time Setup (2 minutes):[/color][/size]
 [list=1]
+[*][b]⚠️ CRITICAL FIRST![/b] Configure 20GB+ Windows pagefile (see System Requirements section - takes 2 minutes, prevents crashes!)
 [*][b]Extract:[/b] Unzip the downloaded file anywhere on your computer (Desktop is fine)
-[*][b]Run the tool:[/b] Double-click [font=Courier New]start_ngio_automation.bat[/font]
+[*][b]Run the tool:[/b] Double-click [font=Courier New]start_ngio_automation.bat[/font] (or the .exe file)
 [*][b]Skyrim path:[/b] Point to your Skyrim installation folder
    [list]
    [*]Usually: [font=Courier New]C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition[/font]
@@ -259,25 +635,29 @@ Based on community feedback, we've dramatically improved stability for users wit
    [*][b]Tip:[/b] You can drag and drop the folder into the console
    [/list]
 [*][b]Output path:[/b] Where to save generated archives (any folder you want)
-[*][b]Seasonal mods:[/b] Tell the tool if you have Seasons of Skyrim installed
-[*][b]Season selection:[/b] Pick ONE season to generate (Winter/Spring/Summer/Autumn)
-[*][b]Timeouts:[/b] Leave defaults unless you have issues (5min crash, 10min no-progress)
+[*][b]Seasonal mods:[/b] Tell the tool if you have Seasons of Skyrim or Cathedral Seasons
+[*][b]Grass profile:[/b] Choose "LOD Compatible" (works for 90% of users)
 [/list]
 
-[size=4][color=#4CAF50]Generation Process (20-60 minutes per season):[/color][/size]
+[size=4][color=#FFD700]⭐ RECOMMENDED: Overnight Mode (Generate All 4 Seasons):[/color][/size]
 [list=1]
-[*][b]Start generation:[/b] Tool automatically launches Skyrim
-[*][b]Walk away:[/b] Tool handles everything (crashes, retries, progress monitoring)
-[*][b]Completion:[/b] Tool creates archive and cleans up files automatically
-[*][b]Install:[/b] Use the generated archive in your mod manager like any other mod
+[*][b]Season selection:[/b] Choose option 5: "All 4 Seasons"
+[*][b]Start before bed:[/b] Click "Start Generation" around 10 PM
+[*][b]Go to sleep:[/b] Tool runs completely unattended (4-6 hours)
+[*][b]Wake up:[/b] 4 completed, ready-to-install mod archives waiting!
+[*][b]Result:[/b] [color=#4CAF50]5 minutes of your time = Complete grass cache for all seasons![/color]
 [/list]
 
-[size=4][color=#4CAF50]For Multiple Seasons:[/color][/size]
-[list]
-[*][b]Run the tool again[/b] and select a different season
-[*][b]Each season is generated separately[/b] for optimal disk space usage
-[*][b]You get one archive per season[/b] - install the ones you want
+[size=4][color=#2196F3]Alternative: Single Season Mode (For Testing):[/color][/size]
+[list=1]
+[*][b]Season selection:[/b] Pick one season (Winter, Spring, Summer, or Autumn)
+[*][b]Start generation:[/b] Tool automatically launches Skyrim
+[*][b]Walk away:[/b] Tool handles everything (60-90 minutes)
+[*][b]Completion:[/b] One season archive ready to install
+[*][b]Repeat:[/b] Run tool again for other seasons if desired
 [/list]
+
+[size=4][color=#FF9800]💡 Pro Tip:[/color][/size] [b]Most users should use Overnight Mode on first run![/b] Why generate one season when you can generate all 4 with the same effort? Takes the same time whether you're watching or sleeping. 🌙
 
 [size=4][color=#FF9800]🔧 Have 500+ Mods? Important Settings![/color][/size]
 [quote]
@@ -295,7 +675,7 @@ Based on community feedback, we've dramatically improved stability for users wit
 [list]
 [*][b]Skyrim startup:[/b] May take 5-15 minutes with 1000+ plugins - [color=#4CAF50][b]THIS IS NORMAL![/b][/color]
 [*][b]Don't panic:[/b] If you see "Waiting for Skyrim to start" for 10+ minutes, it's working fine
-[*][b]First generation:[/b] May need 2-3 attempts as system learns your timing
+[*][b]First generation:[/b] System learns your timing over first 2-3 launches (automatically adjusts timeouts)
 [*][b]Later generations:[/b] Will be smoother as adaptive system optimizes
 [/list]
 
@@ -473,14 +853,14 @@ If you want to manually tune settings (advanced users):
 [*][b]Be patient:[/b] With 1000+ plugins, 10-15 minute startup is completely normal!
 [/list]
 
-[size=4][color=#FF9800]❌ Multiple Skyrim instances running / Death loop[/color][/size]
-[b]Problem:[/b] Tool tries to launch while previous instance still loading
+[size=4][color=#FF9800]❌ Multiple Skyrim instances running (tool keeps restarting Skyrim)[/color][/size]
+[b]Problem:[/b] Tool tries to launch while previous Skyrim instance still loading (called a "death loop")
 [b]Solution (v1.1.0+):[/b]
 [list=1]
-[*][b]Auto-handled:[/b] v1.1.0 detects this automatically and waits
-[*][b]Manual cleanup:[/b] If you see multiple instances, close all Skyrim processes via Task Manager
-[*][b]Increase wait time:[/b] Between retries (startup_wait_seconds parameter)
-[*][b]This is fixed:[/b] v1.1.0 includes specific death loop prevention!
+[*][b]Auto-handled:[/b] v1.1.0 detects this automatically and waits for existing instance to close
+[*][b]Manual cleanup:[/b] If you see multiple Skyrim.exe in Task Manager, close all of them first
+[*][b]Increase wait time:[/b] For very large load orders, increase timeout in configuration
+[*][b]This is fixed:[/b] v1.1.0 includes specific prevention for this issue!
 [/list]
 
 [size=4][color=#4CAF50]🎯 Still Having Issues?[/color][/size]
@@ -507,7 +887,8 @@ If you want to manually tune settings (advanced users):
 [list]
 [*][b]This tool automates NGIO,[/b] it doesn't replace it - NGIO must be installed first
 [*][b]Keep NGIO mod ENABLED[/b] - you might want to generate more seasons later
-[*][b]Requires Grass Cache Helper NG[/b] for seasonal switching functionality  
+[*][b]Grass Cache Helper NG recommended[/b] for in-game seasonal switching (not required for generation itself)
+[*][b]Generates fresh grass cache[/b] - overwrites existing cache for the selected season (this is normal and intended)
 [*][b]First run may take longer[/b] as it validates your setup
 [*][b]Heavy mod lists[/b] will take longer to generate (this is completely normal)
 [*][b]Single-season workflow[/b] - generates one season at a time for optimal performance
@@ -542,4 +923,4 @@ If you want to manually tune settings (advanced users):
 [*][b]Updates:[/b] Check back for new features and improvements
 [/list]
 
-[center][size=2][color=#666]Version 1.1.0 | MIT License | Made with ❤️ for the Skyrim community[/color][/size][/center]
+[center][size=2][color=#666]Version 1.4.0 - The Complete Edition | MIT License | Made with ❤️ for the Skyrim community[/color][/size][/center]

@@ -13,6 +13,12 @@ from typing import List, Dict, Tuple, Optional, Callable
 import time
 from dataclasses import dataclass
 
+try:
+    from tqdm import tqdm
+    _TQDM_AVAILABLE = True
+except ImportError:
+    _TQDM_AVAILABLE = False
+
 from ..utils.logger import Logger
 
 
@@ -155,7 +161,7 @@ class FileProcessor:
     
     def _execute_operations(self, operations: List[FileOperation], 
                           progress_callback: Optional[Callable] = None) -> ProcessingResult:
-        """Execute file operations using multithreading"""
+        """Execute file operations using multithreading with progress bar (v1.2.0+)"""
         processed_files = 0
         failed_files = 0
         errors = []
@@ -164,6 +170,19 @@ class FileProcessor:
         # Update largest batch size stat
         if total_operations > self.stats["largest_batch_size"]:
             self.stats["largest_batch_size"] = total_operations
+        
+        # Create progress bar if tqdm is available (v1.2.0+)
+        if _TQDM_AVAILABLE and not progress_callback:
+            pbar = tqdm(
+                total=total_operations,
+                desc="⚡ Processing files",
+                unit="file",
+                unit_scale=False,
+                ncols=100,
+                bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]"
+            )
+        else:
+            pbar = None
         
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # Submit all operations
@@ -192,14 +211,22 @@ class FileProcessor:
                 
                 # Update progress
                 completed = processed_files + failed_files
-                if progress_callback:
+                
+                if pbar:
+                    # Update tqdm progress bar
+                    pbar.update(1)
+                elif progress_callback:
+                    # Use custom callback
                     progress_callback(completed, total_operations)
                 elif completed % max(1, total_operations // 10) == 0:
-                    # Log progress every 10%
-                    percentage = (completed / total_operations) * 100
+                    # Fallback: Log progress every 10%
                     self.logger.progress(
                         f"Processing files", completed, total_operations
                     )
+        
+        # Close progress bar
+        if pbar:
+            pbar.close()
         
         # Determine overall success
         success = failed_files == 0

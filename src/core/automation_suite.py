@@ -20,6 +20,8 @@ from .progress_monitor import ProgressMonitor
 from .archive_creator import ArchiveCreator
 from ..utils.logger import Logger
 from ..utils.config_cache import ConfigCache
+from ..utils.notifications import Notifier
+from ..utils.state_manager import StateManager, AutomationState
 
 
 class Season(Enum):
@@ -59,6 +61,17 @@ class AutomationConfig:
     create_archives: bool = True
     backup_configs: bool = True
     adaptive_timeouts: bool = True  # Use intelligent timeout adjustment
+    enable_notifications: bool = True  # Windows toast notifications (v1.2.0+)
+    enable_sounds: bool = True  # System sound alerts (v1.2.0+)
+    
+    # v1.5.0: NEW - NGIO Grass Generation Settings
+    extend_grass_distance: bool = True  # Required for LOD compatibility
+    extend_grass_count: bool = False  # WARNING: Dramatically increases generation time
+    super_dense_grass: bool = False  # WARNING: Can take MANY hours
+    overwrite_min_grass_size: int = 67  # Grass density (20-100, higher = less dense)
+    global_grass_scale: float = 1.0  # Grass height multiplier (0.5-2.0)
+    ensure_max_grass_types: int = 15  # Max grass types per texture (grass mod specific)
+    only_pregenerate_worldspaces: str = ""  # Comma-separated worldspace filter (optional)
     
     def __post_init__(self):
         if self.seasons_to_generate is None:
@@ -87,11 +100,22 @@ class NGIOAutomationSuite:
         self.progress_monitor = ProgressMonitor()
         self.archive_creator = ArchiveCreator(config.output_directory)
         
+        # Initialize notifications (v1.2.0+)
+        self.notifier = Notifier(
+            enable_toast=config.enable_notifications,
+            enable_sound=config.enable_sounds
+        )
+        
+        # Initialize state manager (v1.3.0+)
+        self.state_manager = StateManager(config.output_directory)
+        
         # State tracking
         self.current_season: Optional[Season] = None
         self.completed_seasons: List[Season] = []
         self.failed_seasons: List[Season] = []
         self.start_time: Optional[float] = None
+        self.season_start_time: Optional[float] = None  # Track per-season time
+        self.automation_state: Optional[AutomationState] = None
         
     def run_full_automation(self) -> bool:
         """
@@ -104,8 +128,28 @@ class NGIOAutomationSuite:
         self.start_time = time.time()
         
         try:
+            # Check for resumable state (v1.3.0+)
+            interrupted_state = self.state_manager.check_for_interruption()
+            if interrupted_state:
+                self.logger.warning("=" * 60)
+                self.logger.warning("⚠️ PREVIOUS SESSION WAS INTERRUPTED")
+                self.logger.warning("=" * 60)
+                print(self.state_manager.format_state_summary(interrupted_state))
+                
+                if self._should_resume_from_state(interrupted_state):
+                    return self._resume_from_state(interrupted_state)
+                else:
+                    self.logger.info("Starting fresh generation...")
+                    self.state_manager.clear_state()
+            
+            # Create new state
+            self.automation_state = self.state_manager.create_state_from_config(self.config)
+            self.state_manager.save_state(self.automation_state)
+            
             # Phase 1: Setup and Validation
             if not self._setup_and_validate():
+                self.automation_state.is_running = False
+                self.state_manager.save_state(self.automation_state)
                 return False
                 
             # Phase 2: Backup configurations
@@ -113,13 +157,42 @@ class NGIOAutomationSuite:
                 return False
                 
             # Phase 3: Generate grass cache for each season
-            for season in self.config.seasons_to_generate:
-                if not self._generate_season_cache(season):
+            total_seasons = len(self.config.seasons_to_generate)
+            
+            for idx, season in enumerate(self.config.seasons_to_generate, 1):
+                # v1.5.1: Show progress for multi-season
+                if total_seasons > 1:
+                    self.logger.separator()
+                    self.logger.info(f"🌱 SEASON {idx}/{total_seasons}: {season.display_name}")
+                    self.logger.separator()
+                
+                # Update state before starting season (v1.3.0+)
+                if self.automation_state:
+                    self.automation_state.current_season = season.display_name
+                    self.automation_state.season_start_time = time.time()
+                    self.state_manager.save_state(self.automation_state)
+                
+                # Generate season
+                success = self._generate_season_cache(season)
+                
+                # Update state after season (v1.3.0+)
+                if self.automation_state:
+                    self._update_state_after_season(season, success)
+                
+                if not success:
                     self.failed_seasons.append(season)
                     self.logger.error(f"❌ Failed to generate cache for {season.display_name}")
                 else:
                     self.completed_seasons.append(season)
-                    self.logger.info(f"✅ Successfully completed {season.display_name}")
+                    
+                    # v1.5.1: Multi-season progress update
+                    if total_seasons > 1:
+                        remaining = total_seasons - idx
+                        self.logger.success(f"✅ Completed: {season.display_name} (Season {idx}/{total_seasons})")
+                        if remaining > 0:
+                            self.logger.info(f"📊 Progress: {idx}/{total_seasons} seasons complete, {remaining} remaining")
+                    else:
+                        self.logger.info(f"✅ Successfully completed {season.display_name}")
                     
             # Phase 4: Archive creation handled per-season
             # (Archives created individually after each season)
@@ -129,6 +202,12 @@ class NGIOAutomationSuite:
             
             # Phase 6: Generate final report
             self._generate_completion_report()
+            
+            # Clear state on successful completion (v1.3.0+)
+            if self.automation_state:
+                self.automation_state.is_running = False
+                self.state_manager.clear_state()
+                self.logger.debug("✅ State cleared - generation complete")
             
             return len(self.failed_seasons) == 0
             
@@ -198,34 +277,63 @@ class NGIOAutomationSuite:
             bool: True if successful, False if failed
         """
         self.current_season = season
+        self.season_start_time = time.time()
         self.logger.info(f"🌱 Starting {season.display_name} grass cache generation...")
+        
+        # Notify generation start
+        self.notifier.notify_progress(
+            f"Starting {season.display_name} grass cache generation...",
+            season.display_name
+        )
         
         try:
             # Step 1: Configure season settings
             if not self.config_manager.set_season(season.season_type):
+                self.notifier.notify_error(f"Failed to configure {season.display_name} settings")
+                return False
+            
+            # v1.5.0: NEW - Configure NGIO settings for generation
+            if not self.config_manager.configure_ngio_for_generation(
+                extend_grass_distance=self.config.extend_grass_distance,
+                extend_grass_count=self.config.extend_grass_count,
+                super_dense_grass=self.config.super_dense_grass,
+                overwrite_min_grass_size=self.config.overwrite_min_grass_size,
+                global_grass_scale=self.config.global_grass_scale,
+                ensure_max_grass_types=self.config.ensure_max_grass_types,
+                only_pregenerate_worldspaces=self.config.only_pregenerate_worldspaces
+            ):
+                self.notifier.notify_error(f"Failed to configure NGIO for {season.display_name}")
                 return False
                 
             # Step 2: Launch Skyrim and monitor generation
             if not self._run_generation_with_monitoring(season):
+                self.notifier.notify_error(f"{season.display_name} generation failed")
                 return False
                 
             # Step 3: Process and rename generated files
             if not self._process_generated_files(season):
+                self.notifier.notify_error(f"Failed to process {season.display_name} files")
                 return False
                 
             # Step 4: Create archive for this season
             if self.config.create_archives:
                 if not self._create_single_season_archive(season):
+                    self.notifier.notify_error(f"Failed to create {season.display_name} archive")
                     return False
                     
                 # Step 5: Clean up seasonal files after successful archive creation
                 if not self._cleanup_season_files(season):
                     self.logger.warning(f"⚠️ Failed to clean up {season.display_name} files, but continuing...")
-                    
+            
+            # Calculate duration and notify success
+            duration_minutes = (time.time() - self.season_start_time) / 60
+            self.notifier.notify_completion(season.display_name, duration_minutes)
+            
             return True
             
         except Exception as e:
             self.logger.error(f"💥 Error generating {season.display_name}: {e}")
+            self.notifier.notify_error(f"Unexpected error in {season.display_name} generation")
             return False
     
     def _run_generation_with_monitoring(self, season: Season) -> bool:
@@ -431,6 +539,11 @@ class NGIOAutomationSuite:
             
         self.logger.info("🔄 Restoring original configurations...")
         
+        # v1.5.0: NEW - Configure NGIO to use cache (set OnlyLoadFromCache=True)
+        self.logger.info("⚙️ Configuring NGIO for cache usage...")
+        if not self.config_manager.configure_ngio_for_cache_use():
+            self.logger.warning("⚠️ Failed to configure NGIO for cache usage")
+        
         # Restore to seasonal mode (type 5)
         self.config_manager.set_season(5)  # Seasonal mode
         return self.config_manager.restore_all_configs()
@@ -474,9 +587,15 @@ class NGIOAutomationSuite:
                 self.logger.info("   3. Ensure Grass Cache Helper NG is enabled")
                 self.logger.info("   4. Run this script again for other seasons!")
                 self.logger.info("   5. Enjoy your automated seasonal grass cache!")
+                
+                # Send final completion notification
+                self.notifier.notify_completion(season_name, total_time / 60)
         else:
             season_name = self.failed_seasons[0].display_name
             self.logger.warning(f"⚠️  {season_name} generation failed. Check logs for details.")
+            
+            # Send failure notification
+            self.notifier.notify_error(f"{season_name} generation failed after {total_time/60:.1f} minutes")
     
     def _emergency_cleanup(self) -> None:
         """Emergency cleanup in case of unexpected failure"""
@@ -534,6 +653,102 @@ class NGIOAutomationSuite:
         except Exception as e:
             self.logger.warning(f"Failed to check {season.display_name} completion status: {e}")
             return False
+    
+    def _should_resume_from_state(self, state: AutomationState) -> bool:
+        """
+        Ask user if they want to resume from interrupted state (v1.3.0+)
+        
+        Args:
+            state: The interrupted automation state
+            
+        Returns:
+            True if should resume, False to start fresh
+        """
+        remaining = self.state_manager.get_resumable_seasons(state)
+        
+        if not remaining:
+            self.logger.info("No remaining seasons to generate - starting fresh")
+            return False
+        
+        self.logger.info(f"\nRemaining seasons: {', '.join(remaining)}")
+        response = input("\n🔄 Resume from where it left off? (y/n): ").strip().lower()
+        
+        return response in ['y', 'yes']
+    
+    def _resume_from_state(self, state: AutomationState) -> bool:
+        """
+        Resume automation from saved state (v1.3.0+)
+        
+        Args:
+            state: The state to resume from
+            
+        Returns:
+            True if successful
+        """
+        self.logger.info("🔄 Resuming from saved state...")
+        
+        # Restore completed/failed seasons
+        for season_name in state.completed_seasons:
+            season = self._get_season_by_name(season_name)
+            if season:
+                self.completed_seasons.append(season)
+        
+        for season_name in state.failed_seasons:
+            season = self._get_season_by_name(season_name)
+            if season:
+                self.failed_seasons.append(season)
+        
+        # Get remaining seasons
+        remaining_names = self.state_manager.get_resumable_seasons(state)
+        remaining_seasons = [self._get_season_by_name(name) for name in remaining_names if self._get_season_by_name(name)]
+        
+        # Update config with remaining seasons
+        self.config.seasons_to_generate = remaining_seasons
+        
+        # Update state and continue
+        self.automation_state = state
+        self.automation_state.is_running = True
+        self.automation_state.interrupted = False
+        self.state_manager.save_state(self.automation_state)
+        
+        # Run automation with remaining seasons
+        return self.run_full_automation()
+    
+    def _get_season_by_name(self, season_name: str) -> Optional[Season]:
+        """
+        Get Season enum by display name
+        
+        Args:
+            season_name: Display name like "Winter", "Spring"
+            
+        Returns:
+            Season enum or None
+        """
+        for season in Season:
+            if season.display_name == season_name:
+                return season
+        return None
+    
+    def _update_state_after_season(self, season: Season, success: bool):
+        """
+        Update state after completing/failing a season (v1.3.0+)
+        
+        Args:
+            season: The season that was processed
+            success: Whether it succeeded or failed
+        """
+        if not self.automation_state:
+            return
+        
+        if success:
+            if season.display_name not in self.automation_state.completed_seasons:
+                self.automation_state.completed_seasons.append(season.display_name)
+        else:
+            if season.display_name not in self.automation_state.failed_seasons:
+                self.automation_state.failed_seasons.append(season.display_name)
+        
+        self.automation_state.current_season = None
+        self.state_manager.save_state(self.automation_state)
 
 
 def main():

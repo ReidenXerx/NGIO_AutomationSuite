@@ -1,0 +1,7 @@
+# SHA256 Checksums - NGIO_Automation_Suite v1.5.0
+# Generated: 2025-12-02 00:56:09
+
+5725974863c080a715c2c92bbe314e29f870a76b4102c4c97a8bd3e1e90cb343  NGIO_Automation_Suite_v1.5.0.exe
+d54f4e7ce7f1de718c77cd73c7ff72001ab14e4926db82e5d41ebd5012d07944  NGIO_Automation_Suite_v1.5.0_Portable.zip
+b98563621e3911f0229afb2096c76ef246c058348d514301f908ee48f0ea3468  NGIO_Automation_Suite_v1.5.0_Release.zip
+92efec011f77badf22e05dc36c76df22c2ddf57cb482ff1cf3aedfcbf8cf72ac  ngio-automation-suite-1.1.2-bundled.zip
