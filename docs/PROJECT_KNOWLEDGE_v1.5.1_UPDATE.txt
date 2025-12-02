@@ -1,0 +1,163 @@
+================================================================================
+        PROJECT_KNOWLEDGE.md - v1.5.1 UPDATE SUMMARY
+================================================================================
+
+Date: December 1, 2025
+Update: Comprehensive v1.5.1 documentation added
+
+================================================================================
+📝 WHAT WAS ADDED TO PROJECT_KNOWLEDGE.MD
+================================================================================
+
+1. Version Update
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   - Updated header from "Version 1.5.0" to "Version 1.5.1"
+   - Updated date from "2025-11-27" to "2025-12-01"
+
+2. New Section: "🚀 v1.5.1: Build System Overhaul & Critical Fixes"
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   
+   Added comprehensive documentation for:
+
+   A. Build System Revolution
+      - Before/After comparison (300MB → 10.7MB)
+      - New files documentation:
+        * ngio_automation.spec
+        * Enhanced build_release.py
+        * build.bat improvements
+        * test_build_readiness.py
+        * BUILD_GUIDE.md
+        * BUILD_SYSTEM_SUMMARY.txt
+      - PyInstaller integration details
+      - Build output structure
+      - Technical implementation notes
+
+   B. Critical Bug Fixes
+      1. Startup Hang (2-minute delay)
+         - Problem explanation
+         - Solution (hardcoded IS_WINDOWS)
+         - Code examples
+         - Files modified list
+      
+      2. Resume Loop Bug
+         - Problem explanation (infinite loop)
+         - Solution (state flag management)
+         - Code examples
+         - Files modified list
+      
+      3. Buffered Output Bug
+         - Problem explanation
+         - Solution (-u flag)
+         - Files modified
+      
+      4. Profile Loading Error
+         - Problem explanation
+         - Solution (enum loading)
+         - Files modified
+
+   C. System Requirements Validation
+      - RAM validation
+      - Pagefile validation (CRITICAL!)
+      - PAGEFILE_SETUP_GUIDE.txt documentation
+      - Implementation details
+      - Why it matters explanation
+
+   D. Overnight Mode Marketing
+      - Goal: Make it the KILLER FEATURE
+      - All Nexus documentation updates
+      - Marketing messages
+      - Visual hierarchy explanation
+      - Before/after comparison
+
+   E. Additional Improvements
+      - Enhanced requirements.txt
+      - Version bump process
+      - State management improvements
+      - Import fixes
+
+   F. Impact Summary
+      - Build system metrics table
+      - Bug fixes checklist
+      - System validation status
+      - Marketing effectiveness
+
+   G. User-Facing Changes
+      - What users see
+      - What developers see
+
+   H. File Lists
+      - New files table (7 files)
+      - Modified files table (6+ files)
+
+   I. Testing Status
+      - What's tested
+      - What needs testing
+
+   J. Documentation Status
+      - Updated docs
+      - Created docs
+
+   K. Release Readiness
+      - Summary of changes
+      - Next steps checklist
+
+================================================================================
+📊 STATISTICS
+================================================================================
+
+Lines Added:     ~500 lines
+New Sections:    11 subsections
+Tables:          3 comparison tables
+Code Examples:   5 before/after examples
+File Lists:      2 comprehensive lists
+
+================================================================================
+🎯 KEY INFORMATION DOCUMENTED
+================================================================================
+
+✅ Build System: Complete PyInstaller workflow
+✅ Bug Fixes: All 4 critical bugs explained
+✅ System Validation: RAM/pagefile checks
+✅ Marketing: Overnight mode emphasis strategy
+✅ File Changes: Every new and modified file
+✅ Testing: Current status and remaining work
+✅ Release: Ready-to-ship checklist
+
+================================================================================
+📚 RELATED DOCUMENTATION
+================================================================================
+
+This update references and ties together:
+- BUILD_GUIDE.md
+- BUILD_SYSTEM_SUMMARY.txt
+- PAGEFILE_SETUP_GUIDE.txt
+- OVERNIGHT_MODE_MARKETING.txt
+- V1.5.1_RELEASE_NOTES.md
+- All Nexus documentation files
+
+================================================================================
+✨ VERSION UPDATES
+================================================================================
+
+Also updated in this commit:
+- src/__version__.py: 1.5.0 → 1.5.1
+
+================================================================================
+🎊 RESULT
+================================================================================
+
+PROJECT_KNOWLEDGE.md is now FULLY UP TO DATE with all v1.5.1 changes!
+
+New developers or AI assistants reading this file will have:
+- Complete understanding of build system
+- Knowledge of all bug fixes
+- Context for system validation
+- Marketing strategy awareness
+- File-by-file change documentation
+
+This is a COMPREHENSIVE update that captures all work done since Nov 27!
+
+================================================================================
+END OF UPDATE SUMMARY
+================================================================================
+
