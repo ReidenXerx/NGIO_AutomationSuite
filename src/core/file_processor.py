@@ -143,6 +143,13 @@ class FileProcessor:
         for file_path in file_paths:
             # Create target path with season extension
             path_obj = Path(file_path)
+            filename = path_obj.name
+            
+            # SAFETY CHECK: Skip if file already has the correct seasonal extension
+            # This prevents double postfixes (e.g., .SPR.SPR.cgid) on resume
+            if filename.endswith(season.extension):
+                self.logger.debug(f"Skipping already-renamed file: {filename}")
+                continue
             
             # Remove existing .cgid extension and add seasonal extension
             base_name = path_obj.stem
@@ -463,6 +470,107 @@ class FileProcessor:
                 self.stats["total_files_processed"] / self.stats["total_processing_time"]
             )
     
+    def create_lod_grass_files(self, source_directory: str, target_directory: str, 
+                                season_extension: str,
+                                progress_callback: Optional[Callable] = None) -> ProcessingResult:
+        """
+        Create LOD grass files by copying seasonal files and stripping the seasonal extension.
+        
+        This is used for DynDOLOD LOD generation which requires grass files without
+        seasonal postfixes (plain .cgid instead of .WIN.cgid, .SPR.cgid, etc.)
+        
+        Args:
+            source_directory: Directory containing seasonal grass files
+            target_directory: Directory to create LOD grass files in
+            season_extension: The seasonal extension to strip (e.g., ".WIN.cgid")
+            progress_callback: Optional callback for progress updates
+            
+        Returns:
+            ProcessingResult with operation details
+        """
+        self.logger.info(f"🏔️ Creating LOD grass files from {season_extension} files...")
+        start_time = time.time()
+        
+        # Find all files with the seasonal extension
+        seasonal_files = []
+        try:
+            for root, dirs, files in os.walk(source_directory):
+                for file in files:
+                    if file.endswith(season_extension):
+                        full_path = os.path.join(root, file)
+                        seasonal_files.append(full_path)
+        except Exception as e:
+            self.logger.error(f"Error scanning directory {source_directory}: {e}")
+            return ProcessingResult(
+                success=False,
+                processed_files=0,
+                failed_files=0,
+                duration_seconds=0.0,
+                errors=[f"Error scanning directory: {e}"]
+            )
+        
+        if not seasonal_files:
+            self.logger.warning(f"⚠️ No files with extension {season_extension} found")
+            return ProcessingResult(
+                success=False,
+                processed_files=0,
+                failed_files=0,
+                duration_seconds=0.0,
+                errors=[f"No files found with extension {season_extension}"]
+            )
+        
+        self.logger.info(f"📁 Found {len(seasonal_files)} seasonal files to convert to LOD format")
+        
+        # Create target directory
+        os.makedirs(target_directory, exist_ok=True)
+        
+        # Create copy operations with extension stripping
+        operations = []
+        
+        # Determine the seasonal suffix to strip (e.g., ".WIN" from ".WIN.cgid")
+        # Season extensions are like ".WIN.cgid", ".SPR.cgid", etc.
+        # We want to convert to just ".cgid"
+        season_suffix = season_extension.replace(".cgid", "")  # Gets ".WIN", ".SPR", etc.
+        
+        for source_file in seasonal_files:
+            filename = os.path.basename(source_file)
+            
+            # Strip the seasonal suffix: "file.WIN.cgid" -> "file.cgid"
+            if season_suffix in filename:
+                new_filename = filename.replace(season_suffix, "")
+            else:
+                # Fallback: just use original name (shouldn't happen)
+                new_filename = filename
+            
+            target_path = os.path.join(target_directory, new_filename)
+            
+            operations.append(FileOperation(
+                source_path=source_file,
+                target_path=target_path,
+                operation_type="copy",
+                season_extension=season_extension
+            ))
+        
+        self.logger.info(f"⚡ Processing {len(operations)} files for LOD grass cache...")
+        
+        # Execute copy operations with multithreading
+        result = self._execute_operations(operations, progress_callback)
+        
+        # Update statistics
+        duration = time.time() - start_time
+        self._update_stats(len(operations), duration)
+        
+        # Log results
+        if result.success:
+            self.logger.success(f"✅ Created {result.processed_files} LOD grass files in {duration:.2f}s")
+            rate = result.processed_files / max(duration, 0.001)
+            self.logger.info(f"⚡ Processing rate: {rate:.1f} files/second")
+            self.logger.info(f"📁 LOD files location: {target_directory}")
+        else:
+            self.logger.error(f"❌ LOD grass creation failed: {result.failed_files} errors")
+        
+        return result
+
     def benchmark_performance(self, test_directory: str, num_test_files: int = 100) -> Dict:
         """
         Run performance benchmark with test files

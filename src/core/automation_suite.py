@@ -8,6 +8,8 @@ import os
 import sys
 import time
 import logging
+import shutil
+import zipfile
 from pathlib import Path
 from typing import Dict, List, Optional
 from dataclasses import dataclass
@@ -72,6 +74,10 @@ class AutomationConfig:
     global_grass_scale: float = 1.0  # Grass height multiplier (0.5-2.0)
     ensure_max_grass_types: int = 15  # Max grass types per texture (grass mod specific)
     only_pregenerate_worldspaces: str = ""  # Comma-separated worldspace filter (optional)
+    
+    # v1.6.0: LOD Grass Generation for DynDOLOD
+    generate_lod_grass: bool = False  # Generate LOD grass cache (no seasonal suffix)
+    lod_grass_source_season: str = ""  # Which season to use as source (empty = first season)
     
     def __post_init__(self):
         if self.seasons_to_generate is None:
@@ -196,6 +202,16 @@ class NGIOAutomationSuite:
                     
             # Phase 4: Archive creation handled per-season
             # (Archives created individually after each season)
+            
+            # Phase 4.5: LOD Grass Cache Generation (v1.6.0)
+            # Only generate LOD grass for seasonal mods (NO_SEASONS already has plain .cgid files)
+            if self.config.generate_lod_grass and self.completed_seasons:
+                # Check if we have seasonal seasons (not NO_SEASONS)
+                has_seasonal = any(s != Season.NO_SEASONS for s in self.completed_seasons)
+                if has_seasonal:
+                    self._generate_lod_grass_for_dyndolod()
+                else:
+                    self.logger.info("ℹ️ Skipping LOD grass generation - NO_SEASONS mode already uses plain .cgid files")
             
             # Phase 5: Cleanup and restoration
             self._restore_configurations()
@@ -749,6 +765,256 @@ class NGIOAutomationSuite:
         
         self.automation_state.current_season = None
         self.state_manager.save_state(self.automation_state)
+    
+    def _generate_lod_grass_cache(self, source_season: Season) -> bool:
+        """
+        Generate LOD grass cache from a completed seasonal grass cache.
+        
+        This creates grass files without seasonal postfixes, required for
+        DynDOLOD grass LOD generation.
+        
+        Args:
+            source_season: The season to use as source for LOD grass
+            
+        Returns:
+            bool: True if successful, False if failed
+        """
+        self.logger.separator("LOD Grass Cache Generation")
+        self.logger.info(f"🏔️ Creating LOD grass cache from {source_season.display_name}...")
+        self.logger.info("   This is required for DynDOLOD grass LOD generation")
+        
+        try:
+            # Source: seasonal grass files in Data/Grass
+            grass_directory = os.path.join(self.config.skyrim_path, "Data", "Grass")
+            
+            if not os.path.exists(grass_directory):
+                self.logger.error("❌ Grass directory not found")
+                return False
+            
+            # Target: temporary LOD grass directory
+            lod_grass_directory = os.path.join(self.config.output_directory, "_LOD_Grass_Temp")
+            
+            # Use file processor to create LOD grass files (strip seasonal extension)
+            result = self.file_processor.create_lod_grass_files(
+                source_directory=grass_directory,
+                target_directory=lod_grass_directory,
+                season_extension=source_season.extension
+            )
+            
+            if not result.success:
+                self.logger.error(f"❌ Failed to create LOD grass files: {result.errors}")
+                return False
+            
+            self.logger.info(f"✅ Created {result.processed_files} LOD grass files")
+            
+            # Create LOD grass archive
+            self.logger.info("📦 Creating LOD grass archive...")
+            archive_info = self.archive_creator.create_lod_grass_archive(
+                lod_grass_directory=lod_grass_directory,
+                source_season_name=source_season.display_name
+            )
+            
+            if not archive_info:
+                self.logger.error("❌ Failed to create LOD grass archive")
+                return False
+            
+            self.logger.success(f"✅ LOD grass archive created: {archive_info.archive_path}")
+            self.logger.info(f"📊 Archive size: {archive_info.archive_size_mb:.1f} MB")
+            self.logger.info(f"📁 Files included: {archive_info.file_count}")
+            
+            # Clean up temporary LOD grass directory
+            try:
+                shutil.rmtree(lod_grass_directory)
+                self.logger.debug("🧹 Cleaned up temporary LOD grass files")
+            except Exception as e:
+                self.logger.warning(f"⚠️ Failed to clean up temp directory: {e}")
+            
+            # Notify user about LOD grass
+            self.notifier.notify_progress(
+                "LOD grass cache created for DynDOLOD!",
+                "LOD Grass"
+            )
+            
+            self.logger.separator()
+            self.logger.info("📝 LOD GRASS USAGE INSTRUCTIONS:")
+            self.logger.info("   1. Keep 'Grass Cache - Default' DISABLED normally")
+            self.logger.info("   2. Enable it ONLY when generating LOD with DynDOLOD")
+            self.logger.info("   3. Disable seasonal grass caches during DynDOLOD")
+            self.logger.info("   4. After DynDOLOD completes, disable LOD grass")
+            self.logger.info("   5. Re-enable your seasonal grass caches")
+            self.logger.separator()
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"💥 Error generating LOD grass cache: {e}")
+            return False
+    
+    def _generate_lod_grass_for_dyndolod(self) -> bool:
+        """
+        Generate LOD grass cache for DynDOLOD using the specified source season.
+        
+        v1.6.0: This is called after all seasons are generated to create
+        the "Grass Cache - Default" archive for DynDOLOD LOD generation.
+        
+        Returns:
+            bool: True if successful, False if failed
+        """
+        # Safety check: ensure we have completed seasons
+        if not self.completed_seasons:
+            self.logger.error("❌ No completed seasons available for LOD grass generation")
+            return False
+        
+        # Determine source season
+        source_season = None
+        
+        # Check if user specified a source season
+        if self.config.lod_grass_source_season:
+            # Find the season by name
+            for season in self.completed_seasons:
+                if season.display_name == self.config.lod_grass_source_season:
+                    source_season = season
+                    break
+            
+            if not source_season:
+                self.logger.warning(f"⚠️ Specified LOD source season '{self.config.lod_grass_source_season}' was not completed")
+                self.logger.info(f"   Using first completed season instead")
+        
+        # Default to first completed season
+        if not source_season:
+            source_season = self.completed_seasons[0]
+        
+        self.logger.info(f"🏔️ Using {source_season.display_name} as source for LOD grass cache")
+        
+        # We need to check if seasonal files still exist for the source season
+        # They should still be in the archive, but we need the files on disk
+        # The files may have been cleaned up after archive creation
+        
+        # Check if seasonal files exist in Data/Grass
+        grass_directory = os.path.join(self.config.skyrim_path, "Data", "Grass")
+        seasonal_files_exist = False
+        
+        if os.path.exists(grass_directory):
+            for root, dirs, files in os.walk(grass_directory):
+                for file in files:
+                    if file.endswith(source_season.extension):
+                        seasonal_files_exist = True
+                        break
+                if seasonal_files_exist:
+                    break
+        
+        if not seasonal_files_exist:
+            # Need to extract files from the archive
+            self.logger.info(f"📂 Seasonal files not found in Data/Grass")
+            self.logger.info(f"📦 Extracting from {source_season.display_name} archive...")
+            
+            archive_path = os.path.join(
+                self.config.output_directory, 
+                f"Grass_Cache_{source_season.display_name}_Season.zip"
+            )
+            
+            if not os.path.exists(archive_path):
+                self.logger.error(f"❌ Archive not found: {archive_path}")
+                self.logger.error("   Cannot create LOD grass without source files")
+                return False
+            
+            # Extract archive to temporary location
+            temp_extract_dir = os.path.join(self.config.output_directory, "_LOD_Extract_Temp")
+            
+            try:
+                os.makedirs(temp_extract_dir, exist_ok=True)
+                
+                with zipfile.ZipFile(archive_path, 'r') as zipf:
+                    zipf.extractall(temp_extract_dir)
+                
+                # Find the Grass directory in extracted content
+                extracted_grass_dir = None
+                for root, dirs, files in os.walk(temp_extract_dir):
+                    if os.path.basename(root) == "Grass" and files:
+                        extracted_grass_dir = root
+                        break
+                
+                if not extracted_grass_dir:
+                    self.logger.error("❌ Could not find Grass directory in archive")
+                    shutil.rmtree(temp_extract_dir, ignore_errors=True)
+                    return False
+                
+                # Generate LOD grass from extracted files
+                success = self._generate_lod_grass_cache_from_dir(source_season, extracted_grass_dir)
+                
+                # Clean up extracted files
+                shutil.rmtree(temp_extract_dir, ignore_errors=True)
+                
+                return success
+                
+            except Exception as e:
+                self.logger.error(f"💥 Error extracting archive: {e}")
+                shutil.rmtree(temp_extract_dir, ignore_errors=True)
+                return False
+        else:
+            # Generate directly from existing files
+            return self._generate_lod_grass_cache(source_season)
+    
+    def _generate_lod_grass_cache_from_dir(self, source_season: Season, source_dir: str) -> bool:
+        """
+        Generate LOD grass cache from a specific directory.
+        
+        Args:
+            source_season: The season the files came from
+            source_dir: Directory containing the seasonal grass files
+            
+        Returns:
+            bool: True if successful
+        """
+        self.logger.separator("LOD Grass Cache Generation")
+        self.logger.info(f"🏔️ Creating LOD grass cache from {source_season.display_name}...")
+        
+        try:
+            # Target: temporary LOD grass directory
+            lod_grass_directory = os.path.join(self.config.output_directory, "_LOD_Grass_Temp")
+            
+            # Use file processor to create LOD grass files
+            result = self.file_processor.create_lod_grass_files(
+                source_directory=source_dir,
+                target_directory=lod_grass_directory,
+                season_extension=source_season.extension
+            )
+            
+            if not result.success:
+                self.logger.error(f"❌ Failed to create LOD grass files")
+                return False
+            
+            self.logger.info(f"✅ Created {result.processed_files} LOD grass files")
+            
+            # Create LOD grass archive
+            archive_info = self.archive_creator.create_lod_grass_archive(
+                lod_grass_directory=lod_grass_directory,
+                source_season_name=source_season.display_name
+            )
+            
+            if not archive_info:
+                self.logger.error("❌ Failed to create LOD grass archive")
+                return False
+            
+            self.logger.success(f"✅ LOD grass archive created!")
+            self.logger.info(f"📊 Archive size: {archive_info.archive_size_mb:.1f} MB")
+            
+            # Clean up
+            shutil.rmtree(lod_grass_directory, ignore_errors=True)
+            
+            # Show instructions
+            self.logger.separator()
+            self.logger.info("📝 LOD GRASS USAGE INSTRUCTIONS:")
+            self.logger.info("   1. Keep 'Grass Cache - Default' DISABLED normally")
+            self.logger.info("   2. Enable ONLY when generating LOD with DynDOLOD")
+            self.logger.info("   3. After DynDOLOD, disable and re-enable seasonal caches")
+            self.logger.separator()
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"💥 Error generating LOD grass: {e}")
+            return False
 
 
 def main():

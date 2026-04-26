@@ -346,7 +346,10 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
         super_dense_grass=grass_profile.super_dense_grass,
         overwrite_min_grass_size=grass_profile.overwrite_min_grass_size,
         global_grass_scale=grass_profile.global_grass_scale,
-        ensure_max_grass_types=grass_profile.ensure_max_grass_types
+        ensure_max_grass_types=grass_profile.ensure_max_grass_types,
+        # v1.6.0: LOD Grass settings
+        generate_lod_grass=preferences.generate_lod_grass,
+        lod_grass_source_season=preferences.lod_grass_source_season
     )
     
     # Show generation summary
@@ -379,6 +382,15 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
     logger.info(f"   ⚡ Crash timeout: {preferences.crash_timeout_minutes} minutes (process not running)")
     logger.info(f"   ⏰ No progress timeout: {preferences.no_progress_timeout_minutes} minutes (file not updating)")
     logger.info(f"   📦 Create archives: {'Yes' if preferences.create_archives else 'No'}")
+    
+    # v1.6.0: Show LOD grass settings
+    if preferences.generate_lod_grass:
+        logger.info(f"   🏔️ LOD Grass Cache: Yes (for DynDOLOD)")
+        if preferences.lod_grass_source_season:
+            logger.info(f"   🏔️ LOD Source Season: {preferences.lod_grass_source_season}")
+        else:
+            logger.info(f"   🏔️ LOD Source Season: {preferences.seasons_to_generate[0]} (first season)")
+    
     logger.separator()
     
     # Confirm with user
@@ -557,7 +569,10 @@ def create_automation_config_from_cache(config_cache: ConfigCache, grass_profile
         super_dense_grass=grass_profile.super_dense_grass,
         overwrite_min_grass_size=grass_profile.overwrite_min_grass_size,
         global_grass_scale=grass_profile.global_grass_scale,
-        ensure_max_grass_types=grass_profile.ensure_max_grass_types
+        ensure_max_grass_types=grass_profile.ensure_max_grass_types,
+        # v1.6.0: LOD Grass settings
+        generate_lod_grass=preferences.generate_lod_grass,
+        lod_grass_source_season=preferences.lod_grass_source_season
     )
 
 

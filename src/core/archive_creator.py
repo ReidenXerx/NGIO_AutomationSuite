@@ -514,6 +514,283 @@ Extension: {season.extension}
             self.logger.error(f"💥 Error verifying checksum: {e}")
             return False
     
+    def create_lod_grass_archive(self, lod_grass_directory: str, 
+                                  source_season_name: str = "Default") -> Optional[ArchiveInfo]:
+        """
+        Create a mod archive for LOD grass (DynDOLOD compatible).
+        
+        This creates "Grass Cache - Default" archive containing grass files
+        without seasonal postfixes, required for DynDOLOD LOD generation.
+        
+        Args:
+            lod_grass_directory: Directory containing the plain .cgid files (no seasonal suffix)
+            source_season_name: Name of the season used as source (for documentation)
+            
+        Returns:
+            ArchiveInfo if successful, None if failed
+        """
+        self.logger.info(f"🏔️ Creating LOD grass archive (Grass Cache - Default)...")
+        
+        archive_name = "Grass_Cache_Default_LOD.zip"
+        archive_path = os.path.join(self.output_directory, archive_name)
+        
+        # Find plain .cgid files (without seasonal suffixes)
+        lod_files = self._find_lod_grass_files(lod_grass_directory)
+        
+        if not lod_files:
+            self.logger.error("❌ No LOD grass files found (.cgid without seasonal suffix)")
+            return None
+        
+        self.logger.info(f"📁 Found {len(lod_files)} LOD grass files")
+        
+        try:
+            # Create temporary directory for archive structure
+            with tempfile.TemporaryDirectory() as temp_dir:
+                # Create mod structure for LOD grass
+                mod_structure = self._create_lod_mod_structure(temp_dir, lod_files, source_season_name)
+                
+                if not mod_structure:
+                    return None
+                
+                # Create the zip archive
+                archive_info = self._create_lod_zip_archive(mod_structure, archive_path, source_season_name, len(lod_files))
+                
+                if archive_info:
+                    self.created_archives.append(archive_info)
+                    self.logger.success(f"✅ Created LOD archive: {archive_name}")
+                    self.logger.info(f"📊 Archive size: {archive_info.archive_size_mb:.1f} MB")
+                    self.logger.info(f"📁 Files included: {archive_info.file_count}")
+                
+                return archive_info
+                
+        except Exception as e:
+            self.logger.error(f"💥 Failed to create LOD grass archive: {e}")
+            return None
+    
+    def _find_lod_grass_files(self, directory: str) -> List[str]:
+        """Find all plain .cgid files (without seasonal suffixes)"""
+        lod_files = []
+        seasonal_suffixes = ['.WIN.cgid', '.SPR.cgid', '.SUM.cgid', '.AUT.cgid']
+        
+        if not os.path.exists(directory):
+            self.logger.error(f"❌ Directory not found: {directory}")
+            return lod_files
+        
+        try:
+            for root, dirs, files in os.walk(directory):
+                for file in files:
+                    # Only include .cgid files that DON'T have seasonal suffixes
+                    if file.endswith('.cgid'):
+                        is_seasonal = any(file.endswith(suffix) for suffix in seasonal_suffixes)
+                        if not is_seasonal:
+                            full_path = os.path.join(root, file)
+                            lod_files.append(full_path)
+        except Exception as e:
+            self.logger.error(f"Error scanning directory {directory}: {e}")
+        
+        return lod_files
+    
+    def _create_lod_mod_structure(self, temp_dir: str, lod_files: List[str], 
+                                   source_season_name: str) -> Optional[str]:
+        """
+        Create the proper mod directory structure for LOD grass
+        
+        Args:
+            temp_dir: Temporary directory for building the structure
+            lod_files: List of LOD grass cache files
+            source_season_name: Season used as source
+            
+        Returns:
+            str: Path to the mod root directory, or None if failed
+        """
+        try:
+            # Create mod root directory
+            mod_root = os.path.join(temp_dir, "Grass_Cache_Default")
+            data_dir = os.path.join(mod_root, "Data")
+            grass_dir = os.path.join(data_dir, "Grass")
+            
+            os.makedirs(grass_dir, exist_ok=True)
+            
+            # Copy LOD files to Grass directory
+            copied_files = 0
+            for source_file in lod_files:
+                filename = os.path.basename(source_file)
+                target_file = os.path.join(grass_dir, filename)
+                
+                try:
+                    shutil.copy2(source_file, target_file)
+                    copied_files += 1
+                except Exception as e:
+                    self.logger.warning(f"Failed to copy {filename}: {e}")
+            
+            if copied_files == 0:
+                self.logger.error("❌ No files were copied to mod structure")
+                return None
+            
+            # Create LOD-specific metadata files
+            self._create_lod_metadata_files(mod_root, source_season_name, copied_files)
+            
+            self.logger.info(f"📁 Created LOD mod structure with {copied_files} files")
+            return mod_root
+            
+        except Exception as e:
+            self.logger.error(f"💥 Error creating LOD mod structure: {e}")
+            return None
+    
+    def _create_lod_metadata_files(self, mod_root: str, source_season_name: str, file_count: int) -> None:
+        """Create metadata files for the LOD grass mod"""
+        try:
+            # Create README.txt with LOD-specific instructions
+            readme_path = os.path.join(mod_root, "README.txt")
+            with open(readme_path, 'w', encoding='utf-8') as f:
+                f.write(self._generate_lod_readme_content(source_season_name, file_count))
+            
+            # Create meta.ini for Mod Organizer 2
+            meta_path = os.path.join(mod_root, "meta.ini")
+            with open(meta_path, 'w', encoding='utf-8') as f:
+                f.write(self._generate_lod_meta_ini_content(source_season_name))
+            
+            self.logger.debug(f"📝 Created LOD metadata files")
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to create LOD metadata files: {e}")
+    
+    def _generate_lod_readme_content(self, source_season_name: str, file_count: int) -> str:
+        """Generate README.txt content for LOD grass mod"""
+        return f"""Grass Cache - Default (LOD Generation)
+{'=' * 50}
+
+Generated by NGIO Automation Suite
+Source Season: {source_season_name}
+Creation Date: {time.strftime('%Y-%m-%d %H:%M:%S')}
+
+⚠️  IMPORTANT: This mod is ONLY for DynDOLOD LOD generation!
+
+DESCRIPTION:
+This mod contains grass cache files WITHOUT seasonal postfixes.
+These files are required when generating grass LOD with DynDOLOD.
+
+CONTENTS:
+- {file_count} grass cache files (.cgid - no seasonal suffix)
+
+WHEN TO USE THIS MOD:
+✅ Enable ONLY when running DynDOLOD for grass LOD generation
+❌ Keep DISABLED during normal gameplay
+
+HOW TO USE:
+1. Install this mod in your mod manager
+2. Keep it DISABLED by default
+3. When you want to generate grass LOD with DynDOLOD:
+   a. Enable this mod (Grass Cache - Default)
+   b. Disable your seasonal grass cache mods temporarily
+   c. Run DynDOLOD with grass LOD options
+   d. After DynDOLOD completes, DISABLE this mod again
+   e. Re-enable your seasonal grass cache mods
+4. Your grass LOD is now generated!
+
+WHY IS THIS NEEDED:
+DynDOLOD requires grass cache files without seasonal extensions
+to properly generate grass LOD. Seasonal files (.WIN.cgid, .SPR.cgid,
+etc.) are not recognized by DynDOLOD's grass LOD system.
+
+INSTALLATION:
+- Mod Organizer 2: Install as a mod, keep disabled by default
+- Vortex: Install as a mod, set to disabled
+
+SOURCE INFORMATION:
+This LOD grass cache was generated from: {source_season_name} season
+The grass density and settings match your {source_season_name} grass cache.
+
+CREDITS:
+- NGIO Development Team: Original grass cache system
+- DynDOLOD: LOD generation system
+- NGIO Automation Suite: Automated generation
+
+Generated by NGIO Automation Suite
+https://github.com/ReidenXerx/ngio-automation-suite
+"""
+    
+    def _generate_lod_meta_ini_content(self, source_season_name: str) -> str:
+        """Generate meta.ini content for LOD grass MO2"""
+        return f"""[General]
+modid=0
+version=1.0
+newestVersion=1.0
+category=23
+installationFile=Generated by NGIO Automation Suite
+
+[installedFiles]
+size=1
+
+[comments]
+Grass Cache - Default (for DynDOLOD LOD generation)
+Generated from: {source_season_name} season
+Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}
+NOTE: Enable ONLY when generating grass LOD with DynDOLOD!
+"""
+    
+    def _create_lod_zip_archive(self, mod_directory: str, archive_path: str, 
+                                 source_season_name: str, file_count: int) -> Optional[ArchiveInfo]:
+        """
+        Create the final LOD zip archive
+        
+        Args:
+            mod_directory: Directory containing the mod structure
+            archive_path: Path for the output archive
+            source_season_name: Season used as source
+            file_count: Number of grass files
+            
+        Returns:
+            ArchiveInfo if successful, None if failed
+        """
+        try:
+            start_time = time.time()
+            actual_file_count = 0
+            
+            # Remove existing archive if it exists
+            if os.path.exists(archive_path):
+                os.remove(archive_path)
+            
+            with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as zipf:
+                # Walk through mod directory and add all files
+                for root, dirs, files in os.walk(mod_directory):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        
+                        # Calculate relative path within the archive
+                        arcname = os.path.relpath(file_path, mod_directory)
+                        
+                        # Add file to archive
+                        zipf.write(file_path, arcname)
+                        actual_file_count += 1
+            
+            # Get archive size
+            archive_size_mb = os.path.getsize(archive_path) / (1024 * 1024)
+            creation_time = time.time() - start_time
+            
+            # Validate archive
+            if not self._validate_archive(archive_path):
+                self.logger.error(f"❌ LOD archive validation failed: {archive_path}")
+                return None
+            
+            # Generate checksum for integrity verification
+            checksum = self._generate_checksum(archive_path)
+            if checksum:
+                self._save_checksum_file(archive_path, checksum)
+            
+            return ArchiveInfo(
+                season_name=f"Default (LOD - from {source_season_name})",
+                archive_path=archive_path,
+                file_count=actual_file_count,
+                archive_size_mb=archive_size_mb,
+                creation_time=creation_time,
+                sha256_checksum=checksum
+            )
+            
+        except Exception as e:
+            self.logger.error(f"💥 Error creating LOD zip archive: {e}")
+            return None
+
     def create_all_season_archives(self, grass_directory: str, seasons: List) -> List[ArchiveInfo]:
         """
         Create archives for all specified seasons

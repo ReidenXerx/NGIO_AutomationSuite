@@ -60,6 +60,8 @@ class UserPreferences:
     create_archives: bool = True
     backup_configs: bool = True
     auto_cleanup: bool = True
+    generate_lod_grass: bool = False  # v1.6.0: Generate LOD grass cache for DynDOLOD
+    lod_grass_source_season: str = ""  # Which season to use as source for LOD grass (empty = first season)
     
     def __post_init__(self):
         if self.seasons_to_generate is None:
@@ -475,6 +477,39 @@ class ConfigCache:
             if create_archives in ['n', 'no']:
                 self.preferences.create_archives = False
             
+            # v1.6.0: LOD Grass generation for DynDOLOD
+            if self.preferences.use_seasonal_mods:
+                self.logger.info("")
+                self.logger.info("🏔️  LOD Grass Cache (for DynDOLOD):")
+                self.logger.info("   DynDOLOD requires grass files WITHOUT seasonal postfixes")
+                self.logger.info("   This creates 'Grass Cache - Default' from one of your seasons")
+                self.logger.info("   You only enable this mod when generating LOD with DynDOLOD")
+                generate_lod = input("   Generate LOD grass cache? (y/n, default n): ").strip().lower()
+                
+                if generate_lod in ['y', 'yes']:
+                    self.preferences.generate_lod_grass = True
+                    self.logger.success("✅ LOD grass cache will be generated")
+                    
+                    # Ask which season to use as source
+                    if len(self.preferences.seasons_to_generate) > 1:
+                        self.logger.info("")
+                        self.logger.info("   Which season to use as LOD grass source?")
+                        for i, season in enumerate(self.preferences.seasons_to_generate, 1):
+                            self.logger.info(f"   {i}. {season}")
+                        self.logger.info(f"   (default: {self.preferences.seasons_to_generate[0]})")
+                        
+                        source_choice = input("   Choice: ").strip()
+                        if source_choice.isdigit():
+                            idx = int(source_choice) - 1
+                            if 0 <= idx < len(self.preferences.seasons_to_generate):
+                                self.preferences.lod_grass_source_season = self.preferences.seasons_to_generate[idx]
+                                self.logger.info(f"   Using {self.preferences.lod_grass_source_season} as LOD source")
+                    
+                    if not self.preferences.lod_grass_source_season:
+                        self.preferences.lod_grass_source_season = self.preferences.seasons_to_generate[0]
+                else:
+                    self.preferences.generate_lod_grass = False
+            
         except KeyboardInterrupt:
             raise
         except Exception as e:
@@ -535,6 +570,12 @@ class ConfigCache:
         self.logger.info(f"   No Progress Timeout: {self.preferences.no_progress_timeout_minutes} minutes")
         self.logger.info(f"   Create Archives: {'Yes' if self.preferences.create_archives else 'No'}")
         self.logger.info(f"   Backup Configs: {'Yes' if self.preferences.backup_configs else 'No'}")
+        
+        # v1.6.0: LOD grass settings
+        if self.preferences.use_seasonal_mods:
+            self.logger.info(f"   LOD Grass Cache: {'Yes' if self.preferences.generate_lod_grass else 'No'}")
+            if self.preferences.generate_lod_grass and self.preferences.lod_grass_source_season:
+                self.logger.info(f"   LOD Source Season: {self.preferences.lod_grass_source_season}")
         
         if self.paths.last_validated:
             self.logger.info(f"   Last Validated: {self.paths.last_validated}")
