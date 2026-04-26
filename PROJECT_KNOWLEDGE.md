@@ -275,8 +275,8 @@ NGIO_AutomationSuite/
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/ngio-automation-suite.git
-cd ngio-automation-suite
+git clone https://github.com/ReidenXerx/NGIO_AutomationSuite.git
+cd NGIO_AutomationSuite
 
 # Create virtual environment (recommended)
 python -m venv venv

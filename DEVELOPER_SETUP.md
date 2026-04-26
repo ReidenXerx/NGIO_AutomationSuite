@@ -23,8 +23,8 @@ This document is for **developers** who want to build the project from source, c
 
 ### **1. Clone Repository**
 ```bash
-git clone https://github.com/yourusername/ngio-automation-suite.git
-cd ngio-automation-suite
+git clone https://github.com/ReidenXerx/NGIO_AutomationSuite.git
+cd NGIO_AutomationSuite
 ```
 
 ### **2. Install Dependencies**

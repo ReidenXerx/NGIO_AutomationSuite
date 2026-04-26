@@ -8,7 +8,7 @@ colorlog>=6.7.0        # Colored logging for enhanced console output
 
 # New features (v1.2.0+)
 pyyaml>=6.0            # Configuration file support
-win10toast>=0.9        # Windows 10/11 toast notifications
+winotify>=1.1.0        # Windows 10/11 toast notifications (replaces unmaintained win10toast in v1.5.2)
 tqdm>=4.66.0           # Progress bars with ETA
 
 # Build dependencies (required for creating releases)

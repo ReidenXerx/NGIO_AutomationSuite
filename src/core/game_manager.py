@@ -659,111 +659,260 @@ class GameManager:
         
         return status
     
-    def wait_for_precache_completion(self, timeout_minutes: int = 60) -> bool:
+    def _is_process_alive_safe(self) -> bool:
         """
-        Wait for grass generation completion by monitoring PrecacheGrass.txt
-        
-        SMART TIMEOUT LOGIC:
+        Defensive wrapper around is_process_running().
+
+        Treat any unexpected exception as ALIVE so we never false-positive a
+        crash when psutil hits a transient quirk. Conservative by design.
+        """
+        try:
+            return self.is_process_running()
+        except Exception as exc:
+            self.logger.debug(
+                f"is_process_running() raised {exc!r} - assuming alive (conservative)"
+            )
+            return True
+
+    def wait_for_precache_completion(
+        self,
+        timeout_minutes: int = 60,
+        *,
+        warmup_cap_minutes: int = 10,
+        death_streak_threshold: int = 2,
+    ) -> bool:
+        """
+        Wait for grass generation completion by monitoring PrecacheGrass.txt.
+
+        SMART TIMEOUT LOGIC (v1.5.2 hotfix - addresses justkub96/NGIO freeze-detection feedback):
         - If file is actively growing: NO timeout (can run indefinitely)
-        - If no activity for 5+ minutes: Consider hung/crashed
-        - Hard timeout only applies if no progress for extended period
-        
-        This prevents killing active long-running generations!
-        
+        - If no activity for `timeout_minutes`: consider hung
+        - Fast process-death detection: detects crashes within ~10s instead of waiting
+          for the full activity timeout. Confirmed only after `death_streak_threshold`
+          consecutive failed liveness checks (~10s) to absorb psutil transient misses,
+          and re-checks file-gone-by-plugin race before declaring crash.
+        - Warmup grace: the activity-inactivity timer doesn't start until the first
+          file write is observed. Heavy modlists with slow boot (4+ min before
+          generation begins) won't trip the timeout prematurely. Capped by
+          `warmup_cap_minutes` so a truly stuck launch still bails.
+
+        Power-user escape hatch: set env var `NGIO_DISABLE_FAST_DEATH_DETECTION=1`
+        to revert to the legacy "only check process death after activity timeout"
+        behavior.
+
         Args:
-            timeout_minutes: Maximum time to wait WITHOUT ACTIVITY
-            
+            timeout_minutes: Maximum time to wait WITHOUT ACTIVITY (after warmup).
+            warmup_cap_minutes: Max time to wait for first file activity at startup.
+            death_streak_threshold: Consecutive failed liveness checks required
+                to confirm crash (each check is ~5s apart).
+
         Returns:
-            bool: True if completed successfully, False if failed/timeout
+            bool: True if completed successfully, False if failed/timeout.
         """
         self.logger.info("👁️ Monitoring PrecacheGrass.txt for completion...")
-        self.logger.info(f"⏰ Will timeout after {timeout_minutes} minutes of NO ACTIVITY (active generation can run indefinitely)")
-        
+        self.logger.info(
+            f"⏰ Will timeout after {timeout_minutes} minutes of NO ACTIVITY "
+            f"(active generation can run indefinitely)"
+        )
+
         # Reset deletion flag - we're starting fresh monitoring
         self._we_deleted_precache_file = False
-        
+
         # Create progress protection lock
         self._create_progress_lock()
-        
+
+        # Feature flag: env-var escape hatch for fast death detection.
+        # Defaults to ENABLED. Users can opt-out via:
+        #   set NGIO_DISABLE_FAST_DEATH_DETECTION=1
+        fast_death_detection = (
+            os.environ.get("NGIO_DISABLE_FAST_DEATH_DETECTION", "").strip()
+            not in ("1", "true", "yes")
+        )
+
         start_time = time.time()
         last_size = 0
         last_modified = 0
         last_activity_time = start_time
         no_activity_timeout_seconds = timeout_minutes * 60
-        
+        warmup_cap_seconds = warmup_cap_minutes * 60
+
+        # Two-phase timer: timeout doesn't start until we see first activity.
+        first_activity_seen = False
+
+        # Streak counter for fast death detection (absorbs psutil transient misses).
+        liveness_failure_streak = 0
+
         # Track progress for user feedback
         progress_report_interval = 300  # Report every 5 minutes
         last_progress_report = start_time
-        
+
         while True:  # No hard timeout - only activity-based timeout
             current_time = time.time()
             status = self.check_precache_file_status()
-            
+
+            # ---- Branch 1: File doesn't exist (success-by-plugin OR cleanup) ----
+            # MUST run BEFORE process-death check so we don't false-positive a
+            # crash when the plugin completes and the game exits in the same tick.
             if not status["exists"]:
-                # File was deleted - but by whom?
                 if self._we_deleted_precache_file:
                     # We deleted it during cleanup - this is NOT completion
-                    self.logger.warning("🗑️ PrecacheGrass.txt was deleted by cleanup - generation interrupted")
+                    self.logger.warning(
+                        "🗑️ PrecacheGrass.txt was deleted by cleanup - generation interrupted"
+                    )
                     return False
                 else:
                     # Plugin deleted it - this means generation completed!
                     total_time = (current_time - start_time) / 60
-                    self.logger.success(f"🎉 PrecacheGrass.txt deleted by plugin - Generation completed in {total_time:.1f} minutes!")
-                    
-                    # Remove progress protection lock
+                    self.logger.success(
+                        f"🎉 PrecacheGrass.txt deleted by plugin - "
+                        f"Generation completed in {total_time:.1f} minutes!"
+                    )
+
                     self._remove_progress_lock()
-                    
-                    # Additional verification: check if Skyrim is still running
-                    if self.is_process_running():
-                        self.logger.info("🎮 Skyrim still running after completion - will close automatically")
+
+                    if self._is_process_alive_safe():
+                        self.logger.info(
+                            "🎮 Skyrim still running after completion - will close automatically"
+                        )
                     else:
                         self.logger.info("✅ Skyrim closed automatically after completion")
-                    
+
                     return True
-            
-            # Check for file activity
+
+            # ---- Branch 2: File exists - check for activity ----
             if status["size"] != last_size or status["modified_time"] != last_modified:
                 # File is being updated - generation is ACTIVE
-                last_activity_time = current_time  # Reset activity timer
-                
+                if not first_activity_seen:
+                    first_activity_seen = True
+                    boot_seconds = current_time - start_time
+                    self.logger.success(
+                        f"✅ Generation started - first activity after {boot_seconds:.0f}s of boot. "
+                        f"Activity timer now armed."
+                    )
+                    # Restart the activity timer NOW so the warmup boot time
+                    # doesn't count against the inactivity budget.
+                    last_activity_time = current_time
+                else:
+                    last_activity_time = current_time
+
+                # Reset liveness streak on any activity (process clearly alive
+                # if it's writing to the file).
+                liveness_failure_streak = 0
+
                 if status["content_lines"] > 0:
-                    self.logger.info(f"📊 Processing: {status['content_lines']} cells completed")
+                    self.logger.info(
+                        f"📊 Processing: {status['content_lines']} cells completed"
+                    )
                     if status["last_cell"]:
                         self.logger.debug(f"   Last cell: {status['last_cell']}")
-                
+
                 last_size = status["size"]
                 last_modified = status["modified_time"]
             else:
-                # No file changes detected - check for timeout
-                time_since_activity = current_time - last_activity_time
-                
-                if time_since_activity > no_activity_timeout_seconds:
-                    # No activity for too long - likely hung or crashed
-                    self.logger.error(f"⏰ No activity for {timeout_minutes} minutes - generation appears hung")
-                    
-                    # Check if process is still running
-                    if not self.is_process_running():
-                        self.logger.warning("💥 Process not running and no activity - crashed")
+                # No file changes this tick.
+                if first_activity_seen:
+                    # Post-warmup: apply the existing activity-timeout logic.
+                    time_since_activity = current_time - last_activity_time
+
+                    if time_since_activity > no_activity_timeout_seconds:
+                        self.logger.error(
+                            f"⏰ No activity for {timeout_minutes} minutes - generation appears hung"
+                        )
+                        if not self._is_process_alive_safe():
+                            self.logger.warning(
+                                "💥 Process not running and no activity - crashed"
+                            )
+                            return False
+                        else:
+                            self.logger.warning(
+                                "🔒 Process running but no progress - likely hung"
+                            )
+                            return False
+                    elif time_since_activity > 300:  # 5 min warning
+                        minutes_inactive = time_since_activity / 60
+                        self.logger.warning(
+                            f"⚠️ No activity for {minutes_inactive:.1f} minutes "
+                            f"(will timeout at {timeout_minutes} minutes)"
+                        )
+                else:
+                    # Warmup phase: don't apply activity timeout yet.
+                    # Just enforce the hard warmup cap so a hung launch bails.
+                    boot_seconds = current_time - start_time
+                    if boot_seconds > warmup_cap_seconds:
+                        self.logger.error(
+                            f"⏰ No file activity within {warmup_cap_minutes} min of warmup - "
+                            f"generation never started"
+                        )
+                        if not self._is_process_alive_safe():
+                            self.logger.warning(
+                                "💥 Process not running and no activity ever - crashed at boot"
+                            )
+                        else:
+                            self.logger.warning(
+                                "🔒 Process running but file never grew - hung at boot"
+                            )
                         return False
-                    else:
-                        self.logger.warning("🔒 Process running but no progress - likely hung")
+
+            # ---- Fast process-death detection (always runs when file present) ----
+            # This is the main fix for justkub96's feedback: detect game exit
+            # within ~10s instead of waiting the full activity timeout.
+            #
+            # CRITICAL ORDERING: this block ONLY runs when file still exists
+            # (Branch 1 already returned above if file is gone). That guarantees
+            # we never false-positive a crash on the success-by-plugin path.
+            if fast_death_detection:
+                if not self._is_process_alive_safe():
+                    liveness_failure_streak += 1
+                    self.logger.debug(
+                        f"Process liveness check failed ({liveness_failure_streak}/{death_streak_threshold})"
+                    )
+                    if liveness_failure_streak >= death_streak_threshold:
+                        # One last check for the plugin-completes-and-exits race:
+                        # between liveness checks the plugin may have deleted
+                        # the file as part of its shutdown sequence.
+                        final_status = self.check_precache_file_status()
+                        if (
+                            not final_status["exists"]
+                            and not self._we_deleted_precache_file
+                        ):
+                            total_time = (current_time - start_time) / 60
+                            self.logger.success(
+                                f"🎉 Plugin completed during shutdown - "
+                                f"Generation finished in {total_time:.1f} minutes!"
+                            )
+                            self._remove_progress_lock()
+                            return True
+
+                        self.logger.warning(
+                            f"💥 Process died (confirmed via {death_streak_threshold} "
+                            f"consecutive checks ~{death_streak_threshold * 5}s) - crashed"
+                        )
                         return False
-                elif time_since_activity > 300:  # 5 minutes no activity - warning only
-                    minutes_inactive = time_since_activity / 60
-                    self.logger.warning(f"⚠️ No activity for {minutes_inactive:.1f} minutes (will timeout at {timeout_minutes} minutes)")
-            
+                else:
+                    liveness_failure_streak = 0
+
             # Periodic progress report for long-running generations
             if current_time - last_progress_report > progress_report_interval:
                 total_time = (current_time - start_time) / 60
                 time_since_activity = (current_time - last_activity_time) / 60
-                
-                if time_since_activity < 1:
-                    self.logger.info(f"⏱️ Generation running for {total_time:.1f} minutes - ACTIVE")
+
+                if not first_activity_seen:
+                    self.logger.info(
+                        f"⏱️ Waiting for generation to begin - "
+                        f"{total_time:.1f} min of warmup elapsed (cap: {warmup_cap_minutes} min)"
+                    )
+                elif time_since_activity < 1:
+                    self.logger.info(
+                        f"⏱️ Generation running for {total_time:.1f} minutes - ACTIVE"
+                    )
                 else:
-                    self.logger.info(f"⏱️ Generation running for {total_time:.1f} minutes - idle for {time_since_activity:.1f} minutes")
-                
+                    self.logger.info(
+                        f"⏱️ Generation running for {total_time:.1f} minutes - "
+                        f"idle for {time_since_activity:.1f} minutes"
+                    )
+
                 last_progress_report = current_time
-            
+
             # Brief sleep to avoid excessive file system checks
             time.sleep(5)
     

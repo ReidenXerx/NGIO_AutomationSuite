@@ -367,7 +367,7 @@ class SystemValidator:
     def _check_dependencies(self):
         """Check required Python dependencies"""
         required_modules = ['colorlog', 'psutil']
-        optional_modules = ['yaml', 'tqdm', 'win10toast']
+        optional_modules = ['yaml', 'tqdm', 'winotify']
         
         missing_required = []
         missing_optional = []

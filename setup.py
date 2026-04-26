@@ -51,12 +51,12 @@ setup(
     description=__description__,
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/ngio-automation-suite",
+    url="https://github.com/ReidenXerx/NGIO_AutomationSuite",
     project_urls={
-        "Bug Tracker": "https://github.com/yourusername/ngio-automation-suite/issues",
-        "Documentation": "https://github.com/yourusername/ngio-automation-suite/blob/main/docs/",
-        "Source Code": "https://github.com/yourusername/ngio-automation-suite",
-        "Nexus Mods": "https://nexusmods.com/skyrimspecialedition/mods/your-mod-id",
+        "Bug Tracker": "https://github.com/ReidenXerx/NGIO_AutomationSuite/issues",
+        "Documentation": "https://github.com/ReidenXerx/NGIO_AutomationSuite/blob/main/docs/",
+        "Source Code": "https://github.com/ReidenXerx/NGIO_AutomationSuite",
+        "Nexus Mods": "https://www.nexusmods.com/skyrimspecialedition/mods/<NEXUS_MOD_ID>",
     },
     
     # Package discovery

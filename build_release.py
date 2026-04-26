@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-NGIO Automation Suite - Enhanced Release Build System (v1.5.1)
+NGIO Automation Suite - Enhanced Release Build System
 
 Creates professional release packages:
 1. Single-file executable (PyInstaller) - RECOMMENDED
@@ -77,7 +77,7 @@ def check_dependencies():
         'colorama': 'colorama (runtime dependency)',
         'colorlog': 'colorlog (runtime dependency)',
         'yaml': 'PyYAML (runtime dependency)',
-        'win10toast': 'win10toast (runtime dependency)',
+        'winotify': 'winotify (runtime dependency)',
         'tqdm': 'tqdm (runtime dependency)',
     }
     
@@ -286,7 +286,7 @@ If you don't want to install Python, download the single-file .exe version inste
 See the `docs/` folder for complete documentation:
 - NEXUS_DOCUMENTATION.txt - Complete user guide
 - PAGEFILE_SETUP_GUIDE.txt - Important system setup
-- V1.5.1_RELEASE_NOTES.md - Latest changes
+- V{VERSION}_RELEASE_NOTES.md - Latest changes
 
 ## Support
 
@@ -359,18 +359,28 @@ def create_final_release_package():
         target_docs = release_dir / "docs"
         target_docs.mkdir(exist_ok=True)
         
-        # Copy essential documentation only
+        # Copy essential documentation only.
+        # Release notes filename is derived from current VERSION so future
+        # bumps don't require editing this script.
+        release_notes_filename = f"V{VERSION}_RELEASE_NOTES.md"
         essential_docs = [
             "NEXUS_DOCUMENTATION.txt",
             "PAGEFILE_SETUP_GUIDE.txt",
-            "V1.5.1_RELEASE_NOTES.md"
+            release_notes_filename,
         ]
-        
+
         for doc in essential_docs:
             src_doc = docs_dir / doc
             if src_doc.exists():
                 shutil.copy2(src_doc, target_docs / doc)
                 print(f"   📄 Copied docs/{doc}")
+            elif doc == release_notes_filename:
+                # Don't fail the build if release notes are missing - warn
+                # the maintainer to write them, but ship the exe anyway.
+                print(
+                    f"   ⚠️  docs/{doc} not found - "
+                    f"create release notes before publishing!"
+                )
     
     # Copy README
     readme = ROOT_DIR / "README.md"
@@ -421,7 +431,7 @@ The tool will guide you through:
 
 - **Complete Guide**: docs/NEXUS_DOCUMENTATION.txt
 - **Pagefile Setup**: docs/PAGEFILE_SETUP_GUIDE.txt
-- **Release Notes**: docs/V1.5.1_RELEASE_NOTES.md
+- **Release Notes**: docs/V{VERSION}_RELEASE_NOTES.md
 - **Full README**: README.md
 
 ## System Requirements
@@ -537,7 +547,7 @@ def main():
     parser.add_argument('--portable-only', action='store_true', help='Build only portable ZIP')
     args = parser.parse_args()
     
-    print("🚀 NGIO Automation Suite - Enhanced Build System v1.5.1")
+    print(f"🚀 NGIO Automation Suite - Enhanced Build System v{VERSION}")
     print("=" * 80)
     print(f"   Project: {PROJECT_NAME}")
     print(f"   Version: {VERSION}")

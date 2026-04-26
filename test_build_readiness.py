@@ -24,12 +24,12 @@ def test_dependencies():
     print("\n🔍 Checking dependencies...")
     
     dependencies = {
-        'PyInstaller': 'pyinstaller',
+        'PyInstaller': 'PyInstaller',
         'psutil': 'psutil',
         'colorama': 'colorama',
         'colorlog': 'colorlog',
         'PyYAML': 'yaml',
-        'win10toast': 'win10toast',
+        'winotify': 'winotify',
         'tqdm': 'tqdm',
     }
     

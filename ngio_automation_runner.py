@@ -80,8 +80,9 @@ Examples:
   ngio-automation --season winter -v     Generate with verbose output
   ngio-automation --dry-run              Test workflow without launching Skyrim
   ngio-automation --config custom.yaml   Use custom configuration file
+  ngio-automation --no-notifications     Disable toasts/sounds (Proton/Wine/Steam Deck)
 
-For more information, visit: https://github.com/yourusername/ngio-automation-suite
+For more information, visit: https://github.com/ReidenXerx/NGIO_AutomationSuite
         """
     )
     
@@ -128,8 +129,24 @@ For more information, visit: https://github.com/yourusername/ngio-automation-sui
         action='store_true',
         help='Run without user interaction (for scheduled tasks)'
     )
-    
+
+    parser.add_argument(
+        '--no-notifications',
+        action='store_true',
+        help='Disable Windows toast notifications and sounds (useful on Proton/Wine/Steam Deck)'
+    )
+
     return parser.parse_args()
+
+
+def _apply_cli_overrides(automation_config: AutomationConfig, args) -> AutomationConfig:
+    """Apply runtime CLI flags to an already-built AutomationConfig in place."""
+    if args is None:
+        return automation_config
+    if getattr(args, 'no_notifications', False):
+        automation_config.enable_notifications = False
+        automation_config.enable_sounds = False
+    return automation_config
 
 
 def print_banner():
@@ -215,7 +232,7 @@ def show_main_menu(config_cache: ConfigCache) -> str:
             logger.error("❌ Invalid input. Please try again.")
 
 
-def handle_grass_generation(config_cache: ConfigCache) -> bool:
+def handle_grass_generation(config_cache: ConfigCache, args=None) -> bool:
     """Handle the grass cache generation process"""
     logger = Logger("Generation")
     
@@ -276,6 +293,7 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
                 
                 # Skip profile selection - continue to generation with LOD Compatible default
                 automation_config = create_automation_config_from_cache(config_cache)
+                _apply_cli_overrides(automation_config, args)
                 automation_suite = NGIOAutomationSuite(automation_config)
                 
                 # Start fresh generation with remaining seasons
@@ -351,7 +369,9 @@ def handle_grass_generation(config_cache: ConfigCache) -> bool:
         generate_lod_grass=preferences.generate_lod_grass,
         lod_grass_source_season=preferences.lod_grass_source_season
     )
-    
+
+    _apply_cli_overrides(automation_config, args)
+
     # Show generation summary
     logger.separator("Generation Summary")
     logger.info("🎯 About to generate grass cache with these settings:")
@@ -770,7 +790,7 @@ def main():
             return 0
         
         # Run generation
-        success = handle_grass_generation(config_cache)
+        success = handle_grass_generation(config_cache, args=args)
         
         if not args.unattended:
             input("\nPress Enter to exit...")
@@ -784,7 +804,7 @@ def main():
             choice = show_main_menu(config_cache)
             
             if choice == '1':  # Start generation
-                handle_grass_generation(config_cache)
+                handle_grass_generation(config_cache, args=args)
                 input("\nPress Enter to continue...")
                 
             elif choice == '2':  # Configure

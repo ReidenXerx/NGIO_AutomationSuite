@@ -230,8 +230,8 @@ NGIO_AutomationSuite/
 
 #### Option C: **From Source** (For advanced users)
 ```bash
-git clone https://github.com/yourusername/ngio-automation-suite.git
-cd ngio-automation-suite
+git clone https://github.com/ReidenXerx/NGIO_AutomationSuite.git
+cd NGIO_AutomationSuite
 python ngio_automation_runner.py
 ```
 

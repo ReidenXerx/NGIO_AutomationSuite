@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ngio-automation-suite"
-version = "1.1.2"
+version = "1.6.0"
 authors = [
     {name = "Dudu"},
 ]
@@ -32,11 +32,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/ngio-automation-suite"
-"Bug Tracker" = "https://github.com/yourusername/ngio-automation-suite/issues"
-Documentation = "https://github.com/yourusername/ngio-automation-suite/blob/main/docs/"
-"Source Code" = "https://github.com/yourusername/ngio-automation-suite"
-"Nexus Mods" = "https://nexusmods.com/skyrimspecialedition/mods/your-mod-id"
+Homepage = "https://github.com/ReidenXerx/NGIO_AutomationSuite"
+"Bug Tracker" = "https://github.com/ReidenXerx/NGIO_AutomationSuite/issues"
+Documentation = "https://github.com/ReidenXerx/NGIO_AutomationSuite/blob/main/docs/"
+"Source Code" = "https://github.com/ReidenXerx/NGIO_AutomationSuite"
+"Nexus Mods" = "https://www.nexusmods.com/skyrimspecialedition/mods/<NEXUS_MOD_ID>"
 
 [project.scripts]
 ngio-automation = "ngio_automation_runner:main"

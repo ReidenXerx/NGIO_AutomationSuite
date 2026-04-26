@@ -38,7 +38,7 @@ a = Analysis(
         'colorama',
         'colorlog',
         'yaml',
-        'win10toast',
+        'winotify',
         'tqdm',
         'src.core.automation_suite',
         'src.core.game_manager',

@@ -3,10 +3,10 @@
             The Ultimate Automation Tool for NGIO Grass Cache Generation
 ================================================================================
 
-VERSION: 1.5.1
+VERSION: 1.6.0
 AUTHOR: Dudu
 LICENSE: MIT License
-GITHUB: https://github.com/yourusername/ngio-automation-suite
+GITHUB: https://github.com/ReidenXerx/NGIO_AutomationSuite
 
 ================================================================================
                     ⭐ KILLER FEATURE: OVERNIGHT MODE ⭐
@@ -976,7 +976,7 @@ MIT License - Free for personal and commercial use. See LICENSE file for
 full details.
 
 SUPPORT:
-• GitHub: https://github.com/yourusername/ngio-automation-suite
+• GitHub: https://github.com/ReidenXerx/NGIO_AutomationSuite
 • Issues: Report bugs and request features on GitHub
 • Updates: Check back for new features and improvements
 • Documentation: Full project knowledge base available on GitHub
