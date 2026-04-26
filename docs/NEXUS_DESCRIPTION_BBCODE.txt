@@ -1,41 +1,6 @@
 [center][size=6][color=#4CAF50]🌱 NGIO AUTOMATION SUITE 🌱[/color][/size]
-[size=4][color=#2196F3]The Ultimate Automation Tool for NGIO Grass Cache Generation[/color][/size][/center]
-
-[line]
-
-[size=5][color=#FF9800]⚠️ ANTIVIRUS DISCLAIMER[/color][/size]
-
-[quote]
-[size=4][color=#E91E63][b]THIS IS NOT A VIRUS![/b][/color][/size]
-
-[b]Why antivirus might flag this tool:[/b]
-[list]
-[*][b]Process Management:[/b] Tool launches and monitors Skyrim.exe (appears as "process injection" to some AVs)
-[*][b]File Operations:[/b] Rapidly processes thousands of .cgid files (looks like "mass file modification")
-[*][b]System Monitoring:[/b] Monitors CPU, memory, and file activity (appears as "system scanning")
-[*][b]Automation Scripts:[/b] Python scripts with batch files (flagged as "potentially unwanted programs")
-[*][b]New/Unknown Software:[/b] Not widely distributed yet, so not in AV whitelists
-[/list]
-
-[b][color=#4CAF50]This tool is 100% safe:[/color][/b]
-[list]
-[*]✅ [b]Open Source:[/b] Full source code available on GitHub for inspection
-[*]✅ [b]No Network Activity:[/b] Bundled version works completely offline (everything included, no downloads needed)
-[*]✅ [b]No System Changes:[/b] Only modifies Skyrim files and creates mod archives
-[*]✅ [b]No Admin Required:[/b] Runs with normal user permissions
-[*]✅ [b]Portable:[/b] No installation, no registry changes, no system files modified
-[/list]
-
-[b][color=#FF5722]If your antivirus blocks it:[/color][/b]
-[list]
-[*]Add the extracted folder to your antivirus exclusions
-[*]Temporarily disable real-time protection during use
-[*]Use Windows Defender (generally has fewer false positives with Python tools)
-[*]Download from official sources only (GitHub/Nexus)
-[/list]
-
-[b]Why we can't "fix" this:[/b] The tool's legitimate functionality (process monitoring, file operations) naturally triggers heuristic detection. This is common with automation tools.
-[/quote]
+[size=4][color=#2196F3]The Ultimate Automation Tool for NGIO Grass Cache Generation[/color][/size]
+[size=3][color=#FF5722][b]v1.6.0 — Stability & LOD Edition[/b][/color][/size][/center]
 
 [line]
 
@@ -90,39 +55,6 @@ Without proper pagefile, your system WILL crash during overnight runs.
 
 [line]
 
-[size=5][color=#FFD700]💎 Why Overnight Mode is a Game-Changer[/color][/size]
-
-[quote]
-[b][color=#4CAF50]Before this tool existed:[/color][/b]
-[list]
-[*]📅 [b]Day 1 Evening:[/b] Generate Winter (1 hour), manually edit INIs, rename files, test
-[*]📅 [b]Day 2 Evening:[/b] Generate Spring (1 hour), manually edit INIs, rename files, test  
-[*]📅 [b]Day 3 Evening:[/b] Generate Summer (1 hour), manually edit INIs, rename files, test
-[*]📅 [b]Day 4 Evening:[/b] Generate Autumn (1 hour), manually edit INIs, rename files, test
-[*]😫 [b]Result:[/b] [color=#FF0000]4 DAYS of work, 4-6 hours of active time, high frustration[/color]
-[*]🔄 If Skyrim crashes? Start over, lose progress
-[*]📝 Miss one INI setting? Incompatible with DynDOLOD
-[*]😤 Most users gave up and only generated 1 season
-[/list]
-
-[b][color=#FFD700]With Overnight Mode:[/color][/b]
-[list]
-[*]🌙 [b]10 PM Tonight:[/b] Launch tool → Select "All 4 Seasons" → Start (5 minutes)
-[*]😴 [b]10 PM - 6 AM:[/b] Sleep peacefully while tool works
-[*]☀️ [b]6 AM Tomorrow:[/b] Wake up to 4 completed, ready-to-install mods
-[*]✅ [b]Result:[/b] [color=#4CAF50]DONE IN ONE NIGHT, 5 minutes of your time, perfect results[/color]
-[*]🤖 Skyrim crashes? Tool handles it automatically
-[*]🎯 Perfect configuration? Every time, LOD-compatible
-[*]🎊 User satisfaction? [color=#FFD700]★★★★★[/color]
-[/list]
-
-[b][color=#FF5722]This is THE feature that makes grass cache generation ACCESSIBLE to everyone.[/color][/b]
-No more "I don't have time for this", no more "it's too complicated", no more giving up.
-Just click Start before bed. That's it.
-[/quote]
-
-[line]
-
 [size=5][color=#FF5722]🎯 What This Tool Solves[/color][/size]
 
 [size=4][color=#E91E63]Current NGIO Grass Generation (Manual Method):[/color][/size]
@@ -148,7 +80,63 @@ Just click Start before bed. That's it.
 
 [line]
 
-[size=5][color=#FF5722]✨ v1.5.0 - Complete NGIO Configuration & Grass Profiles[/color][/size]
+[size=5][color=#FF5722]✨ v1.6.0 - Stability & LOD Edition (Latest!)[/color][/size]
+
+[quote]
+[size=4][b][color=#FF9800]🛠️ Bug-fix release driven by community feedback! 🛠️[/color][/b][/size]
+
+[b]Every change in this release came directly from your comments. Thank you to everyone who reported issues![/b]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]Reliability Fixes:[/b]
+
+[size=3][color=#E91E63]⚡ 1. Fast Crash Detection (no more 5-min waste)[/color][/size]
+[list]
+[*][b]Before:[/b] If Skyrim crashed mid-generation, the tool waited the full "no activity" timeout (5+ minutes) before retrying
+[*][b]After:[/b] Process death is detected within ~10 seconds, confirmed across two consecutive checks to avoid false positives
+[*][b]Result:[/b] [color=#4CAF50]Up to 5 minutes saved per crash on heavy modlists![/color]
+[*][b]Power-user escape hatch:[/b] Set [font=Courier New]NGIO_DISABLE_FAST_DEATH_DETECTION=1[/font] to revert to legacy behavior
+[*][b]Credits:[/b] zorbon1, justkub96 (community feedback)
+[/list]
+
+[size=3][color=#E91E63]🌅 2. Warmup Grace Period (heavy load order friendly)[/color][/size]
+[list]
+[*][b]Before:[/b] The activity timer started ticking the moment Skyrim launched. 4-min boot + slow first cell = false "hung" detection and pointless restarts
+[*][b]After:[/b] The activity timer doesn't start until the first generation activity is observed. Capped at 10 minutes so a truly stuck launch still bails
+[*][b]Result:[/b] [color=#4CAF50]No more premature restarts during long Skyrim boots on 1000+ plugin lists![/color]
+[*][b]Credits:[/b] zorbon1 (community feedback)
+[/list]
+
+[size=3][color=#E91E63]🔔 3. Notification System Rewrite[/color][/size]
+[list]
+[*][b]Before:[/b] win10toast occasionally crashed at startup with [font=Courier New]pkg_resources.DistributionNotFound[/font] — the tool wouldn't even start
+[*][b]After:[/b] Switched to [b]winotify[/b] (pure-Python, PyInstaller-friendly) with a triple-layered fallback. Auto-disables on Wine/Proton
+[*][b]New flag:[/b] [font=Courier New]--no-notifications[/font] for Steam Deck / Proton users who want zero toast attempts
+[*][b]Credits:[/b] justkub96, timun, Detteride (community feedback)
+[/list]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]New Feature:[/b]
+
+[size=3][color=#2196F3]🌳 LOD Grass Cache Generation[/color][/size]
+[list]
+[*][b]What:[/b] Optionally generate a non-seasonal LOD grass cache alongside your seasonal mods
+[*][b]Why:[/b] DynDOLOD's grass LOD pipeline needs [font=Courier New].cgid[/font] files [b]without[/b] seasonal suffixes — the tool now produces them for you
+[*][b]How:[/b] Pick which season's cache to use as the LOD source (default: Summer) — the tool clones it as a separate "LOD Grass Cache" archive
+[*][b]Result:[/b] [color=#4CAF50]Seamless DynDOLOD grass LOD pipeline — no manual file copying or renaming![/color]
+[/list]
+
+[size=3][color=#FF5722]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/color][/size]
+[b]Other Fixes:[/b]
+[list]
+[*][b]Fixed broken GitHub link[/b] (was pointing to a placeholder URL → 404). Reported by Detteride
+[*][b]Build pipeline hardened:[/b] version is now derived from a single source — no more stale numbers in release banners or filenames
+[/list]
+[/quote]
+
+[line]
+
+[size=5][color=#4CAF50]✨ v1.5.0 - Complete NGIO Configuration & Grass Profiles[/color][/size]
 
 [quote]
 [size=4][b][color=#FF9800]🚨 CRITICAL FIXES + MAJOR NEW FEATURES! 🚨[/color][/b][/size]
@@ -240,7 +228,7 @@ Just click Start before bed. That's it.
 
 [size=3][color=#2196F3]💻 1. Command-Line Interface (CLI)[/color][/size]
 [list]
-[*][b]Direct Season Generation:[/b] start_ngio_automation.bat --season winter
+[*][b]Direct Season Generation:[/b] NGIO_Automation_Suite.exe --season winter
 [*][b]Dry-Run Mode:[/b] Test workflow without launching Skyrim (--dry-run)
 [*][b]Scheduled Tasks:[/b] Unattended mode perfect for Windows Task Scheduler
 [*][b]Batch All Seasons:[/b] --season all generates all four seasons sequentially
@@ -302,21 +290,25 @@ Just click Start before bed. That's it.
 [/list]
 
 [size=3][color=#FF5722]📊 Usage Examples:[/color][/size]
+[i]The actual filename includes the version (e.g. NGIO_Automation_Suite_v1.6.0.exe). Examples use a generic name for clarity.[/i]
 [code]
 # Schedule overnight generation
-Task Scheduler: start_ngio_automation.bat --season winter --unattended
+Task Scheduler: NGIO_Automation_Suite.exe --season winter --unattended
 
 # Test your setup safely (no Skyrim launch)
-start_ngio_automation.bat --dry-run --season winter
+NGIO_Automation_Suite.exe --dry-run --season winter
 
 # Generate all seasons with one command
-start_ngio_automation.bat --season all
+NGIO_Automation_Suite.exe --season all
 
 # Verbose debugging for troubleshooting
-start_ngio_automation.bat --season spring --verbose
+NGIO_Automation_Suite.exe --season spring --verbose
 
 # Use custom configuration file
-start_ngio_automation.bat --config my_setup.yaml
+NGIO_Automation_Suite.exe --config my_setup.yaml
+
+# Disable Windows toast notifications (Wine/Proton/Steam Deck)
+NGIO_Automation_Suite.exe --no-notifications --season all
 
 # Verify downloaded archive integrity
 Get-FileHash Grass_Cache_Winter_Season.zip -Algorithm SHA256
@@ -467,11 +459,13 @@ Based on community feedback, we've dramatically improved stability for users wit
 [size=4][color=#2196F3]🎮 Intelligent Game Manager[/color][/size]
 [list]
 [*]✅ Auto-launch Skyrim for each season
-[*]✅ Detect and handle crashes automatically (up to 10 retries per season) [color=#4CAF50][b]INCREASED![/b][/color]
+[*]✅ Detect and handle crashes automatically (up to 10 retries per season)
 [*]✅ Monitor generation progress via PrecacheGrass.txt
 [*]✅ Resume exactly where it left off after crashes
-[*]✅ [b][color=#4CAF50]NEW:[/color][/b] Already running detection prevents death loops
-[*]✅ [b][color=#4CAF50]NEW:[/color][/b] Adaptive timeouts for large load orders (500+ mods)
+[*]✅ Already-running detection prevents Skyrim "death loops"
+[*]✅ Adaptive timeouts for large load orders (500+ mods)
+[*]✅ [b][color=#4CAF50]NEW v1.6.0:[/color][/b] Fast crash detection — process death caught in ~10s instead of waiting the full activity timeout
+[*]✅ [b][color=#4CAF50]NEW v1.6.0:[/color][/b] Warmup grace period — activity timer doesn't start until first cell, so 4-min Skyrim boots no longer trigger false restarts
 [/list]
 
 [size=4][color=#2196F3]📝 Smart Configuration Management[/color][/size]
@@ -612,22 +606,74 @@ Based on community feedback, we've dramatically improved stability for users wit
 
 [line]
 
+[size=5][color=#FF5722]🎯 USING WITH MO2 (Mod Organizer 2)[/color][/size]
+
+[quote]
+[size=4][color=#4CAF50][b]Yes — this works with MO2.[/b][/color][/size] The trick is to launch the tool [b]from inside MO2[/b] so it sees the same virtual file system MO2 uses for your mods. Many users miss this and then hit "Seasons of Skyrim config file not found".
+
+[size=3][color=#2196F3]✅ Recommended MO2 Setup (community-verified):[/color][/size]
+[list=1]
+[*]Open MO2 → [b]Settings → Executables[/b] (the gear/cog icon, "Modify Executables")
+[*]Click [b]Add (+)[/b] and select [font=Courier New]NGIO_Automation_Suite_v1.6.0.exe[/font]
+[*]Save and close
+[*][b]Important:[/b] Run the tool from MO2's executable dropdown — [color=#FF5722]NOT[/color] from Windows Explorer
+[*]When the tool asks for the Skyrim path, point it at your [b]Skyrim game folder[/b] (the real one on disk, e.g. [font=Courier New]C:\Steam\...\Skyrim Special Edition[/font])
+[*]The tool will launch Skyrim through MO2's VFS automatically — all your enabled mods come along for the ride
+[/list]
+
+[size=3][color=#FF9800]💡 Why must I run from MO2?[/color][/size]
+[list]
+[*]MO2 keeps your mods in a virtual file system. From outside MO2, files like [font=Courier New]po3_SeasonsOfSkyrim.ini[/font] and [font=Courier New]GrassControl.ini[/font] are simply invisible to other programs
+[*]Running the tool through MO2 gives it full access to your mod list, exactly the same way xEdit and DynDOLOD work
+[*]This is not specific to this tool — it's how MO2 works in general
+[/list]
+
+[size=3][color=#E91E63]❌ "Seasons of Skyrim config file not found" in MO2?[/color][/size]
+You launched the tool from Windows Explorer instead of from MO2. Add it as an MO2 executable (steps above) and try again.
+
+[size=3][color=#FF9800]🗒️ Note about GrassControl.ini reformatting in MO2:[/color][/size]
+The tool rewrites [font=Courier New]GrassControl.ini[/font] when applying its grass profile. It does not change the actual values, but the comments and formatting are not preserved. If you have hand-tuned values in your INI (e.g. specific worldspaces), they will survive — values are read and written, only the comment lines are dropped. Preserving comments is on the roadmap.
+[/quote]
+
+[line]
+
+[size=5][color=#FFD700]🏆 PROVEN STABLE SETUP (Community Recipe)[/color][/size]
+
+[quote]
+[size=4][color=#4CAF50][b]This exact recipe was reported by community members to complete all 4 seasons in under 3 hours with zero crashes (~250 mods disabled). The tool itself is grass-mod agnostic — it works with any grass mod NGIO supports — so this checklist is purely about system + Skyrim conditions. If overnight mode keeps crashing for you, follow this before opening a bug report.[/b][/color][/size]
+
+[b]The recipe:[/b]
+[list=1]
+[*][b]Pagefile:[/b] Set Windows pagefile to [color=#FF5722][b]20 GB on a fast drive (preferably SSD)[/b][/color]. This is the #1 fix for OOM crashes during overnight runs. The tool will warn you if your pagefile is too small
+[*][b]Plugin files:[/b] Make sure [font=Courier New]GrassControl.ini[/font] and [font=Courier New]po3_SeasonsOfSkyrim[/font] are present in [font=Courier New]Data/SKSE/Plugins/[/font] (in MO2 they are virtual; in Vortex they are real files on disk)
+[*][b]Slim profile:[/b] Create a separate MO2/Vortex profile with only essentials enabled. Disable big script-heavy or visual mods you don't need just for grass generation — every disabled mod is less memory pressure during the multi-hour cell loop
+[*][b]Windowed mode + low resolution:[/b] In Skyrim's launcher, set [b]Windowed mode[/b] and resolution to [b]800×600[/b] for the generation pass. Saves VRAM, dramatically reduces crash chance, and the .cgid output is identical
+[*]Launch the tool, pick "All 4 Seasons" overnight mode, walk away
+[/list]
+
+[b][color=#FF9800]Why this works:[/color][/b] Skyrim's grass generation pass loads every cell of every worldspace into memory. With 1000+ plugins and a 4K landscape mod, that easily exceeds 16-32 GB of usage. The pagefile + slim profile + low-res combo brings memory pressure under control. After generation completes, you switch back to your real profile and full resolution — the .cgid files don't care about graphics settings, they only encode grass placement.
+
+[b][color=#4CAF50]Once you have a successful run, you don't need to repeat this dance unless you change grass mods.[/color][/b]
+[/quote]
+
+[line]
+
 [size=5][color=#FF5722]🚀 HOW TO USE (Step-by-Step for Complete Beginners)[/color][/size]
 
 [size=4][color=#4CAF50]Download:[/color][/size]
 [list]
-[*][b]Download:[/b] [font=Courier New]ngio-automation-suite-X.X.X-bundled.zip[/font] from Files section
-[*]✅ [b]Complete bundle - No Python installation required![/b]
-[*]✅ Self-contained with all dependencies included
-[*]✅ Works on any Windows PC out of the box
-[*]✅ Just extract and run - zero configuration needed
+[*][b]Download:[/b] [font=Courier New]NGIO_Automation_Suite_v1.6.0.exe[/font] from the Files section
+[*]✅ [b]Single file — no installation, no Python, no extraction[/b]
+[*]✅ Self-contained: every dependency is bundled inside the exe
+[*]✅ Works on any Windows 10/11 PC out of the box
+[*]✅ Save it anywhere — Desktop, Skyrim folder, or add it as an MO2 executable
 [/list]
 
 [size=4][color=#4CAF50]First Time Setup (2 minutes):[/color][/size]
 [list=1]
-[*][b]⚠️ CRITICAL FIRST![/b] Configure 20GB+ Windows pagefile (see System Requirements section - takes 2 minutes, prevents crashes!)
-[*][b]Extract:[/b] Unzip the downloaded file anywhere on your computer (Desktop is fine)
-[*][b]Run the tool:[/b] Double-click [font=Courier New]start_ngio_automation.bat[/font] (or the .exe file)
+[*][b]⚠️ CRITICAL FIRST![/b] Configure 20GB+ Windows pagefile (see System Requirements section — takes 2 minutes, prevents crashes!)
+[*][b]Save the .exe[/b] anywhere on your computer (Desktop or your Skyrim tools folder is fine)
+[*][b]Run the tool:[/b] Double-click [font=Courier New]NGIO_Automation_Suite_v1.6.0.exe[/font] — or run it from MO2's executable dropdown if you use MO2 (see "Using with MO2" section below)
 [*][b]Skyrim path:[/b] Point to your Skyrim installation folder
    [list]
    [*]Usually: [font=Courier New]C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition[/font]
@@ -663,28 +709,29 @@ Based on community feedback, we've dramatically improved stability for users wit
 [quote]
 [b][color=#FF5722]For users with large load orders (500-1000+ plugins):[/color][/b]
 
-[size=3][color=#4CAF50]✅ Good News: v1.1.0 handles this automatically![/color][/size]
+[size=3][color=#4CAF50]✅ Good News: the tool handles this automatically![/color][/size]
 [list]
 [*][b]Adaptive timeouts:[/b] System learns your actual startup time (enabled by default)
-[*][b]Already running detection:[/b] Prevents death loops automatically
+[*][b]Already-running detection:[/b] Prevents death loops automatically
 [*][b]Progressive wait times:[/b] Gives your system time to stabilize between retries
-[*][b]More retries:[/b] Default increased to 10 attempts per season
+[*][b]More retries:[/b] Default 10 attempts per season
+[*][b][color=#4CAF50]v1.6.0 warmup grace:[/color][/b] The activity timer doesn't even start until Skyrim writes its first cell — no more false "hung" detection on slow boots (capped at 10 minutes for genuinely stuck launches)
 [/list]
 
 [size=3][color=#2196F3]💡 What to Expect:[/color][/size]
 [list]
-[*][b]Skyrim startup:[/b] May take 5-15 minutes with 1000+ plugins - [color=#4CAF50][b]THIS IS NORMAL![/b][/color]
-[*][b]Don't panic:[/b] If you see "Waiting for Skyrim to start" for 10+ minutes, it's working fine
-[*][b]First generation:[/b] System learns your timing over first 2-3 launches (automatically adjusts timeouts)
-[*][b]Later generations:[/b] Will be smoother as adaptive system optimizes
+[*][b]Skyrim startup:[/b] May take 5-15 minutes with 1000+ plugins — [color=#4CAF50][b]THIS IS NORMAL.[/b][/color] The tool now waits patiently during boot
+[*][b]Don't panic:[/b] If you see "Waiting for first activity" for several minutes, it's working fine
+[*][b]First generation:[/b] System learns your timing over the first 2-3 launches and auto-adjusts
+[*][b]Later generations:[/b] Smoother as the adaptive system optimizes
 [/list]
 
 [size=3][color=#FF5722]⚙️ Optional Manual Configuration:[/color][/size]
-If you want to manually tune settings (advanced users):
+If you still want to hand-tune (advanced users):
 [list]
-[*][b]For 500-1000 plugins:[/b] Increase timeout to 20-25 minutes
-[*][b]For 1000+ plugins:[/b] Increase timeout to 30+ minutes and retries to 15-20
-[*][b]See documentation:[/b] Includes comprehensive Large Load Order Configuration Guide
+[*][b]For 500-1000 plugins:[/b] Increase the activity timeout to 20-25 minutes (gives slow-streaming worldspaces more headroom)
+[*][b]For 1000+ plugins:[/b] Activity timeout 30+ minutes, retries 15-20
+[*][b]See documentation:[/b] Comprehensive Large Load Order Configuration Guide bundled in [font=Courier New]docs/[/font]
 [/list]
 
 [b][color=#4CAF50]The tool has been battle-tested with 1000+ plugin setups - you're in good hands![/color][/b]
@@ -780,6 +827,29 @@ If you want to manually tune settings (advanced users):
 
 [line]
 
+[size=5][color=#FF9800]🛡️ Antivirus / SmartScreen Notice[/color][/size]
+
+[quote]
+[size=4][color=#E91E63][b]This is not a virus.[/b][/color][/size] Some antivirus products and Windows SmartScreen flag the tool because it does the same things actual malware sometimes does — launches another process (Skyrim), watches it, and modifies thousands of files quickly. The PyInstaller-bundled .exe also lacks a code-signing certificate, which raises the "unknown publisher" warning.
+
+[b]Why this is safe:[/b]
+[list]
+[*]✅ [b]Open source[/b] — full code on [url=https://github.com/ReidenXerx/NGIO_AutomationSuite]GitHub[/url]
+[*]✅ [b]Offline[/b] — no network calls, no telemetry
+[*]✅ [b]No system changes[/b] — only edits files in your Skyrim folder and writes archives to your chosen output folder
+[*]✅ [b]No admin needed[/b] — runs as a normal user
+[/list]
+
+[b]If your AV blocks it:[/b]
+[list]
+[*]Add the .exe (or its folder) to antivirus exclusions
+[*]On SmartScreen: click "More info" → "Run anyway"
+[*]Download only from Nexus or GitHub releases
+[/list]
+[/quote]
+
+[line]
+
 [size=5][color=#FF5722]🆘 TROUBLESHOOTING (Common Issues & Solutions)[/color][/size]
 
 [size=4][color=#4CAF50]✅ Python Issues: NOT APPLICABLE[/color][/size]
@@ -787,7 +857,7 @@ If you want to manually tune settings (advanced users):
 [b]If you see Python errors:[/b]
 [list=1]
 [*]Extract the ZIP file completely before running
-[*]Try running [font=Courier New]start_ngio_automation.bat[/font] as Administrator
+[*]Try running the .exe as Administrator (right-click → Run as administrator)
 [*]Check that your antivirus isn't blocking the Python executable
 [*]Re-download if files are corrupted
 [/list]
@@ -898,12 +968,25 @@ If you want to manually tune settings (advanced users):
 
 [size=5][color=#FF5722]🙏 Credits & Thanks[/color][/size]
 
+[size=4][color=#2196F3]v1.6.0 Community Feedback (this release exists because of you!):[/color][/size]
 [list]
-[*][b]@setsofnumbers:[/b] For detailed feedback on large load order issues that made v1.1.0 possible
-[*][b]infernalryan:[/b] For the comprehensive NGIO guide that inspired this automation
+[*][b]zorbon1:[/b] Detailed crash-detection report that drove the fast process-death detection + warmup grace period
+[*][b]justkub96:[/b] First report of the [font=Courier New]win10toast DistributionNotFound[/font] startup bug
+[*][b]timun:[/b] Confirmed the win10toast issue, helped pin down the bundling problem
+[*][b]Detteride:[/b] Reported the broken GitHub link and asked for Wine/Proton support — both fixed in v1.6.0
+[*][b]azak200:[/b] Documented the working MO2 setup in the comments (now an official section)
+[*][b]DuduPhudu (community testing):[/b] Documented the proven stable setup recipe (pagefile + slim profile + windowed mode)
+[*][b]racinmason, Casinator1, JudgeDread11, SoulDoubt, hysondre, MichailKirn, unisexbrian:[/b] Bug reports, feature requests, and continued engagement
+[/list]
+
+[size=4][color=#2196F3]Earlier contributors:[/color][/size]
+[list]
+[*][b]@setsofnumbers:[/b] Detailed feedback on large load order issues that made v1.1.0 possible
+[*][b]infernalryan:[/b] The comprehensive NGIO guide that inspired this automation
 [*][b]NGIO Development Team:[/b] For creating the foundation this builds upon
 [*][b]Grass Cache Helper NG Team:[/b] For enabling seasonal cache loading
 [*][b]Seasons of Skyrim Team:[/b] For the seasonal framework
+[*][b]po3 (PowerOfThree):[/b] For Seasons of Skyrim and the SKSE plumbing this depends on
 [*][b]Skyrim Modding Community:[/b] For providing feedback and helping improve the tool
 [/list]
 
@@ -918,9 +1001,9 @@ If you want to manually tune settings (advanced users):
 [size=4][color=#FF5722]📞 Support & Updates[/color][/size]
 
 [list]
-[*][b]GitHub:[/b] [url=https://github.com/ReidenXerx/ngio-automation-suite]Full source code and documentation[/url]
+[*][b]GitHub:[/b] [url=https://github.com/ReidenXerx/NGIO_AutomationSuite]Full source code and documentation[/url]
 [*][b]Issues:[/b] Report bugs and request features on GitHub
 [*][b]Updates:[/b] Check back for new features and improvements
 [/list]
 
-[center][size=2][color=#666]Version 1.4.0 - The Complete Edition | MIT License | Made with ❤️ for the Skyrim community[/color][/size][/center]
+[center][size=2][color=#666]Version 1.6.0 - Stability & LOD Edition | MIT License | Made with ❤️ for the Skyrim community[/color][/size][/center]
