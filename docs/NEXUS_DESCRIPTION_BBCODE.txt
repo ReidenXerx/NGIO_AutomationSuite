@@ -52,9 +52,6 @@ Skyrim's precache pass can use more memory than you have RAM. The tool calls a p
 
 [b]2. On MO2, launch the tool from inside MO2.[/b]
 Add the [font=Courier New].exe[/font] under MO2's Executables and start it from MO2's dropdown. Started from Explorer, it cannot see MO2's virtual files and stops with [i]"Seasons of Skyrim config file not found"[/i]. On Vortex, run it directly.
-
-[b]3. Set NGIO's own settings in NGIO's file.[/b]
-NGIO reads the [font=Courier New][GrassConfig][/font] section of [font=Courier New]GrassControl.ini[/font]. The grass profile the tool offers is written somewhere NGIO does not read, so in 1.6.0 it changes nothing. Set NGIO up as its own page describes; a fix is in the works.
 [/quote]
 
 [size=4][b]Getting started[/b][/size]
