@@ -1,4 +1,4 @@
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/hero.jpg[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/hero.jpg[/img][/center]
 
 [center][size=4][b]Builds your No Grass In Objects grass cache for all four seasons in one unattended run, relaunches Skyrim when it crashes, and leaves you one ready-to-install mod per season.[/b][/size][/center]
 
@@ -7,7 +7,7 @@
 [img]https://img.shields.io/badge/Skyrim-SE%20%2F%20AE-4a4a4a?style=for-the-badge&labelColor=2b2b2b[/img] [url=https://skse.silverlock.org/][img]https://img.shields.io/badge/requires-SKSE64-8a5a00?style=for-the-badge&labelColor=2b2b2b[/img][/url] [url=https://www.nexusmods.com/skyrimspecialedition/mods/42161][img]https://img.shields.io/badge/requires-No%20Grass%20In%20Objects-8a5a00?style=for-the-badge&labelColor=2b2b2b[/img][/url]
 [/center]
 
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/divider.png[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]What it is[/color][/b][/size]
 
@@ -15,7 +15,7 @@
 
 This tool runs that loop for you. Pick the seasons, go to bed, and install the archives in the morning. It is a single [font=Courier New].exe[/font] for Windows, with nothing to install and no Python to set up.
 
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/cards.jpg[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/cards.jpg[/img][/center]
 
 [size=5][b][color=#f1c84b]What you get[/color][/b][/size]
 
@@ -23,27 +23,26 @@ This tool runs that loop for you. Pick the seasons, go to bed, and install the a
 [*][b]Overnight Mode.[/b] Option 5, [i]All 4 Seasons[/i], runs Winter, Spring, Summer and Autumn back to back. The tool's own estimate is 4 to 6 hours; a large load order takes longer.
 [*][b]Crash recovery.[/b] When Skyrim dies, the tool notices within about 10 seconds and launches it again. If the game stops making progress for 15 minutes, that counts as a crash too. It retries 10 times per season by default.
 [*][b]Ready-made mods.[/b] Every season is packed as its own archive, like [font=Courier New]Grass_Cache_Winter_Season.zip[/font], with a FOMOD installer and a SHA-256 checksum next to it. Install it with Vortex or MO2 like any other mod.
-[*][b]Grass profiles.[/b] Fast, LOD Compatible (the default), Maximum Quality or Custom. The profile writes NGIO's grass settings for you.
+[*][b]Runs on a schedule.[/b] [font=Courier New]--season all --unattended[/font] asks nothing, so Windows Task Scheduler can start it.
 [*][b]Checks first.[/b] Before a run it checks RAM, pagefile and free disk space, and tells you what to change if one is short.
 [*][b]LOD grass for DynDOLOD[/b] [i](new in 1.6.0, optional)[/i]. Say yes at setup and it also packs one season's cache without the season suffix, as [font=Courier New]Grass_Cache_Default_LOD.zip[/font], which is what DynDOLOD's grass LOD reads.
-[*][b]Your settings back.[/b] When the run ends, it restores the config files it changed and sets NGIO to load from the new cache.
 [/list]
 
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/divider.png[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]How it works[/color][/b][/size]
 
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/pipeline.jpg[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/pipeline.jpg[/img][/center]
 [center][i]One pass per season. The same five steps, four times.[/i][/center]
 
 For each season you pick, the tool writes that season into [font=Courier New]po3_SeasonsOfSkyrim.ini[/font], launches Skyrim through [font=Courier New]skse64_loader.exe[/font] and lets NGIO precache the grass. It follows NGIO's [font=Courier New]PrecacheGrass.txt[/font] to know the game is still working. A long load before the first cell is not mistaken for a hang.
 
 When the pass is done, every [font=Courier New].cgid[/font] file gets its season's suffix ([font=Courier New].WIN[/font], [font=Courier New].SPR[/font], [font=Courier New].SUM[/font] or [font=Courier New].AUT[/font]) so the seasonal loader picks the right one, and the season is packed as a mod. Without a seasonal mod, choose non-seasonal at setup and you get one plain cache instead.
 
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/terminal.jpg[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/terminal.jpg[/img][/center]
 [center][i]The season menu, as the tool prints it. 5 is Overnight Mode.[/i][/center]
 
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/divider.png[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]Before your first run[/color][/b][/size]
 
@@ -53,18 +52,21 @@ Skyrim's precache pass can use more memory than you have RAM. The tool calls a p
 
 [b]2. On MO2, launch the tool from inside MO2.[/b]
 Add the [font=Courier New].exe[/font] under MO2's Executables and start it from MO2's dropdown. Started from Explorer, it cannot see MO2's virtual files and stops with [i]"Seasons of Skyrim config file not found"[/i]. On Vortex, run it directly.
+
+[b]3. Set NGIO's own settings in NGIO's file.[/b]
+NGIO reads the [font=Courier New][GrassConfig][/font] section of [font=Courier New]GrassControl.ini[/font]. The grass profile the tool offers is written somewhere NGIO does not read, so in 1.6.0 it changes nothing. Set NGIO up as its own page describes; a fix is in the works.
 [/quote]
 
 [size=4][b]Getting started[/b][/size]
 [list=1]
 [*]Install the requirements: SKSE64 and No Grass In Objects, plus Seasons of Skyrim and Grass Cache Helper NG for seasonal grass.
 [*]Download the [font=Courier New].exe[/font] from the Files tab and put it anywhere.
-[*]Run it, or run it from MO2. The first time, it asks for your Skyrim folder, where to save the archives, whether you use a seasonal mod, and which grass profile to use. It remembers the answers.
+[*]Run it, or run it from MO2. The first time, it asks for your Skyrim folder, where to save the archives, and whether you use a seasonal mod. It remembers the answers.
 [*]Pick [b]5[/b] for all four seasons and leave the PC alone.
 [*]In the morning, install the archives from the output folder with your mod manager.
 [/list]
 
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/divider.png[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]FAQ[/color][/b][/size]
 
@@ -99,7 +101,7 @@ The [font=Courier New].exe[/font] is a PyInstaller build and is not code-signed,
 Only when you change something that places grass: a grass mod, a landscape mod, or the worldspaces themselves. Graphics settings do not matter.
 [/spoiler]
 
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@4c5a8997889c92d36633469def99bf0197b988f4/docs/img/divider.png[/img][/center]
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]Credits[/color][/b][/size]
 
