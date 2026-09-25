@@ -2,7 +2,7 @@
 
 [center][size=4][b]Builds your No Grass In Objects grass cache for all four seasons in one unattended run, relaunches Skyrim when it crashes, and leaves you one ready-to-install mod per season.[/b][/size][/center]
 
-[center][b][color=#7fd65c]MO2 users:[/color][/b] a 2.0 beta now runs inside Mod Organizer 2, with no exe. Get it from [url=https://www.nexusmods.com/skyrimspecialedition/mods/159499?tab=files]Files > Optional files[/url] and tell us how it went in the [url=https://www.nexusmods.com/skyrimspecialedition/mods/159499?tab=posts]sticky post[/url].[/center]
+[center][b][color=#7fd65c]New: 2.0 beta for MO2 and Vortex, no exe.[/color][/b] It runs inside your mod manager. Get it from [url=https://www.nexusmods.com/skyrimspecialedition/mods/159499?tab=files]Files > Optional files[/url] and tell us how it went in the [url=https://www.nexusmods.com/skyrimspecialedition/mods/159499?tab=posts]sticky post[/url].[/center]
 
 [center]
 [url=https://github.com/ReidenXerx/NGIO_AutomationSuite/blob/master/LICENSE][img]https://img.shields.io/github/license/ReidenXerx/NGIO_AutomationSuite?color=blue&style=for-the-badge&labelColor=2b2b2b[/img][/url] [url=https://github.com/ReidenXerx/NGIO_AutomationSuite][img]https://img.shields.io/badge/source-GitHub-181717?style=for-the-badge&labelColor=2b2b2b&logo=github&logoColor=white[/img][/url] [url=https://github.com/ReidenXerx/NGIO_AutomationSuite/commits][img]https://img.shields.io/github/last-commit/ReidenXerx/NGIO_AutomationSuite?label=last%20commit&style=for-the-badge&labelColor=2b2b2b[/img][/url]
