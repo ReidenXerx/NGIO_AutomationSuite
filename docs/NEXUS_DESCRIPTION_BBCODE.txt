@@ -44,6 +44,10 @@ When the pass is done, every [font=Courier New].cgid[/font] file gets its season
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/terminal.jpg[/img][/center]
 [center][i]The season menu, as the tool prints it. 5 is Overnight Mode.[/i][/center]
 
+[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@b8444da807e960e6f3aaed08350383644cdc0708/docs/img/noexe.jpg[/img][/center]
+
+The 2.0 beta (under Optional files) drops the exe: about 20 KB of plain source that MO2 or Vortex runs for you, with no .exe, .dll or .pyd inside.
+
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]Before your first run[/color][/b][/size]
