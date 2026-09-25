@@ -1,0 +1,6 @@
+{
+  "name": "NGIO Grass Cache",
+  "author": "DuduPhudu",
+  "version": "2.0.0",
+  "description": "Generates the No Grass In Objects grass cache for every season in one unattended run: starts Skyrim through SKSE, restarts it after crashes or hangs, and turns each season into its own mod. Your own mods are never edited."
+}
