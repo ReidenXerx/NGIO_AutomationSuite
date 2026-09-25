@@ -1,0 +1,70 @@
+=== STICKY: How NGIO Automation Suite works inside ===
+[b]How NGIO Automation Suite works inside[/b]
+
+This is what the tool does during a run, step by step, as the code does it today. Items marked [i](2.0 beta)[/i] are in the MO2 plugin and the Vortex extension, which are built but not yet confirmed by testers.
+
+[b]1. One season at a time[/b]
+[list]
+[*][b]Set the season.[/b] Seasons of Skyrim reads [font=Courier New]Season Type[/font] from [font=Courier New]po3_SeasonsOfSkyrim.ini[/font]: 1 winter, 2 spring, 3 summer, 4 autumn, 0 for no seasons. The tool sets it before each pass.
+[*][b]Pull the trigger.[/b] It creates an empty [font=Courier New]PrecacheGrass.txt[/font] in the game folder, next to [font=Courier New]SkyrimSE.exe[/font]. That file is No Grass In Objects' own switch: when the game starts and finds it, NGIO walks the worldspaces and writes one [font=Courier New].cgid[/font] file per cell into [font=Courier New]Data\Grass[/font].
+[*][b]Launch through SKSE.[/b] NGIO is an SKSE plugin, so the game starts with [font=Courier New]skse64_loader.exe[/font].
+[*][b]Know when it is done.[/b] NGIO adds a line to [font=Courier New]PrecacheGrass.txt[/font] for every finished cell and deletes the file when the whole cache is done. A missing file means the season is finished, not crashed.
+[/list]
+
+[b]2. Watching the game[/b]
+Every 5 seconds the tool checks three things: does [font=Courier New]PrecacheGrass.txt[/font] still exist, has it grown, and is the game still running. The game is matched by its full path, so a second Skyrim install is never touched.
+[list]
+[*][b]Crash:[/b] the game is gone while the file is still there. Two checks in a row confirm it, so a crash is noticed in about 10 seconds.
+[*][b]Slow start:[/b] until the first cell is written, a separate, longer limit applies, so a heavy load order that takes minutes to boot is not called a hang. 1.6.0: 10 minutes. [i](2.0 beta)[/i]: 15 minutes, a setting.
+[*][b]Hang:[/b] the game runs but no new cell arrives for a set time, and it is closed and relaunched. 1.6.0: 15 minutes. [i](2.0 beta)[/i]: 10 minutes, a setting.
+[*][b]Pause before the relaunch:[/b] 1.6.0 waits 30, 60, 90 s, then 120 s for every later retry, and stops a season after 10 launches. [i](2.0 beta)[/i]: 10 s and up to 20 restarts per season, both settings.
+[*][b]Resume:[/b] a relaunch keeps [font=Courier New]PrecacheGrass.txt[/font], and NGIO continues from the cells listed in it instead of starting the season over.
+[/list]
+
+[b]3. Seasons and packing[/b]
+[list]
+[*]After a season, every new [font=Courier New].cgid[/font] gets the season's suffix: [font=Courier New].WIN.cgid[/font], [font=Courier New].SPR.cgid[/font], [font=Courier New].SUM.cgid[/font], [font=Courier New].AUT.cgid[/font]. With no seasons the names stay plain. In game, Grass Cache Helper NG loads the right set for the current season.
+[*]1.6.0 packs each season as [font=Courier New]Grass_Cache_<Season>_Season.zip[/font] with a FOMOD installer and a SHA-256 checksum, in [font=Courier New]NGIO_Generated_Mods[/font] (inside the game folder by default). You install the archives yourself.
+[*][i](2.0 beta)[/i] Each season becomes its own mod ([font=Courier New]NGIO Grass Cache - Winter[/font] and so on), enabled at the end of the run. Nothing to install.
+[*]Optional in both: one season copied without its suffix, for DynDOLOD's grass LOD. [i](2.0 beta)[/i] keeps that copy as a separate mod, left disabled; enable it only while you run TexGen and DynDOLOD.
+[/list]
+
+Part 2, below: where it runs (1.6.0 exe, MO2, Vortex) and what happens to your INI files.
+
+=== STICKY (part 2): How NGIO Automation Suite works inside ===
+[b]How it works inside, part 2: where it runs, and your INI files[/b]
+
+[b]1.6.0: a standalone exe[/b]
+[list]
+[*]One PyInstaller exe that you start yourself. It reads [font=Courier New]GrassControl.ini[/font] and [font=Courier New]po3_SeasonsOfSkyrim.ini[/font] at fixed paths in the game folder ([font=Courier New]Data\SKSE\Plugins[/font]) and starts [font=Courier New]skse64_loader.exe[/font] itself.
+[*]With MO2 those INIs live in MO2's virtual Data folder, so the exe only sees them when MO2 starts it (add it as an MO2 executable).
+[*]For a run it writes its settings into your own [font=Courier New]GrassControl.ini[/font] and Seasons INI, after copying them to [font=Courier New]NGIO_Backups[/font] in the game folder, and copies the backups back at the end. A run that does not end cleanly leaves them edited.
+[/list]
+
+[b]2.0 in MO2[/b] [i](2.0 beta)[/i]
+[list]
+[*]A plugin in MO2's [font=Courier New]plugins\ngio_grass[/font] folder, run by MO2's own Python: [b]Tools > NGIO Grass Cache[/b].
+[*]It asks MO2 which mod's [font=Courier New]GrassControl.ini[/font] and Seasons INI win, copies those into a temporary mod, [font=Courier New]NGIO Grass - Run Settings[/font], and puts that mod at the top of your list. Your own files are not written to.
+[*]It starts the game through MO2, so the game sees your whole mod list, and sends every file NGIO writes into that season's mod instead of Overwrite.
+[/list]
+
+[b]2.0 in Vortex[/b] [i](2.0 beta)[/i]
+[list]
+[*]An extension with its own page, [b]NGIO Grass Cache[/b], shown when Skyrim SE is the active game.
+[*]Vortex's deployment record ([font=Courier New]vortex.deployment.json[/font]) says which mods deploy the two INIs. The temporary [font=Courier New]NGIO Grass - Run Settings[/font] mod gets rules to load after them, and is deployed once for the run.
+[*]Between seasons only the [font=Courier New]Season Type[/font] line of that copy changes. With hardlink deployment the game sees it at once; other deployment methods get a short redeploy.
+[*]NGIO writes into the real [font=Courier New]Data\Grass[/font]. After each season, only the files that appeared during that season move into its mod; files that were there before, or that another mod deploys meanwhile, stay where they are.
+[*]Vortex is told a tool is running, so it does not deploy under the live game.
+[/list]
+
+[b]What the temporary mod changes[/b] [i](2.0 beta)[/i]
+Three lines, in copies: [font=Courier New]use-grass-cache = true[/font] and [font=Courier New]only-load-from-cache = true[/font] (No Grass In Objects' own precache settings), plus the season's [font=Courier New]Season Type[/font]. Everything else in your [font=Courier New]GrassControl.ini[/font] is kept as it is, comments included. The mod is removed when the run ends, and also when you press Stop.
+
+[b]Stopping in the middle[/b] [i](2.0 beta)[/i]
+Stop, a failed season, or closing MO2 or Vortex closes the game and moves [font=Courier New]PrecacheGrass.txt[/font] out of the game folder, into the tool's own data folder. Left in place, it would make NGIO start generating on your next normal game launch. [b]Resume unfinished run[/b] puts it back and continues that season.
+
+[b]Logs[/b]
+[list]
+[*][i](2.0 beta)[/i] MO2: [font=Courier New]plugins\data\ngio_grass\run.log[/font] in your MO2 folder. Vortex: [font=Courier New]%APPDATA%\Vortex\ngio-grass\run.log[/font].
+[*]1.6.0 prints to its window; save the window text for a bug report.
+[/list]
