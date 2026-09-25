@@ -378,7 +378,10 @@ class Runner {
       size = buf.length;
       r.cells = buf.toString("utf8").split(/\r?\n/).filter((l) => l.trim()).length;
     }
-    const pids = await procs.findGame(c.gameExe);
+    // The full-path search starts a PowerShell process, so it runs only while the game's PID is
+    // unknown or gone; a known PID is checked for free. (Before 2.0.1: a search every 5 s, all night.)
+    const known = (this.lastPids || []).filter(procs.isAlive);
+    const pids = known.length ? known : await procs.findGame(c.gameExe);
     this.lastPids = pids;
     const before = this.watch.restarts;
     const action = this.watch.tick({ now: Date.now() / 1000, triggerExists: trig, triggerSize: size, gameAlive: pids.length > 0 });

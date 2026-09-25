@@ -48,4 +48,14 @@ async function pagefileBytes() {
   }
 }
 
-module.exports = { findGame, terminate, pagefileBytes };
+/** Does this PID still exist? Signal 0 checks without sending anything, and spawns nothing. */
+function isAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (e) {
+    return e.code === "EPERM";      // exists, but belongs to someone we may not signal
+  }
+}
+
+module.exports = { findGame, isAlive, terminate, pagefileBytes };
