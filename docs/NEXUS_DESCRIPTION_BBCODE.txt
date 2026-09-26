@@ -1,3 +1,7 @@
+[size=1]Comments here are also answered by Dudu's Butt, my own AI model: it handles your questions and brings bug reports straight to me.[/size]
+[center][url=https://discord.gg/H9yqPhjuY5][img]https://img.shields.io/discord/1273646070215348375?style=for-the-badge&labelColor=2b2b2b&logo=discord&logoColor=white&color=5865F2&label=Dudu%27s%20Den[/img][/url]
+[b][url=https://discord.gg/H9yqPhjuY5]Join Dudu's Den on Discord[/url][/b]: news, help and a chat with the people who play these mods.[/center]
+
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/hero.jpg[/img][/center]
 
 [center][size=4][b]Builds your No Grass In Objects grass cache for all four seasons in one unattended run, relaunches Skyrim when it crashes, and leaves you one ready-to-install mod per season.[/b][/size][/center]
@@ -116,3 +120,5 @@ Only when you change something that places grass: a grass mod, a landscape mod, 
 [/list]
 
 Release history is in the [b]Changelog[/b] tab. Bugs go to the [b]Bugs[/b] tab, with the text from the tool's window.
+
+If you'd like to support my work: [url=https://donatello.to/DuduPhudu]Donatello[/url]
