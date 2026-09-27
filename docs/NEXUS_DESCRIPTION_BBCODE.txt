@@ -75,6 +75,17 @@ Add the [font=Courier New].exe[/font] under MO2's Executables and start it from 
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
+[size=5][b][color=#f1c84b]Incompatibilities[/color][/b][/size]
+
+Known conflicts, from real reports and the code. Found another one? Tell us in the Bugs tab.
+[list]
+[*][b][url=https://www.nexusmods.com/skyrimspecialedition/mods/106440]Trainwreck - A Crash Logger[/url][/b]: its crash popup keeps a crashed game open, so the automatic relaunch waits until the hang timer runs out. Disable it for grass runs, or expect about 10-15 minutes lost per crash.[/*]
+[*][b][url=https://www.nexusmods.com/skyrimspecialedition/mods/31720]Kezyma's Root Builder for Mod Organizer[/url][/b]: it can move PrecacheGrass.txt, so generation starts on every launch or never finishes. Add PrecacheGrass.txt as a Root Builder exclusion (No Grass In Objects' own advice).[/*]
+[*][b]Any mod that already ships a grass cache (.cgid files in Data\Grass)[/b]: NGIO skips every cell that already has a file, so those cells keep the old grass. Disable it before generating.[/*]
+[*][b]Skyrim VR[/b]: the 1.6.0 exe does not recognise the VR game and reports "no activity". The 2.0 betas start sksevr_loader.exe, but no VR run has been reported yet.[/*]
+[*][b]Mod Organizer 2 with the 1.6.0 exe[/b]: started from Explorer it can't see MO2's files ("Seasons of Skyrim config file not found"). Run it from MO2's Executables, or use the 2.0 MO2 plugin.[/*]
+[/list]
+
 [size=5][b][color=#f1c84b]FAQ[/color][/b][/size]
 
 [b]A run keeps crashing at the same place. What helps?[/b]
