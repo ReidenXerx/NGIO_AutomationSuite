@@ -1,0 +1,24 @@
+=== ARTICLE: NGIO Automation Suite - under the hood ===
+[size=4][b]What the tool does for one season[/b][/size]
+For each season you pick, the tool writes that season into [font=Courier New]po3_SeasonsOfSkyrim.ini[/font]. It then launches Skyrim through [font=Courier New]skse64_loader.exe[/font] and lets NGIO precache the grass.
+
+[size=4][b]How it knows the game is still working[/b][/size]
+It follows NGIO's [font=Courier New]PrecacheGrass.txt[/font]. A long load before the first cell is not mistaken for a hang.
+
+[size=4][b]What happens when the pass ends[/b][/size]
+Every [font=Courier New].cgid[/font] file gets its season's suffix: [font=Courier New].WIN[/font], [font=Courier New].SPR[/font], [font=Courier New].SUM[/font] or [font=Courier New].AUT[/font]. The seasonal loader then picks the right one. After that the season is packed as a mod. Without a seasonal mod, choose non-seasonal at setup and you get one plain cache instead.
+
+[size=4][b]Crash detection[/b][/size]
+When Skyrim dies, the tool notices within about 10 seconds and launches it again. If the game stops making progress for 15 minutes, that counts as a crash too. It retries 10 times per season by default.
+
+[size=4][b]The archives[/b][/size]
+Every season is packed as its own archive, like [font=Courier New]Grass_Cache_Winter_Season.zip[/font], with a FOMOD installer and a SHA-256 checksum next to it. The optional DynDOLOD LOD grass setting packs one season's cache without the season suffix, as [font=Courier New]Grass_Cache_Default_LOD.zip[/font].
+
+[size=4][b]Command line[/b][/size]
+[font=Courier New]--season all --unattended[/font] runs without questions, which is what Windows Task Scheduler needs. [font=Courier New]--dry-run[/font] tests the setup without launching Skyrim. [font=Courier New]--verbose[/font] adds detail to the output. [font=Courier New]--no-notifications[/font] turns the notification layer off. [font=Courier New]--help[/font] lists the rest.
+
+[size=4][b]The two builds[/b][/size]
+The 1.6.0 build is a single PyInstaller [font=Courier New].exe[/font]. It is not code-signed, so SmartScreen does not recognise the publisher. The 2.0 beta is about 20 KB of plain source that MO2 or Vortex runs for you, with no .exe, .dll or .pyd inside. It starts [font=Courier New]sksevr_loader.exe[/font] for Skyrim VR.
+
+[size=4][b]Source[/b][/size]
+The full source is on [url=https://github.com/ReidenXerx/NGIO_AutomationSuite]GitHub[/url].
