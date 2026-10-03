@@ -1,12 +1,14 @@
+[center][url=https://ko-fi.com/duduphudu][img]https://cdn.jsdelivr.net/gh/ReidenXerx/fo4-anatomy@6e50d8308b73ca15df0469604f39b03332242391/docs/img/support-kofi.png[/img][/url] [url=https://www.paypal.com/donate/?business=motet.volutes.5a@icloud.com&no_recurring=0&currency_code=USD][img]https://cdn.jsdelivr.net/gh/ReidenXerx/fo4-anatomy@6e50d8308b73ca15df0469604f39b03332242391/docs/img/support-paypal.png[/img][/url]
+[size=1]PayPal: motet.volutes.5a@icloud.com[/size][/center]
 [size=1]Comments here are also answered by Dudu's Butt, my own AI model: it handles your questions and brings bug reports straight to me.[/size]
 [center][url=https://discord.gg/H9yqPhjuY5][img]https://img.shields.io/discord/1273646070215348375?style=for-the-badge&labelColor=2b2b2b&logo=discord&logoColor=white&color=5865F2&label=Dudu%27s%20Den[/img][/url]
 [b][url=https://discord.gg/H9yqPhjuY5]Join Dudu's Den on Discord[/url][/b]: news, help and a chat with the people who play these mods.[/center]
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/hero.jpg[/img][/center]
 
-[center][size=4][b]Builds your No Grass In Objects grass cache for all four seasons in one unattended run, relaunches Skyrim when it crashes, and leaves you one ready-to-install mod per season.[/b][/size][/center]
+[center][size=4][b]Skyrim's fast, far-reaching grass needs a cache that takes hours to build and crashes along the way. This tool builds it for you, for all four seasons, while you sleep. It restarts Skyrim after every crash and hands you one ready-to-install mod per season.[/b][/size][/center]
 
-[center][b][color=#7fd65c]New: 2.0 beta for MO2 and Vortex, no exe.[/color][/b] It runs inside your mod manager. Get it from [url=https://www.nexusmods.com/skyrimspecialedition/mods/159499?tab=files]Files > Optional files[/url] and tell us how it went in the [url=https://www.nexusmods.com/skyrimspecialedition/mods/159499?tab=posts]sticky post[/url].[/center]
+[center][b][color=#7fd65c]2.0 beta for MO2 and Vortex, no exe.[/color][/b] It runs inside your mod manager. Get it from [url=https://www.nexusmods.com/skyrimspecialedition/mods/159499?tab=files]Files > Optional files[/url] and tell us how it went in the [url=https://www.nexusmods.com/skyrimspecialedition/mods/159499?tab=posts]sticky post[/url].[/center]
 
 [center]
 [url=https://github.com/ReidenXerx/NGIO_AutomationSuite/blob/master/LICENSE][img]https://img.shields.io/github/license/ReidenXerx/NGIO_AutomationSuite?color=blue&style=for-the-badge&labelColor=2b2b2b[/img][/url] [url=https://github.com/ReidenXerx/NGIO_AutomationSuite][img]https://img.shields.io/badge/source-GitHub-181717?style=for-the-badge&labelColor=2b2b2b&logo=github&logoColor=white[/img][/url] [url=https://github.com/ReidenXerx/NGIO_AutomationSuite/commits][img]https://img.shields.io/github/last-commit/ReidenXerx/NGIO_AutomationSuite?label=last%20commit&style=for-the-badge&labelColor=2b2b2b[/img][/url]
@@ -15,42 +17,55 @@
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
+[size=5][b][color=#f1c84b]In short[/color][/b][/size]
+
+[b]What you get[/b]
+[list]
+[*]One run that builds your grass cache for Winter, Spring, Summer and Autumn, one after the other, with no one at the keyboard.[/*]
+[*]Skyrim restarts by itself when it crashes, so the run carries on.[/*]
+[*]One mod per season, ready to install with Vortex or MO2 like any other mod.[/*]
+[*]A check before the run that tells you if your RAM, pagefile or disk space is too small.[/*]
+[/list][b]What you need[/b]: [url=https://skse.silverlock.org/]SKSE64[/url] and [url=https://www.nexusmods.com/skyrimspecialedition/mods/42161]No Grass In Objects[/url], plus [url=https://www.nexusmods.com/skyrimspecialedition/mods/62861]Seasons of Skyrim[/url] and Grass Cache Helper NG for seasonal grass.
+[b]How it goes[/b]: give Windows a 20 GB pagefile, run the tool once and pick all four seasons, then install the finished archives in the morning. Step by step: [b]Getting started[/b], below.
+
 [size=5][b][color=#f1c84b]What it is[/color][/b][/size]
 
-[url=https://www.nexusmods.com/skyrimspecialedition/mods/42161]No Grass In Objects[/url] can precache grass so it loads fast and draws far. Making that cache is the slow part: Skyrim has to walk every cell of every worldspace, it takes hours, it crashes along the way, and with [url=https://www.nexusmods.com/skyrimspecialedition/mods/62861]Seasons of Skyrim[/url] you do it four times, once per season.
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/42161]No Grass In Objects[/url] (NGIO) makes grass load fast and draw far. To do that it needs a grass cache, a set of files that remember where grass grows.
 
-This tool runs that loop for you. Pick the seasons, go to bed, and install the archives in the morning. It is a single [font=Courier New].exe[/font] for Windows, with nothing to install and no Python to set up.
+Making that cache is the slow part. Skyrim has to visit every cell of every worldspace. It takes hours, and the game crashes along the way. With [url=https://www.nexusmods.com/skyrimspecialedition/mods/62861]Seasons of Skyrim[/url] you do it four times, once per season.
+
+This tool does that loop for you. Pick the seasons, go to bed, and install the archives in the morning. It is a single [font=Courier New].exe[/font] for Windows, with nothing to install and no Python to set up.
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/cards.jpg[/img][/center]
 
 [size=5][b][color=#f1c84b]What you get[/color][/b][/size]
 
 [list]
-[*][b]Overnight Mode.[/b] Option 5, [i]All 4 Seasons[/i], runs Winter, Spring, Summer and Autumn back to back. The tool's own estimate is 4 to 6 hours; a large load order takes longer.
-[*][b]Crash recovery.[/b] When Skyrim dies, the tool notices within about 10 seconds and launches it again. If the game stops making progress for 15 minutes, that counts as a crash too. It retries 10 times per season by default.
-[*][b]Ready-made mods.[/b] Every season is packed as its own archive, like [font=Courier New]Grass_Cache_Winter_Season.zip[/font], with a FOMOD installer and a SHA-256 checksum next to it. Install it with Vortex or MO2 like any other mod.
-[*][b]Runs on a schedule.[/b] [font=Courier New]--season all --unattended[/font] asks nothing, so Windows Task Scheduler can start it.
-[*][b]Checks first.[/b] Before a run it checks RAM, pagefile and free disk space, and tells you what to change if one is short.
-[*][b]LOD grass for DynDOLOD[/b] [i](new in 1.6.0, optional)[/i]. Say yes at setup and it also packs one season's cache without the season suffix, as [font=Courier New]Grass_Cache_Default_LOD.zip[/font], which is what DynDOLOD's grass LOD reads.
-[/list]
-
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
+[*][b]Overnight Mode.[/b] Option 5, [i]All 4 Seasons[/i], runs Winter, Spring, Summer and Autumn back to back. The tool's own estimate is 4 to 6 hours; a large load order takes longer.[/*]
+[*][b]Crash recovery.[/b] When Skyrim dies, the tool notices within about 10 seconds and launches it again. If the game makes no progress for 15 minutes, that counts as a crash too. It retries 10 times per season by default.[/*]
+[*][b]Ready-made mods.[/b] Every season is packed as its own archive, like [font=Courier New]Grass_Cache_Winter_Season.zip[/font]. A FOMOD installer and a SHA-256 checksum (a fingerprint that proves the file is intact) come with it. Install it with Vortex or MO2 like any other mod.[/*]
+[*][b]Runs on a schedule.[/b] [font=Courier New]--season all --unattended[/font] asks no questions, so Windows Task Scheduler can start it.[/*]
+[*][b]Checks first.[/b] Before a run it checks RAM, pagefile and free disk space, and tells you what to change if one is short.[/*]
+[*][b]LOD grass for DynDOLOD (optional).[/b] Say yes at setup and it also packs one season's cache without the season name, as [font=Courier New]Grass_Cache_Default_LOD.zip[/font]. DynDOLOD's grass LOD reads that one.[/*]
+[/list][center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]How it works[/color][/b][/size]
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/pipeline.jpg[/img][/center]
 [center][i]One pass per season. The same five steps, four times.[/i][/center]
 
-For each season you pick, the tool writes that season into [font=Courier New]po3_SeasonsOfSkyrim.ini[/font], launches Skyrim through [font=Courier New]skse64_loader.exe[/font] and lets NGIO precache the grass. It follows NGIO's [font=Courier New]PrecacheGrass.txt[/font] to know the game is still working. A long load before the first cell is not mistaken for a hang.
+For each season you pick, the tool sets that season, starts Skyrim and lets NGIO build the grass cache. It watches NGIO's progress file to know the game is still working. A long load before the first cell is not mistaken for a hang.
 
-When the pass is done, every [font=Courier New].cgid[/font] file gets its season's suffix ([font=Courier New].WIN[/font], [font=Courier New].SPR[/font], [font=Courier New].SUM[/font] or [font=Courier New].AUT[/font]) so the seasonal loader picks the right one, and the season is packed as a mod. Without a seasonal mod, choose non-seasonal at setup and you get one plain cache instead.
+When the pass is done, the cache files are labelled with their season, so the seasonal mod picks the right ones. Then the season is packed as a mod. Without a seasonal mod, choose non-seasonal at setup and you get one plain cache instead.
+
+[b]How it works:[/b] [url=https://www.nexusmods.com/skyrimspecialedition/articles/12483]NGIO Automation Suite - under the hood →[/url]
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/terminal.jpg[/img][/center]
 [center][i]The season menu, as the tool prints it. 5 is Overnight Mode.[/i][/center]
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@b8444da807e960e6f3aaed08350383644cdc0708/docs/img/noexe.jpg[/img][/center]
 
-The 2.0 beta (under Optional files) drops the exe: about 20 KB of plain source that MO2 or Vortex runs for you, with no .exe, .dll or .pyd inside.
+The 2.0 beta (under Optional files) has no exe. It is about 20 KB of plain source that MO2 or Vortex runs for you, with no .exe, .dll or .pyd inside.
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
@@ -58,80 +73,61 @@ The 2.0 beta (under Optional files) drops the exe: about 20 KB of plain source t
 
 [quote]
 [b]1. Give Windows a pagefile of 20 GB or more.[/b]
-Skyrim's precache pass can use more memory than you have RAM. The tool calls a pagefile under 10 GB critical and under 20 GB a warning. To set it: [i]System Properties → Advanced → Performance Settings → Advanced → Virtual memory → Change[/i], custom size 20480 MB, then restart.
+Skyrim's grass pass can use more memory than you have RAM. The tool calls a pagefile under 10 GB critical and under 20 GB a warning. To set it: [i]System Properties → Advanced → Performance Settings → Advanced → Virtual memory → Change[/i], custom size 20480 MB, then restart.
 
 [b]2. On MO2, launch the tool from inside MO2.[/b]
-Add the [font=Courier New].exe[/font] under MO2's Executables and start it from MO2's dropdown. Started from Explorer, it cannot see MO2's virtual files and stops with [i]"Seasons of Skyrim config file not found"[/i]. On Vortex, run it directly.
-[/quote]
-
-[size=4][b]Getting started[/b][/size]
+Add the [font=Courier New].exe[/font] under MO2's Executables and start it from MO2's dropdown. Started from Explorer, it cannot see MO2's virtual files and stops with [i]"Seasons of Skyrim config file not found"[/i]. On Vortex, run it directly.[/quote][size=4][b]Getting started[/b][/size]
 [list=1]
-[*]Install the requirements: SKSE64 and No Grass In Objects, plus Seasons of Skyrim and Grass Cache Helper NG for seasonal grass.
-[*]Download the [font=Courier New].exe[/font] from the Files tab and put it anywhere.
-[*]Run it, or run it from MO2. The first time, it asks for your Skyrim folder, where to save the archives, and whether you use a seasonal mod. It remembers the answers.
-[*]Pick [b]5[/b] for all four seasons and leave the PC alone.
-[*]In the morning, install the archives from the output folder with your mod manager.
-[/list]
-
-[center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
+[*]Install the requirements: SKSE64 and No Grass In Objects, plus Seasons of Skyrim and Grass Cache Helper NG for seasonal grass.[/*]
+[*]Download the [font=Courier New].exe[/font] from the Files tab and put it anywhere.[/*]
+[*]Run it, or run it from MO2. The first time, it asks for your Skyrim folder, where to save the archives, and whether you use a seasonal mod. It remembers the answers.[/*]
+[*]Pick [b]5[/b] for all four seasons and leave the PC alone.[/*]
+[*]In the morning, install the archives from the output folder with your mod manager.[/*]
+[/list][center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]Incompatibilities[/color][/b][/size]
 
 Known conflicts, from real reports and the code. Found another one? Tell us in the Bugs tab.
 [list]
-[*][b][url=https://www.nexusmods.com/skyrimspecialedition/mods/106440]Trainwreck - A Crash Logger[/url][/b]: its crash popup keeps a crashed game open, so the automatic relaunch waits until the hang timer runs out. Disable it for grass runs, or expect about 10-15 minutes lost per crash.[/*]
+[*][b][url=https://www.nexusmods.com/skyrimspecialedition/mods/106440]Trainwreck - A Crash Logger[/url][/b]: its crash popup keeps a crashed game open, so the automatic restart waits until the hang timer runs out. Disable it for grass runs, or expect about 10-15 minutes lost per crash.[/*]
 [*][b][url=https://www.nexusmods.com/skyrimspecialedition/mods/31720]Kezyma's Root Builder for Mod Organizer[/url][/b]: it can move PrecacheGrass.txt, so generation starts on every launch or never finishes. Add PrecacheGrass.txt as a Root Builder exclusion (No Grass In Objects' own advice).[/*]
 [*][b]Any mod that already ships a grass cache (.cgid files in Data\Grass)[/b]: NGIO skips every cell that already has a file, so those cells keep the old grass. Disable it before generating.[/*]
-[*][b]Skyrim VR[/b]: the 1.6.0 exe does not recognise the VR game and reports "no activity". The 2.0 betas start sksevr_loader.exe, but no VR run has been reported yet.[/*]
+[*][b]Skyrim VR[/b]: the 1.6.0 exe does not recognise the VR game and reports "no activity". The 2.0 betas start sksevr_loader.exe.[/*]
 [*][b]Mod Organizer 2 with the 1.6.0 exe[/b]: started from Explorer it can't see MO2's files ("Seasons of Skyrim config file not found"). Run it from MO2's Executables, or use the 2.0 MO2 plugin.[/*]
-[/list]
-
-[size=5][b][color=#f1c84b]FAQ[/color][/b][/size]
+[/list][size=5][b][color=#f1c84b]FAQ[/color][/b][/size]
 
 [b]A run keeps crashing at the same place. What helps?[/b]
 [spoiler]
 What owners of large load orders report working:
 [list]
-[*]A 20 GB pagefile on an SSD.
-[*]A slim profile in your mod manager for the run: keep the landscape and grass mods, and disable big script-heavy or visual mods you do not need to place grass.
-[*]Windowed mode at 800×600 for the run. The [font=Courier New].cgid[/font] files only record where grass goes, so they do not depend on graphics settings.
-[/list]
-If it still fails, open a Bugs report with the text from the tool's window. Running it with [font=Courier New]--verbose[/font] adds the detail that helps most.
-[/spoiler]
+[*]A 20 GB pagefile on an SSD.[/*]
+[*]A slim profile in your mod manager for the run: keep the landscape and grass mods, and disable big script-heavy or visual mods you do not need to place grass.[/*]
+[*]Windowed mode at 800×600 for the run. The [font=Courier New].cgid[/font] files only record where grass goes, so they do not depend on graphics settings.[/*]
+[/list]If it still fails, open a Bugs report with the text from the tool's window. Running it with [font=Courier New]--verbose[/font] adds the detail that helps most.[/spoiler]
 
 [b]Can I run it on a schedule, without the menu?[/b]
 [spoiler]
-Yes. [font=Courier New]--season all --unattended[/font] runs without questions, which is what Windows Task Scheduler needs. [font=Courier New]--dry-run[/font] tests the setup without launching Skyrim. [font=Courier New]--help[/font] lists the rest.
-[/spoiler]
+Yes. [font=Courier New]--season all --unattended[/font] runs without questions, which is what Windows Task Scheduler needs. [font=Courier New]--dry-run[/font] tests the setup without launching Skyrim. [font=Courier New]--help[/font] lists the rest.[/spoiler]
 
 [b]Does it work on Steam Deck or Linux?[/b]
 [spoiler]
-Not verified. The notification layer detects Wine and turns itself off, and [font=Courier New]--no-notifications[/font] disables it entirely, but nobody has reported a full run under Proton yet. If you try, please report back in the comments.
-[/spoiler]
+On Linux (Proton, Steam Deck) the notification layer detects Wine and turns itself off, and [font=Courier New]--no-notifications[/font] disables it entirely. Tell us how it goes in the comments.[/spoiler]
 
 [b]Windows warns about an unknown publisher.[/b]
 [spoiler]
-The [font=Courier New].exe[/font] is a PyInstaller build and is not code-signed, so SmartScreen does not recognise the publisher. It launches Skyrim, watches it and renames thousands of files, which some heuristic scanners also flag. The full source it is built from is on [url=https://github.com/ReidenXerx/NGIO_AutomationSuite]GitHub[/url].
-[/spoiler]
+The [font=Courier New].exe[/font] is a PyInstaller build and is not code-signed, so SmartScreen does not recognise the publisher. It launches Skyrim, watches it and renames thousands of files, which some heuristic scanners also flag. The full source it is built from is on [url=https://github.com/ReidenXerx/NGIO_AutomationSuite]GitHub[/url].[/spoiler]
 
 [b]Do I need to run it again?[/b]
 [spoiler]
-Only when you change something that places grass: a grass mod, a landscape mod, or the worldspaces themselves. Graphics settings do not matter.
-[/spoiler]
+Only when you change something that places grass: a grass mod, a landscape mod, or the worldspaces themselves. Graphics settings do not matter.[/spoiler]
 
 [center][img]https://cdn.jsdelivr.net/gh/ReidenXerx/NGIO_AutomationSuite@fd8badf4de7a8e32f86e9af548ce685937da57c1/docs/img/divider.png[/img][/center]
 
 [size=5][b][color=#f1c84b]Credits[/color][/b][/size]
 
 [list]
-[*][b]meh321[/b], and [b]DwemerEngineer[/b] and [b]alandtse[/b], for No Grass In Objects. Everything here drives NGIO's own precache, and none of it would exist without it.
-[*][b]powerofthree[/b] for Seasons of Skyrim.
-[*][b]The SKSE team[/b] for the Skyrim Script Extender.
-[*]Everyone whose reports shaped a release: setsofnumbers, zorbon1, justkub96, timun, unisexbrian, Detteride, and everyone in the comments and bug reports.
-[/list]
-
-Release history is in the [b]Changelog[/b] tab. Bugs go to the [b]Bugs[/b] tab, with the text from the tool's window.
-
-[center]If you'd like to support my work:
-[url=https://ko-fi.com/duduphudu][img]https://img.shields.io/badge/Ko--fi-support%20me-FF5E5B?style=for-the-badge&labelColor=2b2b2b&logo=kofi&logoColor=white[/img][/url] [url=https://www.paypal.com/donate/?business=motet.volutes.5a@icloud.com&no_recurring=0&currency_code=USD][img]https://img.shields.io/badge/PayPal-donate-0070BA?style=for-the-badge&labelColor=2b2b2b&logo=paypal&logoColor=white[/img][/url]
-[size=1]PayPal: motet.volutes.5a@icloud.com[/size][/center]
+[*][b]meh321[/b], and [b]DwemerEngineer[/b] and [b]alandtse[/b], for No Grass In Objects. Everything here drives NGIO's own precache, and none of it would exist without it.[/*]
+[*][b]powerofthree[/b] for Seasons of Skyrim.[/*]
+[*][b]The SKSE team[/b] for the Skyrim Script Extender.[/*]
+[*]Everyone whose reports shaped a release: setsofnumbers, zorbon1, justkub96, timun, unisexbrian, Detteride, and everyone in the comments and bug reports.[/*]
+[/list]Release history is in the [b]Changelog[/b] tab. Bugs go to the [b]Bugs[/b] tab, with the text from the tool's window.
